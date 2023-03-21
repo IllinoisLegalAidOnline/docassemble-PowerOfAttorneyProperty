@@ -1,0 +1,1289 @@
+metadata:
+  title: Power of attorney for property
+  short title: POA property
+  comment: This program helps you create documents to give another person access or control of your money and property.
+  authors:
+    - Vivian McNaughton
+    - Matt Newsted
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALToolbox:phone-number-validation.yml
+  - docassemble.ILAO:ilao-interview-framework.yml
+  - docassemble.ILAO:shared-basic-questions.yml
+---
+objects:
+  - principal: ALIndividual
+  - agent: ALIndividual
+  - preparer: ALIndividual
+  - successors: ALPeopleList.using(
+        object_type=ALIndividual,
+        complete_attribute='complete',
+        there_are_any=True)
+---
+code: |
+  ilao_easy_form_title = "Power of attorney for property"
+  ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/power-attorney-property"
+  github_user = 'IllinoisLegalAidOnline'
+  github_repo_name = 'docassemble-PowerOfAttorneyProperty'
+---
+# Road map
+sections:
+  - section_intro: Start
+  #- section_qualify: Do you qualify?
+  - section_principal: Principal
+  - section_agent: Agent
+  - section_powers: Powers
+  - section_successors: Successor agents
+  - section_other: Other information
+  - section_download: Download
+---
+# interview order block
+mandatory: True
+code: |
+  nav.set_section('section_intro')
+  sees_nav_bar
+  set_progress(5)
+  how_to_use
+  accept_terms
+  nav.set_section('section_principal')
+  if for_yourself == False:
+    other_principal
+  principal.name.first
+  if in_illinois == False:
+    illinois_kickout
+  set_progress(20)
+  principal.address.address
+  nav.set_section('section_agent')
+  agent.name.first
+  agent.address.address
+  agent.phone_number
+  poa_date
+  nav.set_section('section_powers')
+  which_powers
+  set_progress(40)
+  life_insurance
+  file_bankruptcy
+  designate_successors
+  is_guardian
+  if ssn_authority == True:
+    social_security
+  birth_date
+  set_progress(60)
+  if agent_limitations == True:
+    agent_limits
+  if any_additional_powers == True:
+    additional_powers
+  delegate_decisions 
+  agent_compensation
+  nav.set_section('section_successors')
+  if any_successors == True:
+    successors.gather()
+  #This program currently does not ask about witnesses because the statutory short form only seems to have space for their signatures. If we end up using a different form, this may change. 
+  nav.set_section('section_other')
+  set_progress(80)
+  if effective_immediately == False:
+    effective_date
+  if end_before_death == True:
+    end_date
+  if for_yourself == False:
+    if which_powers['real'] == True:
+      preparer.address.address
+  set_progress(100)
+  get_docs_screen
+---
+id: welcome
+question: |
+  Power of attorney for property
+subquestion: |
+  Welcome to Illinois Legal Aid Online's **Power of attorney for property** Easy Form.
+
+  This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
+  
+  Learn about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
+field: sees_nav_bar
+---
+id: instructions
+continue button field: how_to_use
+question: |
+  Instructions
+subquestion: |  
+  To use this program you will need to know:
+
+  * The name, address, and phone number of the person you want to designate as the agent with power of attorney,
+  * The names, address, and phone numbers of any successor agents, and
+  * How much control you want the agent to have over your property.
+    
+  Set aside 15 to 30 minutes to finish this program. You can log in and save your work to return to later. 
+  
+  ${ collapse_template(help_example) }  
+
+  Click on **{green words}** to learn what they mean. Some questions have a question mark in a circle ${ fa_icon("question-circle", color_css="#0DCAF0" ) } that also gives help.
+---
+template: help_example
+
+subject: |
+
+  **You can expand sections like this to show more information.**
+
+content: |  
+
+  This is an example of help. Click again to hide.
+---
+id: accept terms
+question: |
+  Terms of use
+subquestion: |
+  This program does not provide legal advice. It does not take the place of advice from a lawyer.
+
+  Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
+
+  ${ collapse_template(get_legal_help) }  
+
+fields:
+  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use).: accept
+    datatype: checkboxes
+    none of the above: False
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.
+continue button field: accept_terms
+---
+template: get_legal_help
+subject: |
+  **What if I need legal advice?**
+content: |  
+  If you have questions or concerns about your legal problem and want legal advice you should talk to a lawyer.
+ 
+  Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+---
+id: for yourself
+question: |
+  Are you making these forms for yourself?
+subquestion: |
+  In other words, are you the **{principal}** who wants to designate an **{agent}**?
+
+  If you are making these forms for someone else, that person will be the principal.
+fields:
+  - no label: for_yourself
+    datatype: yesnoradio
+terms:
+  agent: |
+    The agent is the person who will make decisions about the principal's money or property.
+  principal: |
+    The principal is the person who chooses an agent to make decisions about the principal's money and property.
+---
+id: other principal notice
+continue button field: other_principal
+question: |
+  Making a Power of Attorney for someone else
+subquestion: |
+  You can use this program for someone other than yourself, but:
+  
+  * That person must have directed you to make a Power of Attorney for Property, and
+  * That person must choose what powers they want to give their agent.
+---
+id: principal name
+question: |
+  % if for_yourself == True:
+  What is your name?
+  % else:
+  What is the principal's name?
+  % endif
+subquestion: |
+  % if for_yourself == False:
+  The principal is the person who chooses an agent to make decisions about the principal's medical treatment.
+  % endif
+fields:
+  - First: principal.name.first
+  - Middle: principal.name.middle
+    required: False
+  - Last: principal.name.last
+  - Suffix: principal.name.suffix
+    required: False
+---
+id: in illinois
+question: |
+  % if for_yourself == True:
+  Are you a resident of Illinois?
+  % else:
+  Is ${principal.name.full(middle='full')} a resident of Illinois?
+  % endif
+fields:
+  - no label: in_illinois
+    datatype: yesnoradio
+---
+id: illinois kickout
+event: illinois_kickout
+question: |
+  Sorry
+subquestion: |
+  % if for_yourself == True:
+  You must be an Illinois resident to use this form.
+  % else:
+  ${principal.name.full(middle='full')} must be an Illinois resident to use this form.
+  % endif
+  
+  If you do not live in Illinois, use [**the Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+id: principal address
+question: |
+  % if for_yourself == True:
+  What is your address?
+  % else:
+  What is ${principal.name.full(middle='full')}'s address?
+  % endif
+fields:
+  - Street address: principal.address.address
+    address autocomplete: True
+  - Address line 2: principal.address.unit
+    required: False
+  - City: principal.address.city
+  - State: principal.address.state
+    code: |
+      states_list() 
+  - ZIP code: principal.address.zip
+---
+id: agent name
+question: |
+  % if for_yourself == True:
+  Who do you want to name as your agent?
+  % else:
+  Who does ${principal.name.full(middle='full')} want to name as their agent?
+  % endif
+subquestion: |
+  % if for_yourself == False:
+  The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property.
+  % endif
+fields:
+  - First: agent.name.first
+  - Middle: agent.name.middle
+    required: False
+  - Last: agent.name.last
+---
+id: agent address
+question: |
+  What is ${agent.name.full(middle='full')}'s address?
+fields:
+  - Street address: agent.address.address
+    address autocomplete: True
+  - Address line 2: agent.address.unit
+    required: False
+  - City: agent.address.city
+  - State: agent.address.state
+    code: |
+      states_list() 
+  - ZIP code: agent.address.zip
+---
+id: agent phone
+question: |
+  What is ${agent.name.full(middle='full')}'s phone number?
+subquestion: |
+  If you do not know this, leave this blank.
+fields:
+  - Phone number: agent.phone_number
+    datatype: al_international_phone
+    required: False
+---
+id: power of attorney date
+question: |
+  % if for_yourself == True:
+  When will you complete and sign this power of attorney in front of a notary?
+  % else:
+  When will ${principal.name.full(middle='full')} complete and sign this power of attorney in front of a notary?
+  % endif
+subquestion: |
+  If you do not know, you can leave this blank.
+fields:
+  - Date: poa_date
+    datatype: date
+    required: False
+---
+id: which powers
+question: |
+  % if for_yourself == True:
+  What do you want ${agent.name.full(middle='full')} to have power over?
+  % else:
+  What does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power over?
+  % endif
+fields: 
+  - no label: which_powers
+    datatype: checkboxes
+    none of the above: False
+    choices:
+      - Real estate transactions: real
+        help: |
+          Some examples of real estate transactions are buying a house or renting an apartment.
+      - Financial institution transactions: financial
+        help: |
+          Some examples of financial institution transactions are depositing or taking out money from an account or writing checks.
+      - Stock and bond transactions: stock
+        help: |
+          Some examples of stock and bond transactions are buying stock and safekeeping any interest or shares of that stock.
+      - Tangible personal property transactions: tangible
+        help: |
+          Some examples of tangible personal property are furniture, jewelry, and pictures.
+
+          Some examples of tangible personal property transactions are selling furniture, storing pictures, and repairing appliances.
+      - Safe deposit transactions: safe
+        help: |
+          Some examples of safe deposit transactions are renewing safe deposits, closing the safe deposit, or being able to get into the safe deposit box.
+      - Insurance and annuity transactions: insurance
+        help: |
+          Some examples of insurance and annuity transactions are buying health insurance, paying for car insurance, or ending life insurance.
+      - Retirement plan transactions: retirement
+        help: |
+          Some examples of retirement plan transactions are putting money into a retirement plan, or taking money out of a retirement plan or an employee savings account.
+      - Social Security, employment and military service benefits: social
+        help: |
+          Some examples of Social Security, unemployment, and military service benefit transactions are filing applications for these services or filing or settling any claims regarding these services.
+      - Tax matters: tax
+        help: |
+          An example of a tax matter is filing federal and state income tax returns.
+      - Claims and litigation: claims
+        help: |
+          Some examples of claims and litigation are the power to sue someone, to settle a claim, or to hire an attorney.
+      - Commodity and option transactions: commodity
+        help: |
+          Some examples of commodity and option transactions are buying stock options and continuing to use a stock broker.
+      - Business operations: business
+        help: |
+          Some examples of business transactions are selling, expanding, or remodeling the principal's business. For example, if the principal owned a store, then the agent could sell the store, make the store bigger, or remodel it. The agent could also hire or fire employees.
+      - Borrowing transactions: borrowing
+        help: |
+          Some examples of borrowing transactions are taking out a loan in the principal's name, paying any current loans, or taking out a mortgage on the principal's home.
+      - Estate transactions: estate
+        help: |
+          Some examples of estate transactions are accepting money or a gift on behalf of the principal.
+      - All other property powers and transactions: all
+---
+id: life insurance
+question: |
+  % if for_yourself == True:
+  Do you want ${agent.name.full(middle='full')} to have power to change your life insurance beneficiaries?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to change their life insurance beneficiaries?
+  % endif
+fields:
+  - no label: life_insurance
+    datatype: yesnoradio
+---
+id: bankruptcy
+question: |
+  % if for_yourself == True:
+  Do you want ${agent.name.full(middle='full')} to have power to file a bankruptcy on your behalf?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to file a bankruptcy on ${principal.name.full(middle='full')}'s behalf?
+  % endif
+fields:
+  - no label: file_bankruptcy
+    datatype: yesnoradio
+---
+id: designate successors
+question: |
+  % if for_yourself == True:
+  Do you want ${agent.name.full(middle='full')} to have power to designate a successor agent if the need arises and you are incapable of doing so?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to designate a successor agent if the need arises and ${principal.name.full(middle='full')} is incapable of doing so?
+  % endif
+fields:
+  - no label: designate_successors
+    datatype: yesnoradio
+---
+id: social security authority
+question: |
+  % if for_yourself == True: 
+  Do you want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
+  % endif
+subquestion: |
+  Note: If so, a separate authorization will be created in addition to this Power of Attorney for Property.
+fields:
+  - no label: ssn_authority
+    datatype: yesnoradio
+---
+id: social security number
+question: |
+  % if for_yourself == True:
+  What is your Social Security number?
+  % else:
+  What is ${principal.name.full(middle='full')}'s Social Secuirty number?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  A Social Security number is required to authorize ${agent.name.full(middle='full')} to work with the Social Security Administration on your behalf.
+  % else:
+  A Social Security number is required to authorize ${agent.name.full(middle='full')} to work with the Social Security Administration on ${principal.name.full(middle='full')}'s behalf.
+  % endif
+fields:
+  - Social Security number: social_security
+---
+id: date of birth
+question: |
+  % if for_yourself == True:
+  What is your date of birth?
+  % else:
+  What is ${principal.name.full(middle='full')}'s date of birth?
+  % endif
+fields:
+  - Date: birth_date
+    datatype: date
+    max: ${ today() }
+---
+id: agent limitation
+question: |
+  % if for_yourself == True:
+  Do you want to set special rules to limit ${agent.name.full(middle='full')}'s powers?
+  % else:
+  Does ${principal.name.full(middle='full')} want to set special rules to limit ${agent.name.full(middle='full')}'s powers?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  You may limit any of the powers given to an agent. You may also list any specific powers you do not want the agent to have.
+  % else:
+  ${principal.name.full(middle='full')} may limit any of the powers given to an agent. They may also list any specific powers they do not want the agent to have.
+  % endif
+fields:
+  - no label: agent_limitations
+    datatype: yesnoradio
+---
+id: agent limits
+question: |
+  % if for_yourself == True:
+  What limits or special rules do you want to include?
+  % else:
+  What limits or special rules does ${principal.name.full(middle='full')} want to include?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+    For example, you can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name.full(middle='full')}.
+  % else:
+  For example, they can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name.full(middle='full')}.
+  % endif
+fields:
+  - Limits: agent_limits
+    input type: area
+---
+id: any additional powers
+question: |
+  % if for_yourself == True:
+  Do you want to give any additional powers to ${agent.name.full(middle='full')}?
+  % else:
+  Does ${ principal.name.full(middle='full')} want to give any additional powers to ${agent.name.full(middle='full')}?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  If desired, you may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
+  % else:
+  If desired, ${principal.name.full(middle='full')} may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
+  % endif
+
+  Other powers may include: the power to make gifts; to exercise powers of appointment; to name or change beneficiaries or joint tenants; or to revoke or amend any trust. However, if ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
+fields:
+  - no label: any_additional_powers
+    datatype: yesnoradio
+---
+id: additional powers
+question: |
+  Complete the sentence: "In addition to the powers granted above, ${agent.name.full(middle='full')} is granted the following powers: "
+subquestion: |
+  For example: The agent will have the right to transfer my money from my savings account to my checking account.
+fields:
+  - Additional powers: additional_powers
+    input type: area
+---
+id: delegate decisions
+question: |
+  % if for_yourself == True:
+  Do you want to give ${agent.name.full(middle='full')} the right to delegate discretionary decision making powers to others?
+  % else:
+  Does ${principal.name.full(middle='full')} want to give ${agent.name.full(middle='full')} the right to delegate discretionary decision making powers to others?
+  % endif
+subquestion: |
+  ${ collapse_template(delegate_meaning) }  
+fields:
+  - no label: delegate_decisions
+    datatype: yesnoradio 
+---
+template: delegate_meaning
+subject: |
+  **What does "delegating discretionary decision making powers" mean?**
+content: |  
+  As agent, ${agent.name.full(middle='full')} has the authority to employ other people necessary to carry out the powers granted in this form, but ${agent.name.full(middle='full')} will still have to make all the decisions.
+
+  % if for_yourself == True:
+  However, you may decide to give ${agent.name.full(middle='full')} the option to let others make decisions. This is called "delegating discretionary decision making powers."
+  % else:
+  However, ${principal.name.full(middle='full')} may decide to give ${agent.name.full(middle='full')} the option to let others make decisions. This is called "delegating discretionary decision making powers."
+  % endif
+---
+id: agent compensation
+question: |
+  % if for_yourself == True:
+  Do you want ${agent.name.full(middle='full')} to have the right to reasonable payment for services as your agent?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have the right to reasonable payment for services as their agent?
+  % endif
+subquestion: |  
+  % if for_yourself == True:
+  You will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
+
+  You can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
+  % else:
+  ${principal.name.full(middle='full')} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
+
+  They can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
+  % endif
+fields:
+  - no label: agent_compensation
+    datatype: yesnoradio
+---
+id: any successors
+question: |
+  % if for_yourself == True:
+  Do you want to name successor agents?
+  % else:
+  Does ${principal.name.full(middle='full')} want to name successor agents?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  The person named as a successor agent will have power of attorney for propert for you if ${agent.name.full(middle='full')} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
+  % else:
+  The person named as a successor agent will have power of attorney for property for ${principal.name.full(middle='full')} if ${agent.name.full(middle='full')} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
+  % endif
+fields:
+  - no label: any_successors
+    datatype: yesnoradio
+terms:
+  incompetent: |
+    Incompetent means unable to handle one's own affairs due to illness, disability, or age. A person can be declared incompetent or legally disabled by a court. A person may be certified by a doctor as unable to make decisions or handle business affairs.
+---
+code: |
+  successors[i].name.first
+  successors[i].address.address
+  successors[i].phone_number
+  successors[i].complete = True
+---
+id: any other successors
+question: |
+  % if for_yourself == True:
+  Do you want to name another successor agent?
+  % else:
+  Does ${principal.name.full(middle='full')} want to name another successor agent?
+  % endif
+subquestion: |
+  So far you have told us about ${comma_and_list(successors.complete_elements().full_names())}.
+fields:
+  - "Anyone else?": successors.there_is_another
+    datatype: yesnoradio
+---
+sets:
+  - successors[i].name.first
+id: names of successors
+question: |
+  % if i == 0:
+  What is the successor's name?
+  % else:
+  What is the ${ordinal(i)} successor's name?
+  % endif
+fields:
+  - First: successors[i].name.first
+  - Middle: successors[i].name.middle
+    required: False
+  - Last: successors[i].name.last
+  - Suffix: successors[i].name.suffix
+    code: |
+      name_suffix()
+    required: False  
+---
+id: successor address
+sets:
+  - successors[i].address.address
+question: |
+  What is ${successors[i].name.full(middle='full')}'s address?
+fields:
+  - Street address: successors[i].address.address
+    address autocomplete: True
+  - Address line 2: successors[i].address.unit
+    required: False
+  - City: successors[i].address.city
+  - State: successors[i].address.state
+    code: |
+      states_list() 
+  - ZIP code: successors[i].address.zip  
+---
+id: successor phone
+sets:
+  - successors[i].phone_number
+question: |
+  What is ${successors[i].name.full(middle='full')}'s phone number?
+subquestion: |
+  If you do not know this, leave this blank.
+fields:
+  - Phone number: successors[i].phone_number
+    datatype: al_international_phone
+    required: False
+---
+id: effective date option
+question: |
+  % if for_yourself == True:
+  Do you want this Power of Attorney to go into effect immediately after you sign it?
+  % else:
+  Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
+  % else:
+  This Power of Attorney will go into effect when ${principal.name.full(middle='full')} signs the form unless they state that it should take effect at a later time.
+  % endif
+fields:
+  - no label: effective_immediately
+    datatype: yesnoradio
+---
+id: effective date
+question: |
+  % if for_yourself == True:
+  When do you want the Power of Attorney to take effect?
+  % else:
+  When does ${principal.name.full(middle='full')} want the Power of Attorney to take effect?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
+  % else:
+  To make the Power of Attorney take effect at a later time, ${principal.name.full(middle='full')} must give a date or event when it should start.
+  % endif
+  
+  The event chosen must be limited to a specific future date or occurrence. The event chosen should also be as specific as possible.
+
+  As an example, the event 'the birth of my child' is not specific. Instead, the event should specify which child: 'the birth of my first child.'
+fields:
+  - "This power of attorney shall become effective on...": effective_date
+    input type: area
+---
+id: revocation option
+question: |
+  % if for_yourself == True:
+  Do you want this Power of Attorney to end before your death?
+  % else:
+  Does ${principal.name.full(middle='full')} want this Power of Attorney to end before their death?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
+  % else:
+  This Power of Attorney for Property will last until ${principal.name.full(middle='full')}'s death. However, they may choose to end it earlier.
+  % endif
+fields:
+  - no label: end_before_death
+    datatype: yesnoradio
+---
+id: revocation
+question: |
+  % if for_yourself == True:
+  When do you want the Power of Attorney to end?
+  % else:
+  When does ${principal.name.full(middle='full')} want the Power of Attorney to end?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  To make the Power of Attorney end before your death, you must give a date or an event upon which the Power of Attorney will end.
+
+  For example, the Power of Attorney could end upon a court determination of your disability.
+  % else:
+  To make the Power of Attorney end before ${principal.name.full(middle='full')}'s death, they must give a date or an event upon which the Power of Attorney will end.
+
+  For example, the Power of Attorney could end upon a court determination of their disability.
+  % endif
+fields:
+  - "This power of attorney shall terminate on...": end_date
+    input type: area
+---
+id: agent as guardian
+question: |
+  % if for_yourself == True:
+  Do you want ${agent.name.full(middle='full')} appointed as your legal guardian, if needed?
+  % else:
+  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} appointed as their legal guardian, if needed?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  You can make ${agent.name.full(middle='full')} the guardian of your estate property if a court decides that a guardian should be appointed.
+
+  However, you are not required to name ${agent.name.full(middle='full')} as guardian of your estate. The court may appoint ${agent.name.full(middle='full')} as guardian if it decides that this would serve your best interests.
+  % else:
+  ${principal.name.full(middle='full')} can make ${agent.name.full(middle='full')} the guardian of their estate property if a court decides that a guardian should be appointed.
+
+  However, they are not required to name ${agent.name.full(middle='full')} as guardian of your estate. The court may appoint ${agent.name.full(middle='full')} as guardian if it decides that this would serve their best interests.
+  % endif
+  
+  If you click **No**, then a court may appoint someone other than ${agent.name.full(middle='full')} to be guardian if needed.
+fields:
+  - no label: is_guardian
+    datatype: yesnoradio
+---
+id: prepare address
+question: |
+  What is your address?
+subquestion: |
+  Since you helped ${principal.name.full(middle='full')} prepare this Power of Attorney for Property, and since real estate is involved, you must provide your address.
+
+  Also, remember that ${principal.name.full(middle='full')} must sign the documents before a notary public and a second witness.
+fields:
+  - Street address: preparer.address.address
+    address autocomplete: True
+  - Address line 2: preparer.address.unit
+    required: False
+  - City: preparer.address.city
+  - State: preparer.address.state
+    code: |
+      states_list() 
+  - ZIP code: preparer.address.zip
+---
+id: get docs screen
+event: get_docs_screen
+question: |
+  Download
+subquestion: |
+  Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+  
+  Read the instructions to learn what to do next.
+  
+  ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
+
+  ${ al_user_bundle.download_list_html() }
+ 
+  &nbsp;
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  **Note:** This program does not send your form. You will need to do this yourself.
+
+  Thank you for using ILAO Easy Forms!
+under: |
+  % if not user_logged_in():
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} **Sign-in**](${url_of('login', next=interview_url())}) or [**create**](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif
+
+ 
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+  Power of attorney for property
+content: |
+  Your forms are attached.
+  
+  Thanks for using ILAO Easy Forms!
+  
+  [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="Download all forms", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="Download all forms", enabled=True)
+---
+attachment:
+  - name: poa_property
+    variable name: poa_property[i]
+    filename: power_of_attorney_for_property
+    docx template file: poa_property_statutory_shortform_word_version.docx
+---
+attachment:
+  - name: instructions
+    variable name: instructions[i]
+    filename: instructions
+    docx template file: instructions_poa_property.docx
+---
+objects:
+  - poa_property: ALDocument.using(title="Power of attorney for property", filename="poa_property", enabled=True, has_addendum=False)
+  - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
+---
+id: review screen
+event: review_answers
+question: |
+  Review screen
+subquestion: |
+  Edit your answers below.
+review: 
+  - Edit: for_yourself
+    button: |
+      **You are making these forms for:**
+      % if for_yourself == True:
+      Myself
+      % else:
+      Someone else
+      % endif
+  - Edit: principal.name.first
+    button: |
+      % if for_yourself == True:
+      **Your name:**
+      % else:
+      **The principal's name:**
+      % endif
+      ${principal.name.full(middle="full")}
+  - Edit: principal.address.address
+    button: |
+      % if for_yourself == True:
+      **Your address:**
+      % else:
+      **${principal.name.full(middle='full')}'s address:**
+      % endif
+      ${principal.address.on_one_line(bare=True)}
+  - Edit: agent.name.first
+    button: |
+      **The agent's name:**
+      ${agent.name.full(middle='full')}
+  - Edit: agent.address.address
+    button: |
+      **${agent.name.full(middle='full')}'s address:**
+      ${agent.address.on_one_line(bare=True)}
+  - Edit: agent.phone_number
+    button: |
+      **${agent.name.full(middle='full')}'s phone number:**
+      ${phone_number_formatted(agent.phone_number)}
+  - Edit: poa_date
+    button: |
+      **Signature date:**
+      ${poa_date}
+  - Edit: which_powers
+    button: |
+      **${agent.name.full(middle='full')} will have power over:**
+      
+      % if which_powers['real'] == True:
+      * Real estate transactions
+      % endif
+      % if which_powers['financial'] == True:
+      * Financial institution transactions
+      % endif
+      % if which_powers['stock'] == True:
+      * Stock and bond transactions
+      % endif
+      % if which_powers['tangible'] == True:
+      * Tangible personal property transactions
+      % endif
+      % if which_powers['safe'] == True:
+      * Safe deposit transactions
+      % endif
+      % if which_powers['insurance'] == True:
+      * Insurance and annuity transactions
+      % endif
+      % if which_powers['retirement'] == True:
+      * Retirement plan transactions
+      % endif
+      % if which_powers['social'] == True:
+      * Social Security, employment and military service benefits
+      % endif
+      % if which_powers['tax'] == True:
+      * Tax matters
+      % endif
+      % if which_powers['claims'] == True:
+      * Claims and litigation
+      % endif
+      % if which_powers['commodity'] == True:
+      * Commodity and option transactions
+      % endif
+      % if which_powers['business'] == True:
+      * Business operations
+      % endif
+      % if which_powers['borrowing'] == True:
+      * Borrowing transactions
+      % endif
+      % if which_powers['estate'] == True:
+      * Estate transactions
+      % endif
+      % if which_powers['all'] == True:
+      * All other property powers and transactions
+      % endif
+  - Edit: life_insurance
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to change life insurance beneficiaries?**
+      ${word(yesno(life_insurance))}
+  - Edit: file_bankruptcy
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to file for bankruptcy?**
+      ${word(yesno(file_bankruptcy))}    
+  - Edit: designate_successors
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to designate a successor agent?**
+      ${word(yesno(designate_successors))}
+  - Edit: is_guardian
+    button: |
+      % if for_yourself == True:
+      **Do you want ${agent.name.full(middle='full')} to serve as your legal guardian?**
+      % else:
+      **Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to serve as their legal guardian?**
+      % endif
+      ${word(yesno(is_guardian))}
+  - Edit: ssn_authority
+    button: |
+      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      ${ssn_authority}
+  - Edit: social_security
+    button: |
+      % if for_yourself == True:
+      **Your Social Security number:**
+      % else:
+      **${principal.name.full(middle='full')}'s Social Security number:**
+      % endif
+      ${social_security}
+    show if: ssn_authority
+  - Edit: birth_date
+    button: |
+      % if for_yourself == True:
+      **Your birth date:**
+      % else:
+      **${principal.name.full(middle='full')}'s birth date:**
+      % endif
+      ${birth_date}
+  - Edit: agent_limitations
+    button: |
+      **Are ${agent.name.full(middle='full')}'s powers limited?**
+      ${word(yesno(agent_limitations))}
+  - Edit: agent_limits
+    button: |
+      **Limits on ${agent.name.full(middle='full')}'s power:**
+      ${agent_limits}
+  - Edit: any_additional_powers
+    button: |
+      **Does ${agent.name.full(middle='full')} have additional powers?**
+      ${word(yesno(any_additional_powers))}
+  - Edit: additional_powers
+    button: |
+      **${agent.name.full(middle='full')} is granted these additional powers:**
+      ${additional_powers}
+    show if: any_additional_powers
+  - Edit: delegate_decisions
+    button: |
+      **Can ${agent.name.full(middle='full')} delegate decision making powers?**
+      ${word(yesno(delegate_decisions))}
+  - Edit: agent_compensation
+    button: |
+      **Will ${agent.name.full(middle='full')} be paid?**
+      ${word(yesno(agent_compensation))}
+  - Edit: any_successors
+    button: |
+      % if for_yourself == True:
+      **Do you want to name successor agents?**
+      % else:
+      **Does ${principal.name.full(middle='full')} want to name successor agents?**
+      % endif
+      ${word(yesno(any_successors))}
+  - Edit: successors.revisit
+    button: |
+      **Successors: (Edit to change names, addresses, and phone numbers)**
+
+      % for person in successors:
+        * ${ person.name.full(middle="full") }
+      % endfor
+  - Edit: effective_immediately
+    button: |
+      **Is this Power of Attorney effective immediately?**
+      ${word(yesno(effective_immediately))}
+  - Edit: effective_date
+    button: |
+      **This power of attorney shall become effective on:**
+      ${effective_date}
+    show if: effective_immediately == False
+  - Edit: end_before_death
+    button: |
+      % if for_yourself == True:
+      **Will this Power of Attorney end before your death?**
+      % else:
+      **Will this Power of Attorney end before ${principal.name.full(middle='full')}'s death?**
+      % endif
+      ${word(yesno(end_before_death))}
+  - Edit: end_date
+    button: |
+      **This power of attorney shall terminate on...**
+      ${end_date}
+    show if: end_before_death
+  - Edit: preparer.address.address
+    button: |
+      **Your address:**
+      ${preparer.address.on_one_line()}
+    show if: for_yourself == False and which_powers['real'] == True
+---
+id: review principal
+event: section_principal
+question: |
+  Principal
+subquestion: |
+  Edit your answers below.
+review:
+  - Edit: for_yourself
+    button: |
+      **You are making these forms for:**
+      % if for_yourself == True:
+      Myself
+      % else:
+      Someone else
+      % endif
+  - Edit: principal.name.first
+    button: |
+      % if for_yourself == True:
+      **Your name:**
+      % else:
+      **The principal's name:**
+      % endif
+      ${principal.name.full(middle="full")}
+  - Edit: principal.address.address
+    button: |
+      % if for_yourself == True:
+      **Your address:**
+      % else:
+      **${principal.name.full(middle='full')}'s address:**
+      % endif
+      ${principal.address.on_one_line(bare=True)} 
+---
+id: review agent
+event: section_agent
+question: |
+  Agent
+subquestion: |
+  Edit your answers below.
+review:
+  - Edit: agent.name.first
+    button: |
+      **The agent's name:**
+      ${agent.name.full(middle='full')}
+  - Edit: agent.address.address
+    button: |
+      **${agent.name.full(middle='full')}'s address:**
+      ${agent.address.on_one_line(bare=True)}
+  - Edit: agent.phone_number
+    button: |
+      **${agent.name.full(middle='full')}'s phone number:**
+      ${phone_number_formatted(agent.phone_number)}
+  - Edit: poa_date
+    button: |
+      **Signature date:**
+      ${poa_date}
+---
+id: review powers
+event: section_powers
+question: |
+  Powers
+subquestion: |
+  Edit your answers below.
+review:
+  - Edit: which_powers
+    button: |
+      **${agent.name.full(middle='full')} will have power over:**
+      
+      % if which_powers['real'] == True:
+      * Real estate transactions
+      % endif
+      % if which_powers['financial'] == True:
+      * Financial institution transactions
+      % endif
+      % if which_powers['stock'] == True:
+      * Stock and bond transactions
+      % endif
+      % if which_powers['tangible'] == True:
+      * Tangible personal property transactions
+      % endif
+      % if which_powers['safe'] == True:
+      * Safe deposit transactions
+      % endif
+      % if which_powers['insurance'] == True:
+      * Insurance and annuity transactions
+      % endif
+      % if which_powers['retirement'] == True:
+      * Retirement plan transactions
+      % endif
+      % if which_powers['social'] == True:
+      * Social Security, employment and military service benefits
+      % endif
+      % if which_powers['tax'] == True:
+      * Tax matters
+      % endif
+      % if which_powers['claims'] == True:
+      * Claims and litigation
+      % endif
+      % if which_powers['commodity'] == True:
+      * Commodity and option transactions
+      % endif
+      % if which_powers['business'] == True:
+      * Business operations
+      % endif
+      % if which_powers['borrowing'] == True:
+      * Borrowing transactions
+      % endif
+      % if which_powers['estate'] == True:
+      * Estate transactions
+      % endif
+      % if which_powers['all'] == True:
+      * All other property powers and transactions
+      % endif
+  - Edit: life_insurance
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to change life insurance beneficiaries?**
+      ${word(yesno(life_insurance))}
+  - Edit: file_bankruptcy
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to file for bankruptcy?**
+      ${word(yesno(file_bankruptcy))}    
+  - Edit: designate_successors
+    button: |
+      **Does ${agent.name.full(middle='full')} have the power to designate a successor agent?**
+      ${word(yesno(designate_successors))}
+  - Edit: is_guardian
+    button: |
+      % if for_yourself == True:
+      **Do you want ${agent.name.full(middle='full')} to serve as your legal guardian?**
+      % else:
+      **Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to serve as their legal guardian?**
+      % endif
+      ${word(yesno(is_guardian))}
+  - Edit: ssn_authority
+    button: |
+      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      ${ssn_authority}
+  - Edit: social_security
+    button: |
+      % if for_yourself == True:
+      **Your Social Security number:**
+      % else:
+      **${principal.name.full(middle='full')}'s Social Security number:**
+      % endif
+      ${social_security}
+    show if: ssn_authority
+  - Edit: birth_date
+    button: |
+      % if for_yourself == True:
+      **Your birth date:**
+      % else:
+      **${principal.name.full(middle='full')}'s birth date:**
+      % endif
+      ${birth_date}
+  - Edit: agent_limitations
+    button: |
+      **Are ${agent.name.full(middle='full')}'s powers limited?**
+      ${word(yesno(agent_limitations))}
+  - Edit: agent_limits
+    button: |
+      **Limits on ${agent.name.full(middle='full')}'s power:**
+      ${agent_limits}
+  - Edit: any_additional_powers
+    button: |
+      **Does ${agent.name.full(middle='full')} have additional powers?**
+      ${word(yesno(any_additional_powers))}
+  - Edit: additional_powers
+    button: |
+      **${agent.name.full(middle='full')} is granted these additional powers:**
+      ${additional_powers}
+    show if: any_additional_powers
+  - Edit: delegate_decisions
+    button: |
+      **Can ${agent.name.full(middle='full')} delegate decision making powers?**
+      ${word(yesno(delegate_decisions))}
+  - Edit: agent_compensation
+    button: |
+      **Will ${agent.name.full(middle='full')} be paid?**
+      ${word(yesno(agent_compensation))}
+---
+id: successor review
+continue button field: x.review_successor
+generic object: ALIndividual
+question: |
+  Edit ${x.name.full(middle='full')}'s information
+review: 
+  - Edit: x.name.first
+    button: |
+      **Successor name:**
+      ${ x.name.full(middle="full")  }
+  - Edit: x.address.address
+    button: |
+      **${ x.name.full(middle="full") }'s address: **
+      ${ x.address.on_one_line(bare=True) }
+  - Edit: x.phone_number
+    button: |
+      **${ x.name.full(middle="full") }'s phone number:**
+      ${ phone_number_formatted(x.phone_number) }
+---
+id: review successors
+event: section_successors
+question: |
+  Successors
+subquestion: |
+  Edit your answers below.
+review:
+  - Edit: any_successors
+    button: |
+      % if for_yourself == True:
+      **Do you want to name successor agents?**
+      % else:
+      **Does ${principal.name.full(middle='full')} want to name successor agents?**
+      % endif
+      ${word(yesno(any_successors))}
+  - Edit: successors.revisit
+    button: |
+      **Successors: (Edit to change names, addresses, and phone numbers)**
+
+      % for person in successors:
+        * ${ person.name.full(middle="full") }
+      % endfor
+---
+id: review other information
+event: section_other
+question: |
+  Other information
+subquestion: |
+  Edit your answers below.
+review:
+  - Edit: effective_immediately
+    button: |
+      **Is this Power of Attorney effective immediately?**
+      ${word(yesno(effective_immediately))}
+  - Edit: effective_date
+    button: |
+      **This power of attorney shall become effective on:**
+      ${effective_date}
+    show if: effective_immediately == False
+  - Edit: end_before_death
+    button: |
+      % if for_yourself == True:
+      **Will this Power of Attorney end before your death?**
+      % else:
+      **Will this Power of Attorney end before ${principal.name.full(middle='full')}'s death?**
+      % endif
+      ${word(yesno(end_before_death))}
+  - Edit: end_date
+    button: |
+      **This power of attorney shall terminate on...**
+      ${end_date}
+    show if: end_before_death
+  - Edit: preparer.address.address
+    button: |
+      **Your address:**
+      ${preparer.address.on_one_line()}
+    show if: for_yourself == False and which_powers['real'] == True
+---
+id: successors table
+table: successors.table
+rows: successors
+columns:
+  - Name: |
+      row_item.name.full(middle="full") if defined("row_item.name.first") else ""
+  - Address and phone number: |
+      action_button_html(url_action(row_item.attr_name("review_successor")), label="Edit", icon="pencil-alt")
+delete buttons: True
+confirm: True
+---
+id: successors review
+continue button field: successors.revisit
+question: |
+  Edit the information about the successors
+subquestion: |
+  ${ successors.table }
+
+  ${ successors.add_action() }
