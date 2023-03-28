@@ -46,6 +46,7 @@ code: |
   set_progress(5)
   how_to_use
   accept_terms
+  completion_guide
   nav.set_section('section_principal')
   if for_yourself == False:
     other_principal
@@ -66,8 +67,7 @@ code: |
   file_bankruptcy
   designate_successors
   is_guardian
-  if ssn_authority == True:
-    social_security
+  ssn_authority
   birth_date
   set_progress(60)
   if agent_limitations == True:
@@ -87,8 +87,9 @@ code: |
   if end_before_death == True:
     end_date
   if for_yourself == False:
-    if which_powers['real'] == True:
-      preparer.address.address
+    preparer.name.first
+    preparer.address.address
+    preparer.phone_number
   set_progress(100)
   get_docs_screen
 ---
@@ -100,7 +101,7 @@ subquestion: |
 
   This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
   
-  Learn about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
+  To learm more, read ILAO's article about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
 field: sees_nav_bar
 ---
 id: instructions
@@ -160,6 +161,17 @@ content: |
  
   Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
 ---
+id: completion guide
+question: |
+  Completing this form
+subquestion: |
+  Once you finish this interview, you will have a Power of Attorney for Property. 
+  
+  However, you will need to initial some sections to confirm your choices. You will also need to sign the form in front of a notary and a witness. Some portions of the Power of Attorney can be left blank until you sign it.
+  
+  The document you receive will have more detailed instructions.
+continue button field: completion_guide
+---
 id: for yourself
 question: |
   Are you making these forms for yourself?
@@ -181,10 +193,10 @@ continue button field: other_principal
 question: |
   Making a Power of Attorney for someone else
 subquestion: |
-  You can use this program for someone other than yourself, but:
+  You can use this program for someone other than yourself, but that person:
   
-  * That person must have directed you to make a Power of Attorney for Property, and
-  * That person must choose what powers they want to give their agent.
+  * Must have directed you to make a Power of Attorney for Property, and
+  * Must choose what powers they want to give their agent.
 ---
 id: principal name
 question: |
@@ -315,52 +327,53 @@ question: |
 fields: 
   - no label: which_powers
     datatype: checkboxes
+    all of the above: True
     none of the above: False
     choices:
       - Real estate transactions: real
         help: |
-          Some examples of real estate transactions are buying a house or renting an apartment.
+          Some examples of **real estate transactions** are buying a house or renting an apartment.
       - Financial institution transactions: financial
         help: |
-          Some examples of financial institution transactions are depositing or taking out money from an account or writing checks.
+          Some examples of **financial institution transactions** are depositing or taking out money from an account or writing checks.
       - Stock and bond transactions: stock
         help: |
-          Some examples of stock and bond transactions are buying stock and safekeeping any interest or shares of that stock.
+          Some examples of **stock and bond transactions** are buying stock and safekeeping any interest or shares of that stock.
       - Tangible personal property transactions: tangible
         help: |
-          Some examples of tangible personal property are furniture, jewelry, and pictures.
+          Some examples of **tangible personal property** are furniture, jewelry, and pictures.
 
-          Some examples of tangible personal property transactions are selling furniture, storing pictures, and repairing appliances.
+          Some examples of **tangible personal property transactions** are selling furniture, storing pictures, and repairing appliances.
       - Safe deposit transactions: safe
         help: |
-          Some examples of safe deposit transactions are renewing safe deposits, closing the safe deposit, or being able to get into the safe deposit box.
+          Some examples of **safe deposit transactions** are renewing safe deposits, closing the safe deposit, or being able to get into the safe deposit box.
       - Insurance and annuity transactions: insurance
         help: |
-          Some examples of insurance and annuity transactions are buying health insurance, paying for car insurance, or ending life insurance.
+          Some examples of **insurance and annuity transactions** are buying health insurance, paying for car insurance, or ending life insurance.
       - Retirement plan transactions: retirement
         help: |
-          Some examples of retirement plan transactions are putting money into a retirement plan, or taking money out of a retirement plan or an employee savings account.
+          Some examples of **retirement plan transactions** are putting money into a retirement plan, or taking money out of a retirement plan or an employee savings account.
       - Social Security, employment and military service benefits: social
         help: |
-          Some examples of Social Security, unemployment, and military service benefit transactions are filing applications for these services or filing or settling any claims regarding these services.
+          Some examples of **Social Security, unemployment, and military service benefit transactions** are filing applications for these services or filing or settling any claims regarding these services.
       - Tax matters: tax
         help: |
-          An example of a tax matter is filing federal and state income tax returns.
+          An example of a **tax matter** is filing federal and state income tax returns.
       - Claims and litigation: claims
         help: |
-          Some examples of claims and litigation are the power to sue someone, to settle a claim, or to hire an attorney.
+          Some examples of **claims and litigation** are the power to sue someone, to settle a claim, or to hire an attorney.
       - Commodity and option transactions: commodity
         help: |
-          Some examples of commodity and option transactions are buying stock options and continuing to use a stock broker.
+          Some examples of **commodity and option transactions** are buying stock options and continuing to use a stock broker.
       - Business operations: business
         help: |
-          Some examples of business transactions are selling, expanding, or remodeling the principal's business. For example, if the principal owned a store, then the agent could sell the store, make the store bigger, or remodel it. The agent could also hire or fire employees.
+          Some examples of **business transactions** are selling, expanding, or remodeling the principal's business. For example, if the principal owned a store, then the agent could sell the store, make the store bigger, or remodel it. The agent could also hire or fire employees.
       - Borrowing transactions: borrowing
         help: |
-          Some examples of borrowing transactions are taking out a loan in the principal's name, paying any current loans, or taking out a mortgage on the principal's home.
+          Some examples of **borrowing transactions** are taking out a loan in the principal's name, paying any current loans, or taking out a mortgage on the principal's home.
       - Estate transactions: estate
         help: |
-          Some examples of estate transactions are accepting money or a gift on behalf of the principal.
+          Some examples of **estate transactions** are accepting money or a gift on behalf of the principal.
       - All other property powers and transactions: all
 ---
 id: life insurance
@@ -404,7 +417,7 @@ question: |
   Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
   % endif
 subquestion: |
-  Note: If so, a separate authorization will be created in addition to this Power of Attorney for Property.
+  If you select **Yes**, a separate authorization will be created in addition to this Power of Attorney for Property.
 fields:
   - no label: ssn_authority
     datatype: yesnoradio
@@ -434,7 +447,7 @@ question: |
   % endif
 fields:
   - Date: birth_date
-    datatype: date
+    datatype: ThreePartsDate
     max: ${ today() }
 ---
 id: agent limitation
@@ -485,7 +498,14 @@ subquestion: |
   If desired, ${principal.name.full(middle='full')} may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
   % endif
 
-  Other powers may include: the power to make gifts; to exercise powers of appointment; to name or change beneficiaries or joint tenants; or to revoke or amend any trust. However, if ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
+  Other powers may include: 
+  
+  * The power to make gifts, 
+  * The power to exercise powers of appointment 
+  * The power to name or change beneficiaries or joint tenants, or 
+  * The power to revoke or amend any trust. 
+  
+  If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
 fields:
   - no label: any_additional_powers
     datatype: yesnoradio
@@ -682,9 +702,27 @@ subquestion: |
   % else:
   This Power of Attorney for Property will last until ${principal.name.full(middle='full')}'s death. However, they may choose to end it earlier.
   % endif
+  
+  ${collapse_template(revoke_later)}
 fields:
   - no label: end_before_death
     datatype: yesnoradio
+---
+template: revoke_later
+subject: |
+  % if for_yourself == True:
+  **What if I decide I want to revoke the Power of Attorney after I sign it?**
+  % else:
+  **What if they decide they want to revoke the Power of Attorney after they sign it?**
+  % endif
+content: |  
+  % if for_yourself == True:
+  You can create a Power of Attorney Revocation to revoke a Power of Attorney. 
+  % else:
+  They can create a Power of Attorney Revocation to revoke a Power of Attorney.
+  % endif
+  
+  Illinois Legal Aid Online has an [**easy form program that can create a Power of Attorney Revocation**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
 ---
 id: revocation
 question: |
@@ -730,13 +768,20 @@ fields:
   - no label: is_guardian
     datatype: yesnoradio
 ---
-id: prepare address
+id: preparer name
+question: |
+  What is your name?
+fields:
+  - First: preparer.name.first
+  - Middle: preparer.name.middle
+    required: False
+  - Last: preparer.name.last
+  - Suffix: preparer.name.suffix
+    required: False
+---
+id: preparer address
 question: |
   What is your address?
-subquestion: |
-  Since you helped ${principal.name.full(middle='full')} prepare this Power of Attorney for Property, and since real estate is involved, you must provide your address.
-
-  Also, remember that ${principal.name.full(middle='full')} must sign the documents before a notary public and a second witness.
 fields:
   - Street address: preparer.address.address
     address autocomplete: True
@@ -748,6 +793,16 @@ fields:
       states_list() 
   - ZIP code: preparer.address.zip
 ---
+id: preparer phone
+question: |
+  What is your phone number?
+subquestion: |
+  If you do not want to include your phone number, leave this blank.
+fields:
+  - Phone number: preparer.phone_number
+    datatype: al_international_phone
+    required: False
+---
 id: get docs screen
 event: get_docs_screen
 question: |
@@ -755,7 +810,7 @@ question: |
 subquestion: |
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
   
-  Read the instructions to learn what to do next.
+  The Instructions page has important information. You can read it to find out what to do next. The Power of Attorney form has additional instructions. 
   
   ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
 
@@ -926,7 +981,7 @@ review:
   - Edit: ssn_authority
     button: |
       **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
-      ${ssn_authority}
+      ${word(yesno(ssn_authority))}
   - Edit: social_security
     button: |
       % if for_yourself == True:
@@ -952,6 +1007,7 @@ review:
     button: |
       **Limits on ${agent.name.full(middle='full')}'s power:**
       ${agent_limits}
+    show if: agent_limitations
   - Edit: any_additional_powers
     button: |
       **Does ${agent.name.full(middle='full')} have additional powers?**
@@ -1006,11 +1062,21 @@ review:
       **This power of attorney shall terminate on...**
       ${end_date}
     show if: end_before_death
+  - Edit: preparer.name.first
+    button: |
+      **Your name:**
+      ${preparer.name.full(middle='full')}
+    show if: for_yourself == False
   - Edit: preparer.address.address
     button: |
       **Your address:**
       ${preparer.address.on_one_line()}
-    show if: for_yourself == False and which_powers['real'] == True
+    show if: for_yourself == False
+  - Edit: preparer.phone_number
+    button: |
+      **Your phone number:**
+      ${phone_number_formatted(preparer.phone_number)}
+    show if: for_yourself == False
 ---
 id: review principal
 event: section_principal
@@ -1043,6 +1109,21 @@ review:
       **${principal.name.full(middle='full')}'s address:**
       % endif
       ${principal.address.on_one_line(bare=True)} 
+  - Edit: preparer.name.first
+    button: |
+      **Your name:**
+      ${preparer.name.full(middle='full')}
+    show if: for_yourself == False
+  - Edit: preparer.address.address
+    button: |
+      **Your address:**
+      ${preparer.address.on_one_line()}
+    show if: for_yourself == False
+  - Edit: preparer.phone_number
+    button: |
+      **Your phone number:**
+      ${phone_number_formatted(preparer.phone_number)}
+    show if: for_yourself == False
 ---
 id: review agent
 event: section_agent
@@ -1147,7 +1228,7 @@ review:
   - Edit: ssn_authority
     button: |
       **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
-      ${ssn_authority}
+      ${word(yesno(ssn_authority))}
   - Edit: social_security
     button: |
       % if for_yourself == True:
@@ -1173,6 +1254,7 @@ review:
     button: |
       **Limits on ${agent.name.full(middle='full')}'s power:**
       ${agent_limits}
+    show if: agent_limitations
   - Edit: any_additional_powers
     button: |
       **Does ${agent.name.full(middle='full')} have additional powers?**
@@ -1262,19 +1344,29 @@ review:
       **This power of attorney shall terminate on...**
       ${end_date}
     show if: end_before_death
+  - Edit: preparer.name.first
+    button: |
+      **Your name:**
+      ${preparer.name.full(middle='full')}
+    show if: for_yourself == False
   - Edit: preparer.address.address
     button: |
       **Your address:**
       ${preparer.address.on_one_line()}
-    show if: for_yourself == False and which_powers['real'] == True
+    show if: for_yourself == False
+  - Edit: preparer.phone_number
+    button: |
+      **Your phone number:**
+      ${phone_number_formatted(preparer.phone_number)}
+    show if: for_yourself == False
 ---
 id: successors table
 table: successors.table
 rows: successors
 columns:
-  - Name: |
+  - Successor: |
       row_item.name.full(middle="full") if defined("row_item.name.first") else ""
-  - Address and phone number: |
+  - Name, address, and phone number: |
       action_button_html(url_action(row_item.attr_name("review_successor")), label="Edit", icon="pencil-alt")
 delete buttons: True
 confirm: True
