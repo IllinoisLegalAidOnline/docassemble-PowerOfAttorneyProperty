@@ -87,9 +87,10 @@ code: |
   if end_before_death == True:
     end_date
   if for_yourself == False:
-    preparer.name.first
-    preparer.address.address
-    preparer.phone_number
+    if include_preparer == True:
+      preparer.name.first
+      preparer.address.address
+      preparer.phone_number
   set_progress(100)
   get_docs_screen
 ---
@@ -165,11 +166,11 @@ id: completion guide
 question: |
   Completing this form
 subquestion: |
-  Once you finish this interview, you will have a Power of Attorney for Property. 
+  At the end of the program, you can download your Power of Attorney for Property.  
   
-  However, you will need to initial some sections to confirm your choices. You will also need to sign the form in front of a notary and a witness. Some portions of the Power of Attorney can be left blank until you sign it.
+  Note: the Power of Attorney for Property is not valid until it is signed in front of a notary and a witness. Most pages in the form will need to be initialed.
   
-  The document you receive will have more detailed instructions.
+  Be sure to read the instructions you can download at the end of the program.
 continue button field: completion_guide
 ---
 id: for yourself
@@ -328,7 +329,7 @@ fields:
   - no label: which_powers
     datatype: checkboxes
     all of the above: True
-    none of the above: False
+    none of the above: True
     choices:
       - Real estate transactions: real
         help: |
@@ -341,7 +342,7 @@ fields:
           Some examples of **stock and bond transactions** are buying stock and safekeeping any interest or shares of that stock.
       - Tangible personal property transactions: tangible
         help: |
-          Some examples of **tangible personal property** are furniture, jewelry, and pictures.
+          **Personal property** means physical things like furniture, jewelry, or pictures.
 
           Some examples of **tangible personal property transactions** are selling furniture, storing pictures, and repairing appliances.
       - Safe deposit transactions: safe
@@ -710,19 +711,11 @@ fields:
 ---
 template: revoke_later
 subject: |
-  % if for_yourself == True:
-  **What if I decide I want to revoke the Power of Attorney after I sign it?**
-  % else:
-  **What if they decide they want to revoke the Power of Attorney after they sign it?**
-  % endif
+  **How does someone end a Power of Attorney early?**
 content: |  
-  % if for_yourself == True:
-  You can create a Power of Attorney Revocation to revoke a Power of Attorney. 
-  % else:
-  They can create a Power of Attorney Revocation to revoke a Power of Attorney.
-  % endif
+  They can create a Power of Attorney Revocation to end a Power of Attorney.
   
-  Illinois Legal Aid Online has an [**easy form program that can create a Power of Attorney Revocation**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
+  To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
 ---
 id: revocation
 question: |
@@ -768,6 +761,15 @@ fields:
   - no label: is_guardian
     datatype: yesnoradio
 ---
+id: include preparer
+question: |
+  Do you want to include your name and address as the preparer of the form?
+subquestion: |
+  You do not have to include your information. However, you may be asked to answer questions about the Power of Attorney if ${principal.name.full(middle='full')} cannot do so.
+fields:
+  - no label: include_preparer
+    datatype: yesnoradio 
+---
 id: preparer name
 question: |
   What is your name?
@@ -784,14 +786,18 @@ question: |
   What is your address?
 fields:
   - Street address: preparer.address.address
+    required: False
     address autocomplete: True
   - Address line 2: preparer.address.unit
     required: False
   - City: preparer.address.city
+    required: False
   - State: preparer.address.state
+    required: False
     code: |
       states_list() 
   - ZIP code: preparer.address.zip
+    required: False
 ---
 id: preparer phone
 question: |
