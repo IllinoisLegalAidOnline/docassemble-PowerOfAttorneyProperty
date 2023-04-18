@@ -59,7 +59,6 @@ code: |
   agent.name.first
   agent.address.address
   agent.phone_number
-  poa_date
   nav.set_section('section_powers')
   which_powers
   set_progress(40)
@@ -453,7 +452,6 @@ question: |
 fields:
   - Date: birth_date
     datatype: ThreePartsDate
-    max: ${ today() }
 ---
 id: agent limitation
 question: |
@@ -915,10 +913,6 @@ review:
     button: |
       **${agent.name.full(middle='full')}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
-  - Edit: poa_date
-    button: |
-      **Signature date:**
-      ${poa_date}
   - Edit: which_powers
     button: |
       **${agent.name.full(middle='full')} will have power over:**
@@ -1158,10 +1152,6 @@ review:
     button: |
       **${agent.name.full(middle='full')}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
-  - Edit: poa_date
-    button: |
-      **Signature date:**
-      ${poa_date}
 ---
 id: review powers
 event: section_powers
