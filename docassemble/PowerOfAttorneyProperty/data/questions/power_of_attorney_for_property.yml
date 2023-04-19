@@ -304,21 +304,6 @@ fields:
     datatype: al_international_phone
     required: False
 ---
-id: power of attorney date
-question: |
-  % if for_yourself == True:
-  When will you complete and sign this power of attorney in front of a notary?
-  % else:
-  When will ${principal.name.full(middle='full')} complete and sign this power of attorney in front of a notary?
-  % endif
-subquestion: |
-  If you do not know, you can leave this blank.
-fields:
-  - Date: poa_date
-    datatype: date
-    min: today()
-    required: False
----
 id: which powers
 question: |
   % if for_yourself == True:
