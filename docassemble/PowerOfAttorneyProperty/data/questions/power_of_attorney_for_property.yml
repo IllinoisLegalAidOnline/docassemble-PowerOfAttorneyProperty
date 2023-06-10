@@ -188,6 +188,10 @@ terms:
   principal: |
     The principal is the person who chooses an agent to make decisions about the principal's money and property.
 ---
+id: forgery warning
+question: |
+  
+---
 id: other principal notice
 continue button field: other_principal
 question: |
@@ -197,6 +201,10 @@ subquestion: |
   
   * Must have directed you to make a Power of Attorney for Property, and
   * Must choose what powers they want to give their agent.
+  
+  When you help someone make a Power of Attorney form, you must follow their express wishes. If they cannot understand what they are signing or tell you their wishes, you should not use this program. 
+  
+  If you make a Power of Attorney for someone else that does not follow their instructions, you could face legal consequences. You could be charged with forgery, which can be punished with jail time.
 ---
 id: principal name
 question: |
@@ -271,7 +279,13 @@ question: |
   % endif
 subquestion: |
   % if for_yourself == False:
-  The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property.
+  The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property. 
+  
+  An agent has a lot of power that they could potentially abuse. ${principal.name.full(middle='full')} should choose someone who they would trust with their life and everything they own.
+  % else:
+  The agent is the person who will make decisions about your money or property. 
+  
+  An agent has a lot of power that they could potentially abuse. You should choose someone you would trust with your life and everything you own.
   % endif
 fields:
   - First: agent.name.first
