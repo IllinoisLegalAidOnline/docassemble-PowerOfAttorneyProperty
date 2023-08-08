@@ -101,7 +101,7 @@ subquestion: |
 
   This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
   
-  To learm more, read ILAO's article about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
+  To learn more, read ILAO's article about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
 field: sees_nav_bar
 ---
 id: instructions
@@ -130,28 +130,6 @@ subject: |
 content: |  
 
   This is an example of help. Click again to hide.
----
-id: accept terms
-question: |
-  Terms of use
-subquestion: |
-  This program does not provide legal advice. It does not take the place of advice from a lawyer.
-
-  Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
-
-  ${ collapse_template(get_legal_help) }  
-
-fields:
-  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use).: accept
-    datatype: checkboxes
-    none of the above: False
-    minlength: 1
-    choices:
-      - I accept the terms of use.
-    validation messages:
-      minlength: |
-        You cannot continue unless you agree to the terms of use.
-continue button field: accept_terms
 ---
 template: get_legal_help
 subject: |
@@ -839,8 +817,8 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="Download all forms", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="Download all forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
   - name: poa_property
