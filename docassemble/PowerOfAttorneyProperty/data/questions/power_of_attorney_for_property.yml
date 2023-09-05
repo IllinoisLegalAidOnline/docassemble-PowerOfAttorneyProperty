@@ -73,6 +73,8 @@ code: |
     agent_limits
   if any_additional_powers == True:
     additional_powers
+  if no_powers == True:
+    no_powers_kickout
   delegate_decisions 
   agent_compensation
   nav.set_section('section_successors')
@@ -83,7 +85,7 @@ code: |
   set_progress(80)
   if effective_immediately == False:
     effective_date
-  if end_before_death == True:
+  if end_at_death == False:
     end_date
   if for_yourself == False:
     preparer.name.first
@@ -147,7 +149,7 @@ subquestion: |
   
   Note: the Power of Attorney for Property is not valid until it is signed in front of a notary and a witness. Most pages in the form will need to be initialed.
   
-  Be sure to read the instructions you can download at the end of the program.
+  Be sure to download and read the instructions at the end of the program.
 continue button field: completion_guide
 ---
 id: for yourself
@@ -164,7 +166,7 @@ terms:
   agent: |
     The agent is the person who will make decisions about the principal's money or property.
   principal: |
-    The principal is the person who chooses an agent to make decisions about the principal's money and property.
+    The principal is the person who chooses somone (an agent) to make decisions about the their money and property.
 ---
 id: forgery warning
 question: |
@@ -193,7 +195,7 @@ question: |
   % endif
 subquestion: |
   % if for_yourself == False:
-  The principal is the person who chooses an agent to make decisions about the principal's medical treatment.
+  The principal is the person who chooses somone (an agent) to make decisions about the their money and property.
   % endif
 fields:
   - First: principal.name.first
@@ -229,6 +231,38 @@ subquestion: |
 buttons:
   - Exit: exit
   - Restart: restart
+---
+id: no powers kickout
+event: no_powers_kickout
+question: |
+  Sorry
+subquestion: |
+  % if for_yourself == True:
+  You have not given ${agent.name.full(middle='full')} any power over your property. This form is intended for giving someone power of attorney over your property.
+  % else:
+  You have not given ${agent.name.full(middle='full')} any power over ${principal.name.full(middle='full')}'s property. This form is intended for giving someone power of attorney over their property.
+  % endif
+  Please use the back button or the review buttons to change your answers.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+depends on:
+  - which_powers
+  - life_insurance
+  - file_bankruptcy
+  - is_guardian
+  - ssn_authority
+  - any_additional_powers
+code: |
+  no_powers = False
+  if which_powers.all_false() == True:
+    if life_insurance == False:
+      if file_bankruptcy == False:
+        if is_guardian == False:
+          if ssn_authority == False:
+            if any_additional_powers == False:
+              no_powers = True
 ---
 id: principal address
 question: |
@@ -659,9 +693,9 @@ fields:
 id: revocation option
 question: |
   % if for_yourself == True:
-  Do you want this Power of Attorney to end before your death?
+  Do you want this Power of Attorney to last until your death?
   % else:
-  Does ${principal.name.full(middle='full')} want this Power of Attorney to end before their death?
+  Does ${principal.name.full(middle='full')} want this Power of Attorney to last until their death?
   % endif
 subquestion: |
   % if for_yourself == True:
@@ -672,7 +706,7 @@ subquestion: |
   
   ${collapse_template(revoke_later)}
 fields:
-  - no label: end_before_death
+  - no label: end_at_death
     datatype: yesnoradio
 ---
 template: revoke_later
@@ -1010,19 +1044,19 @@ review:
       **This power of attorney shall become effective on:**
       ${effective_date}
     show if: effective_immediately == False
-  - Edit: end_before_death
+  - Edit: end_at_death
     button: |
       % if for_yourself == True:
-      **Will this Power of Attorney end before your death?**
+      **Will this Power of Attorney last until your death?**
       % else:
-      **Will this Power of Attorney end before ${principal.name.full(middle='full')}'s death?**
+      **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
       % endif
-      ${word(yesno(end_before_death))}
+      ${word(yesno(end_at_death))}
   - Edit: end_date
     button: |
       **This power of attorney shall terminate on...**
       ${end_date}
-    show if: end_before_death
+    show if: end_at_death == False
   - Edit: include_preparer
     button: |
       **Do you want to include your name and contact information?**
@@ -1283,19 +1317,19 @@ review:
       **This power of attorney shall become effective on:**
       ${effective_date}
     show if: effective_immediately == False
-  - Edit: end_before_death
+  - Edit: end_at_death
     button: |
       % if for_yourself == True:
-      **Will this Power of Attorney end before your death?**
+      **Will this Power of Attorney last until your death?**
       % else:
-      **Will this Power of Attorney end before ${principal.name.full(middle='full')}'s death?**
+      **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
       % endif
-      ${word(yesno(end_before_death))}
+      ${word(yesno(end_at_death))}
   - Edit: end_date
     button: |
       **This power of attorney shall terminate on...**
       ${end_date}
-    show if: end_before_death
+    show if: end_at_death == False
   - Edit: include_preparer
     button: |
       **Do you want to include your name and contact information?**
