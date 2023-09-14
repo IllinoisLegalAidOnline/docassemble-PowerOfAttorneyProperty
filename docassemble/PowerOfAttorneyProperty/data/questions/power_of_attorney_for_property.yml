@@ -1077,6 +1077,7 @@ review:
       ${phone_number_formatted(preparer.phone_number)}
     show if: for_yourself == False and include_preparer == True
 ---
+section: Principal
 id: review principal
 event: section_principal
 question: |
@@ -1124,6 +1125,7 @@ review:
       ${phone_number_formatted(preparer.phone_number)}
     show if: for_yourself == False
 ---
+section: Agent
 id: review agent
 event: section_agent
 question: |
@@ -1144,6 +1146,7 @@ review:
       **${agent.name.full(middle='full')}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
 ---
+section: Powers
 id: review powers
 event: section_powers
 question: |
@@ -1278,10 +1281,11 @@ review:
       **${ x.name.full(middle="full") }'s phone number:**
       ${ phone_number_formatted(x.phone_number) }
 ---
+section: Successor agents
 id: review successors
 event: section_successors
 question: |
-  Successors
+  Successor agents
 subquestion: |
   Edit your answers below.
 review:
@@ -1301,6 +1305,7 @@ review:
         * ${ person.name.full(middle="full") }
       % endfor
 ---
+section: Other information
 id: review other information
 event: section_other
 question: |
