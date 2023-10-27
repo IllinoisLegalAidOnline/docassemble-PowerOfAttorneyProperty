@@ -159,9 +159,13 @@ subquestion: |
   In other words, are you the **{principal}** who wants to designate an **{agent}**?
 
   If you are making these forms for someone else, that person will be the principal.
-fields:
-  - no label: for_yourself
-    datatype: yesnoradio
+field: for_yourself
+choices:
+  - Yes, I am making a power of attorney for myself.: True
+  - No, I am making a power of attorney for somebody else.: False
+#fields:
+#  - no label: for_yourself
+#    datatype: yesnoradio
 terms:
   agent: |
     The agent is the person who will make decisions about the principal's money or property.
