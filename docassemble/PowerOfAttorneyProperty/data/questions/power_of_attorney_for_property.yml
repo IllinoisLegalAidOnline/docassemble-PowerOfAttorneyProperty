@@ -57,7 +57,7 @@ code: |
   principal.address.address
   nav.set_section('section_agent')
   agent.name.first
-  agent.address.address
+  agent.in_america
   agent.phone_number
   nav.set_section('section_powers')
   which_powers
@@ -311,17 +311,45 @@ fields:
 ---
 id: agent address
 question: |
-  What is ${agent.name.full(middle='full')}'s address?
+  Enter ${agent.name.full(middle='full')}'s address
+subquestion: |
+  ${collapse_template(intl_address_help)}
 fields:
+  - Does ${agent.name.full(middle='full')} have a United States address?: agent.in_america
+    datatype: yesnoradio
+    default: True
+    help: |
+      Click **No** if you want to list an address outside the United States. You should enter the international address using the English alphabet.
   - Street address: agent.address.address
     address autocomplete: True
+    show if: agent.in_america
   - Address line 2: agent.address.unit
     required: False
+    show if: agent.in_america
   - City: agent.address.city
+    show if: agent.in_america
   - State: agent.address.state
+    show if: agent.in_america
     code: |
       states_list() 
   - ZIP code: agent.address.zip
+    show if: agent.in_america
+  - Non-US address line 1 (street address, apartment number): agent.intl_address_1
+    show if: 
+      variable: agent.in_america
+      is: False
+  - Non-US address line 2 (city, province or state, postal code, country): agent.intl_address_2
+    show if: 
+      variable: agent.in_america
+      is: False
+---
+template: intl_address_help
+subject: |
+  **What if my agent does not have a United States address?**
+content: |
+  You are able to list someone outside of the United States as your agent. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  
+  For international addresses, there will be space for two lines to enter the address. You should enter the international address using the English alphabet.
 ---
 id: agent phone
 question: |
@@ -588,7 +616,7 @@ terms:
 ---
 code: |
   successors[i].name.first
-  successors[i].address.address
+  successors[i].in_america
   successors[i].phone_number
   successors[i].complete = True
 ---
@@ -626,19 +654,47 @@ fields:
 ---
 id: successor address
 sets:
-  - successors[i].address.address
+  - successors[i].in_america
 question: |
-  What is ${successors[i].name.full(middle='full')}'s address?
+  Enter ${successors[i].name.full(middle='full')}'s address
+subquestion: |
+  ${collapse_template(success_intl_address_help)}
 fields:
+  - Does ${successors[i].name.full(middle='full')} have a United States address?: successors[i].in_america
+    datatype: yesnoradio
+    default: True
+    help: |
+      Click **No** if you want to list an address outside the United States. You should enter the international address using the English alphabet.
   - Street address: successors[i].address.address
     address autocomplete: True
+    show if: successors[i].in_america
   - Address line 2: successors[i].address.unit
     required: False
+    show if: successors[i].in_america
   - City: successors[i].address.city
+    show if: successors[i].in_america
   - State: successors[i].address.state
+    show if: successors[i].in_america
     code: |
       states_list() 
   - ZIP code: successors[i].address.zip  
+    show if: successors[i].in_america
+  - Non-US address line 1 (street address, apartment number): successors[i].intl_address_1
+    show if: 
+      variable: successors[i].in_america
+      is: False
+  - Non-US address line 2 (city, province or state, postal code, country): successors[i].intl_address_2
+    show if: 
+      variable: successors[i].in_america
+      is: False
+---
+template: success_intl_address_help
+subject: |
+  **What if my successor agent does not have a United States address?**
+content: |
+  You are able to list someone outside of the United States as your successor agent. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  
+  For international addresses, there will be space for two lines to enter the address. You should enter the international address using the English alphabet.
 ---
 id: successor phone
 sets:
@@ -909,10 +965,14 @@ review:
     button: |
       **The agent's name:**
       ${agent.name.full(middle='full')}
-  - Edit: agent.address.address
+  - Edit: agent.in_america
     button: |
       **${agent.name.full(middle='full')}'s address:**
+      % if agent.in_america == True:
       ${agent.address.on_one_line(bare=True)}
+      % else:
+      ${agent.intl_address_1}, ${agent.intl_address_2}
+      % endif
   - Edit: agent.phone_number
     button: |
       **${agent.name.full(middle='full')}'s phone number:**
@@ -1141,10 +1201,14 @@ review:
     button: |
       **The agent's name:**
       ${agent.name.full(middle='full')}
-  - Edit: agent.address.address
+  - Edit: agent.in_america
     button: |
       **${agent.name.full(middle='full')}'s address:**
+      % if agent.in_america == True:
       ${agent.address.on_one_line(bare=True)}
+      % else:
+      ${agent.intl_address_1}, ${agent.intl_address_2}
+      % endif
   - Edit: agent.phone_number
     button: |
       **${agent.name.full(middle='full')}'s phone number:**
@@ -1276,10 +1340,14 @@ review:
     button: |
       **Successor name:**
       ${ x.name.full(middle="full")  }
-  - Edit: x.address.address
+  - Edit: x.in_america
     button: |
-      **${ x.name.full(middle="full") }'s address: **
+      **${ x.name.full(middle="full") }'s address:**
+      % if x.in_america == True:
       ${ x.address.on_one_line(bare=True) }
+      % else:
+      ${x.intl_address_1}, ${x.intl_address_2}
+      % endif
   - Edit: x.phone_number
     button: |
       **${ x.name.full(middle="full") }'s phone number:**
