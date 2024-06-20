@@ -43,6 +43,7 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
+  snapshot_start
   set_progress(5)
   how_to_use
   accept_terms
@@ -93,7 +94,34 @@ code: |
     preparer.phone_number
   set_progress(100)
   nav.set_section('section_download')
+  forms_assembling
+  snapshot_forms
   get_docs_screen
+---
+code: |
+  stuff_to_snapshot = {
+  	'start_time': str(current_datetime().format_datetime()),
+  	'started_interview': True, 
+  	}
+    
+  stuff_to_snapshot['user_zip'] = showifdef('users[0].address.zip')
+
+  stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
+  
+  stuff_to_snapshot['user_is_principal'] = showifdef('for_yourself')
+  
+  store_variables_snapshot(
+  	data=stuff_to_snapshot, persistent=True
+  	)
+  snapshot_interview_state = True
+---
+code: |
+  snapshot_interview_state
+  snapshot_start = True  
+---
+code: |
+  reconsider('snapshot_interview_state')
+  snapshot_forms = True
 ---
 id: welcome
 question: |
@@ -633,8 +661,6 @@ fields:
   - "Anyone else?": successors.there_is_another
     datatype: yesnoradio
 ---
-sets:
-  - successors[i].name.first
 id: names of successors
 question: |
   % if i == 0:
@@ -870,6 +896,17 @@ fields:
   - Phone number: preparer.phone_number
     datatype: al_international_phone
     required: False
+---
+id: forms assembling
+continue button field: forms_assembling
+question: |
+  Almost done
+subquestion: |
+  After you click **Next**, it may take a few moments to finish making your forms.
+  
+  ###### You do not need to refresh your screen. Hang in there!
+  
+  [NEWLINE]
 ---
 id: get docs screen
 event: get_docs_screen
@@ -1142,7 +1179,7 @@ review:
     show if: for_yourself == False and include_preparer == True
 ---
 section: Principal
-id: review principal
+id: principal review section
 event: section_principal
 question: |
   Principal
@@ -1190,7 +1227,7 @@ review:
     show if: for_yourself == False
 ---
 section: Agent
-id: review agent
+id: agent review screen
 event: section_agent
 question: |
   Agent
@@ -1215,7 +1252,7 @@ review:
       ${phone_number_formatted(agent.phone_number)}
 ---
 section: Powers
-id: review powers
+id: powers review screen
 event: section_powers
 question: |
   Powers
@@ -1330,7 +1367,7 @@ review:
       **Will ${agent.name.full(middle='full')} be paid?**
       ${word(yesno(agent_compensation))}
 ---
-id: successor review
+id: successor review screen
 continue button field: x.review_successor
 generic object: ALIndividual
 question: |
@@ -1354,7 +1391,7 @@ review:
       ${ phone_number_formatted(x.phone_number) }
 ---
 section: Successor agents
-id: review successors
+id: successor agents review screen
 event: section_successors
 question: |
   Successor agents
@@ -1378,7 +1415,7 @@ review:
       % endfor
 ---
 section: Other information
-id: review other information
+id: other information review screen
 event: section_other
 question: |
   Other information
@@ -1438,7 +1475,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: successors review
+id: successors review screen
 continue button field: successors.revisit
 question: |
   Edit the information about the successors
