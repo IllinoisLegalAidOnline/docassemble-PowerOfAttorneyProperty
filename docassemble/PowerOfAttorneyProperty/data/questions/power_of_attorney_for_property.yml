@@ -96,7 +96,7 @@ code: |
   effective_date_choice
   if end_at_death == False:
     end_date_choice
-  if for_yourself == False:
+  if not for_yourself:
     preparer.name.first
     preparer.address.address
     preparer.phone_number
@@ -150,6 +150,18 @@ subquestion: |
   To learn more, read ILAO's article about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
 field: sees_nav_bar
 ---
+template: video_intro
+subject: |
+  **Video: Intro to Power of Attorney for Property**
+content: |  
+  [YOUTUBE -1pMMIe4hb4]
+---
+template: video_why
+subject: |
+  **Video: Why I made a Power of Attorney for Property and Finances**
+content: |  
+  [YOUTUBE -1pMMIe4hb4]
+---
 #First Video Intro to Power of Attorney for Property
 #Second video: Why I made a Power of Attorney for Property and Finances"
 id: poa explainer
@@ -157,7 +169,8 @@ continue button field: poa_explainer
 question: |
   About Power of Attorney
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_intro)}
+  
   A Power of Attorney for property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property for you when you can't make decisions for yourself. Someone with this power is called an "agent."
 
   You can give an agent power to:
@@ -169,7 +182,7 @@ subquestion: |
   * Talk to the Social Security office
   * File your taxes
 
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_why)}
 ---
 id: instructions
 continue button field: how_to_use
@@ -207,6 +220,12 @@ content: |
  
   Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
 ---
+template: video_agent
+subject: |
+  **Video: Who should I pick as my agent?**
+content: |
+  [YOUTUBE -1pMMIe4hb4]
+---
 #Add video Who should I pick as my agent?
 id: about agents
 continue button field: about_agents
@@ -219,7 +238,7 @@ subquestion: |
 
   You can select successor agents as backup if the first agent becomes unable to make these decisions.
 
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_agent)}
 
   **Note:** If you can communicate your choices, you are the decision maker.
 
@@ -268,6 +287,7 @@ code: |
     my_their = "my"
     my_subject = "my"
     your_their = "your"
+    your_subject = "your"
     do_does = "do"
     you_subject = "you"
     i_subject = "I"
@@ -276,19 +296,29 @@ code: |
     am_is = "am"
     have_has = "have"
     i_they = "I"
+    me_subject = "me"
+    me_them = "me"
+    am_are = "am"
+    you_they = "you"
   else:
     my_their = "their"
     my_subject = principal.name.full(middle='full')
     my_subject += "'s"
-    your_their - "their"
+    your_subject = principal.name.full(middle='full')
+    your_subject += "'s"
+    your_their = "their"
     you_subject = principal.name.full(middle='full')
     i_subject = principal.name.full(middle='full')
-    do_does += " does"
+    do_does = " does"
     myself_their_self = "their self"
     yourself_their_self = "their self"
     am_is = "is"
     have_has = "has"
     i_they = "they"
+    me_subject = principal.name.full(middle='full')
+    me_them = "them"
+    am_are = "are"
+    you_they = "they"
   grammar_code = True
 ---
 id: forgery warning
@@ -418,7 +448,7 @@ question: |
   Who does ${principal.name.full(middle='full')} want to name as their agent?
   % endif
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_agent)}
   
   % if for_yourself == False:
   The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property. 
@@ -497,6 +527,12 @@ fields:
   - Phone number: agent.phone_number
     datatype: al_international_phone
 ---
+template: video_agent_powers
+subject: |
+  **Video: What powers am I giving my agent?**
+content: |
+  [YOUTUBE -1pMMIe4hb4]
+---
 #Add video "What powers am I giving my agent?"
 id: which powers
 question: |
@@ -506,7 +542,7 @@ question: |
   What does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power over?
   % endif
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_agent_powers)}
   
   % if for_yourself:
   A Power of Attorney for property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **All of the above**.
@@ -623,7 +659,6 @@ subquestion: |
   % endif
 fields:
   - Social Security number: principal_ssn
-    required: False
     maxlength: 12
 ---
 id: principal phone
@@ -816,6 +851,8 @@ subquestion: |
   % endif 
 fields:
   - no label: additional_powers
+    all of the above: True
+    none of the above: False
     datatype: checkboxes
     choices: 
       - The power to give my property to others as gifts: gifts
@@ -825,7 +862,7 @@ fields:
       - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
       - The power to revoke or amend a trust.: trust
         help: |
-          If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified. You may want to talk to an attorney before giving ${agent.name.full(middle='full')} power over a trust.
+          If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified. ${capitalize(you_subject)} may want to talk to an attorney before giving ${agent.name.full(middle='full')} power over a trust.
       - Another power I will enter: other
   - Name of trust: trust_name
     show if: additional_powers["trust"]
@@ -848,12 +885,12 @@ fields:
   - no label: delegate_decisions
     input type: radio
     choices:
-      - No, only ${agent.name.full(middle='full')} can make decisions for me.: agent_only 
+      - No, only ${agent.name.full(middle='full')} can make decisions for ${me_subject}.: agent_only 
       - Yes, ${agent.name.full(middle='full')} can choose any person as a delegate.: anyone
         help: |
-          Your acting agent can amend or revoke that delegation at any time. 
-      - They can only delegate to someone that I will authorize.: authorized
-  - Who do you authorize as delegate?: delegate.name.first
+          ${your_subject} acting agent can amend or revoke that delegation at any time. 
+      - They can only delegate to someone that ${i_subject} will authorize.: authorized
+  - Who ${do_does} ${you_subject} authorize as delegate?: delegate.name.first
     js show if: 
       val("delegate_decisions") === "authorized"
 ---
@@ -877,7 +914,7 @@ question: |
   Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have the right to reasonable payment for services as their agent?
   % endif
 subquestion: |  
-  % if for_yourself == True:
+  % if for_yourself:
   ${agent.name.full(middle='full')} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
 
   You can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
@@ -888,21 +925,21 @@ subquestion: |
 
   They can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
 
-  **Note:** this payment would come out of ${principal.name.first(middle='full')}'s own money. This is not a payment from an outside agency or other source.
+  **Note:** this payment would come out of ${principal.name.full(middle='full')}'s own money. This is not a payment from an outside agency or other source.
   % endif
 fields:
   - no label: agent_compensation
     input type: radio
     choices:
       - No, ${agent.name.full(middle='full')} shall not be entitled to reasonable compensation for their services. They will only be entitled to reimbursement for reasonable expenses.: expenses_only
-      - Yes, ${agent.name.full(middle='full')} will be entilted to reasonable compensation at their discretion.: discretion
+      - Yes, ${agent.name.full(middle='full')} will be entitled to reasonable compensation at their discretion.: discretion
       - Yes, ${agent.name.full(middle='full')} will be entitled to reasonable compensation, within limits.: with_limits
   - Compensation will be no more than: compensate_amount
-    datatype: integer
+    datatype: currency
     js show if: 
       val("agent_compensation") === "with_limits"
   - Frequency of compensation: compensate_time
-    input type: dropdown
+    input type: radio
     js show if: 
       val("agent_compensation") === "with_limits"
     choices:
@@ -990,6 +1027,7 @@ fields:
       Click **No** if you want to list an address outside the United States. You should enter the international address using the English alphabet.
   - Street address: successors[i].address.address
     address autocomplete: True
+    required: False
     show if: successors[i].in_america
   - Address line 2: successors[i].address.unit
     required: False
@@ -1001,8 +1039,10 @@ fields:
     code: |
       states_list() 
   - ZIP code: successors[i].address.zip  
+    required: False
     show if: successors[i].in_america
   - Non-US address line 1 (street address, apartment number): successors[i].intl_address_1
+    required: False
     show if: 
       variable: successors[i].in_america
       is: False
@@ -1034,6 +1074,12 @@ fields:
   - Phone number: successors[i].phone_number
     datatype: al_international_phone
 ---
+template: video_when_effect
+subject: |
+  **Video: When does a POA for Property go into effect?**
+content: |
+  [YOUTUBE -1pMMIe4hb4]
+---
 id: effective date option
 question: |
   % if for_yourself == True:
@@ -1042,7 +1088,7 @@ question: |
   Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
   % endif
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_when_effect)}
   
   % if for_yourself == True:
   This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
@@ -1066,26 +1112,27 @@ fields:
     input type: radio
     choices:
       - Immediately.: immediately
-      - Only during times when a doctor has decided that I cannot make decisions for myself.: doctor
+      - Only during times when a doctor has decided that ${i_subject} cannot make decisions for ${myself_their_self}.: doctor
         help: |
           % if for_yourself:
           If you choose this, ${agent.name.full(middle='full')} will have authority as your personal representative under HIPAA to speak with your doctor and request a written statement whether or not you can make financial decisons.
           % else:
           If ${principal.name.full(middle='full')} chooses this, ${agent.name.full(middle='full')} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
           % endif
-      - Only if I am arrested, detained, or deported by law enforcement and I am unable to make financial decisions: detained
+      - Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
       - Other: other
   - "This power of attorney shall become effective on:": effective_date_text
     input type: area
-    show if: effective_date_choice == "other"
+    js show if:
+      val("effective_date_choice") === "other"
 terms:
   revoke: |
     Undo, destroy, or void
   legal capacity: |
-    You have the legal capacity to revoke a Power of Attorney for Property if 
+    ${capitalize(you_subject)} ${have_has} the legal capacity to revoke a Power of Attorney for Property if 
     
-       * You understand what revoking the Power of Attorney will do, and 
-       * You know your income and property.
+       * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
+       * ${capitalize(you_they)} know ${your_their} income and property.
 ---
 id: effective date
 question: |
@@ -1108,6 +1155,12 @@ fields:
   - "This power of attorney shall become effective on...": effective_date
     input type: area
 ---
+template: video_when_end
+subject: |
+  **Video: When does my Power of Attorney end?**
+content: |
+  [YOUTUBE -1pMMIe4hb4]
+---
 id: revocation option
 question: |
   % if for_yourself == True:
@@ -1116,7 +1169,7 @@ question: |
   Does ${principal.name.full(middle='full')} want this Power of Attorney to last until their death?
   % endif
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_when_end)}
   
   % if for_yourself == True:
   This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
@@ -1158,12 +1211,13 @@ fields:
   - no label: end_date_choice
     input type: radio
     choices:
-       - When ${agent.name.full(middle='full')} gets a note from my doctor that says I can manage my financial affairs.: doctor
-       - When I have been released from custody: custody
+       - When ${agent.name.full(middle='full')} gets a note from ${my_subject} doctor that says ${i_they} can manage ${my_their} financial affairs.: doctor
+       - When ${i_subject} ${have_has} been released from custody: custody
        - Other: other
   - This power of attorney shall terminate on:: end_date_text
     input type: area
-    show if: end_date_choice == "other
+    js show if:
+      val("end_date_choice") === "other"
 ---
 id: agent as guardian
 question: |
@@ -1247,12 +1301,18 @@ subquestion: |
   
   [NEWLINE]
 ---
+template: video_congrats
+subject: |
+  **Video: Congratulations and call to action**
+content: |
+  [YOUTUBE -1pMMIe4hb4]
+---
 id: get docs screen
 event: get_docs_screen
 question: |
   Download
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
+  ${collapse_template(video_congrats)}
   
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
   
