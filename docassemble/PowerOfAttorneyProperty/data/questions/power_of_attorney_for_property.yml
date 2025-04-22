@@ -76,7 +76,7 @@ code: |
   if which_powers['social']:
     if ssn_authority:
       ssa_info
-      principal_ssn
+      #principal_ssn
       principal_phone
   birth_date
   set_progress(60)
@@ -104,7 +104,9 @@ code: |
   if which_powers['social']:
     if ssn_authority:
       release_logic
+      release_reminder
   nav.set_section('section_download')
+  
   forms_assembling
   snapshot_forms
   get_docs_screen
@@ -169,7 +171,7 @@ continue button field: poa_explainer
 question: |
   About Power of Attorney
 subquestion: |
-  ${collapse_template(video_intro)}
+  [YOUTUBE -1pMMIe4hb4]
   
   A Power of Attorney for property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property for you when you can't make decisions for yourself. Someone with this power is called an "agent."
 
@@ -250,7 +252,7 @@ question: |
 subquestion: |
   At the end of the program, you can download your Power of Attorney for Property.  
   
-  Note: the Power of Attorney for Property is not valid until it is signed in front of a notary and a witness. Most pages in the form will need to be initialed.
+  **Note:** the Power of Attorney for Property is not valid until it is signed in front of a notary and a witness. Most pages in the form will need to be initialed.
   
   Be sure to download and read the instructions at the end of the program.
 continue button field: completion_guide
@@ -271,10 +273,10 @@ choices:
 #    datatype: yesnoradio
 terms:
   principal: |
-    The principal is the person who chooses someone they trust to make decisions about their property. If this is your document, you are the principal. 
+    The **principal** is the person who chooses someone they trust to make decisions about their property. If this is your document, you are the principal. 
 
   agent: |
-    The agent is the person the principal trusts and chooses to make decisions about their property for them, if the principal ever needs help. If this is your document, you are giving the agent power to make decisions about your property for you, if you ever need help.
+    The **agent** is the person the principal trusts and chooses to make decisions about their property for them, if the principal ever needs help. If this is your document, you are giving the agent power to make decisions about your property for you, if you ever need help.
 ---
 depends on: 
   - for_yourself
@@ -644,22 +646,39 @@ fields:
   - no label: ssn_authority
     datatype: yesnoradio
 ---
-id: ssn
+#id: ssn
+#question: |
+#  % if for_yourself:
+#  What is your Social Security number?
+#  % else:
+#  What is ${principal.name.full(middle='full')}'s Social Security number?
+#  % endif
+#subquestion: |
+#  % if for_yourself:
+#  The Consent for Release of Information form needs to list your Social Security number.
+#  % else:
+#  The Consent for Release of Information form needs to list ${principal.name.full(middle='full')}'s Social Security number.
+#  % endif
+#fields:
+#  - Social Security number: principal_ssn
+#    maxlength: 12
+---
+id: ssa release completion reminder
+continue button field: release_reminder
 question: |
-  % if for_yourself:
-  What is your Social Security number?
-  % else:
-  What is ${principal.name.full(middle='full')}'s Social Security number?
-  % endif
+  Completing the Consent for Release of Information form
 subquestion: |
-  % if for_yourself:
-  The Consent for Release of Information form needs to list your Social Security number.
+  ${capitalize(you_subject)} will need to add ${your_their} Social Security number to the Consent for Relase of Information form before signing it. ${capitalize(you_subject)} will need to sign it in front of two witnesses and include those witnesses' signatures and addresses.
+
+  % if any_successors and successors.number_gathered() > 1:
+  The witnesses must be at least 18 years old. ${agent.name.full(middle='full')}, ${successors.full_names()} cannot be witnesses.
+  % elif any_successors and successors.number_gathered() == 1:
+  The witnesses must be at least 18 years old. ${agent.name.full(middle='full')} and ${successors.full_names()} cannot be witnesses.
   % else:
-  The Consent for Release of Information form needs to list ${principal.name.full(middle='full')}'s Social Security number.
+  The witnesses must be at least 18 years old. ${agent.name.full(middle='full')} cannot be a witness.
   % endif
-fields:
-  - Social Security number: principal_ssn
-    maxlength: 12
+
+  Once you have completed and signed the form, follow the included instructions to send it to the Social Security Administration.
 ---
 id: principal phone
 question: |
@@ -694,39 +713,45 @@ fields:
       - Verification of Social Security Number: verify
       - Current monthly Social Security benefit amount: current_benefit
       - Current monthly Supplemental Security Income payment amount: current_supplement
-      - Past Social Security benefit amounts: past_benefits
-      - Past Supplemental Security Income payment amounts: past_supplement
-      - Medicare entitlement: medicare
-      - Medical records: medical
-      - Other Social Security records: other
+      - Past Social Security benefit amounts (Explain below): past_benefits
+      - Past Supplemental Security Income payment amounts (Explain below): past_supplement
+      - Medicare entitlement (Explain below): medicare
+      - Medical records (Explain below): medical
+      - Other Social Security records (Explain below): other
   - note: What time range of past Social Security benefit amounts do you want to release?
     show if: ssa_info['past_benefits']
   - From: benefit_start_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_benefits']
   - To: benefit_end_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_benefits']
   - note: What time range of past Supplemental Social Security Income payment amounts do you want to release?
     show if: ssa_info['past_supplement']
   - From: supplemental_start_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_supplement']
   - To: supplemental_end_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_supplement']
   - note: What time range of Medicare entitlements do you want to release?
     show if: ssa_info['medicare']
   - From: medicare_start_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['medicare']
   - To: medicare_end_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['medicare']
   - Do you want all medical records released, or just some medical records?: complete_or_dates
@@ -734,17 +759,19 @@ fields:
     show if: ssa_info['medical']
     choices:
       - All medical records: complete
-      - Some medical records: dates
+      - Some medical records (Explain below): dates
   - note: What time range of medical records do you want to release?
     js show if:
       val("complete_or_dates") === "dates"
   - From: medical_records_start_date
+    min: 08/14/1935
     max: ${ today() }
     datatype: date
     js show if:
       val("complete_or_dates") === "dates"
   - To: medical_records_end_date
     datatype: date
+    min: 08/14/1935
     max: ${ today() }
     js show if:
       val("complete_or_dates") === "dates"
@@ -754,6 +781,19 @@ fields:
     show if: ssa_info['other']
     help: |
       This could include award notices, denial notices, benefit applications, appeals, or any other records.
+validation code: |
+  if ssa_info['past_benefits'] and defined('benefit_start_date') and defined('benefit_end_date'):
+    if benefit_start_date > benefit_end_date:
+      validation_error("The start date must be before the end date.", field="benefit_end_date")
+  if ssa_info['past_supplement'] and defined('supplemental_start_date') and defined('supplemental_end_date'):
+    if supplemental_start_date > supplemental_end_date:
+      validation_error("The start date must be before the end date.", field="supplemental_end_date")
+  if ssa_info['medicare'] and defined('medicare_start_date') and defined('medicare_end_date'):
+    if medicare_start_date > medicare_end_date:
+      validation_error("The start date must be before the end date.", field="medicare_end_date")
+  if ssa_info['medical'] and complete_or_dates == "dates" and defined('medical_records_start_date') and defined('medical_records_end_date'):
+    if medical_records_start_date > medical_records_end_date:
+      validation_error("The start date must be before the end date.", field="medical_records_end_date")
 ---
 id: date of birth
 question: |
@@ -763,7 +803,7 @@ question: |
   What is ${principal.name.full(middle='full')}'s date of birth?
   % endif
 fields:
-  - Date: birth_date
+  - Birth date: birth_date
     max: ${ today() }
     datatype: ThreePartsDate
 ---
@@ -800,6 +840,8 @@ subquestion: |
 fields:
   - Limits: agent_limits
     input type: area
+    maxlength: 500
+    rows: 6
 ---
 #id: any additional powers
 #question: |
@@ -863,12 +905,15 @@ fields:
       - The power to revoke or amend a trust.: trust
         help: |
           If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified. ${capitalize(you_subject)} may want to talk to an attorney before giving ${agent.name.full(middle='full')} power over a trust.
-      - Another power I will enter: other
+      - Another power (Explain below): other
   - Name of trust: trust_name
+    maxlength: 50
     show if: additional_powers["trust"]
   - In addition to the powers granted above, ${agent.name.full(middle='full')} is granted the following powers:: additional_powers_text
     show if: additional_powers["other"]
     input type: area
+    maxlength: 500
+    rows: 6
 ---
 id: delegate decisions
 question: |
@@ -891,6 +936,7 @@ fields:
           ${your_subject} acting agent can amend or revoke that delegation at any time. 
       - They can only delegate to someone that ${i_subject} will authorize.: authorized
   - Who ${do_does} ${you_subject} authorize as delegate?: delegate.name.first
+    maxlength: 50
     js show if: 
       val("delegate_decisions") === "authorized"
 ---
@@ -936,6 +982,7 @@ fields:
       - Yes, ${agent.name.full(middle='full')} will be entitled to reasonable compensation, within limits.: with_limits
   - Compensation will be no more than: compensate_amount
     datatype: currency
+    min: 0.01
     js show if: 
       val("agent_compensation") === "with_limits"
   - Frequency of compensation: compensate_time
@@ -970,9 +1017,9 @@ fields:
     datatype: yesnoradio
 terms:
   incompetent: |
-    Incompetent means unable to handle one's own affairs due to illness, disability, or age. A person can be declared incompetent or legally disabled by a court. A person may be certified by a doctor as unable to make decisions or handle business affairs.
+    **Incompetent** means unable to handle one's own affairs due to illness, disability, or age. A person can be declared incompetent or legally disabled by a court. A person may be certified by a doctor as unable to make decisions or handle business affairs.
   successor agent: |
-    A successor agent is a back-up agent who will act as your agent if your first agent is unavailable, passes away, or stops being your agent.
+    A **successor agent** is a back-up agent who will act as your agent if your first agent is unavailable, passes away, or stops being your agent.
 ---
 code: |
   successors[i].name.first
@@ -1083,9 +1130,9 @@ content: |
 id: effective date option
 question: |
   % if for_yourself == True:
-  Do you want this Power of Attorney to go into effect immediately after you sign it?
+  When do you want this Power of Attorney to go into effect?
   % else:
-  Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
+  When does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect?
   % endif
 subquestion: |
   ${collapse_template(video_when_effect)}
@@ -1120,16 +1167,17 @@ fields:
           If ${principal.name.full(middle='full')} chooses this, ${agent.name.full(middle='full')} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
           % endif
       - Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
-      - Other: other
+      - At another time. I will explain below.: other
   - "This power of attorney shall become effective on:": effective_date_text
     input type: area
+    maxlength: 250
     js show if:
       val("effective_date_choice") === "other"
 terms:
   revoke: |
-    Undo, destroy, or void
+    To **revoke** a Power of Attorney means to undo, destroy, or void it.
   legal capacity: |
-    ${capitalize(you_subject)} ${have_has} the legal capacity to revoke a Power of Attorney for Property if 
+    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney for Property if 
     
        * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
        * ${capitalize(you_they)} know ${your_their} income and property.
@@ -1312,7 +1360,7 @@ event: get_docs_screen
 question: |
   Download
 subquestion: |
-  ${collapse_template(video_congrats)}
+  [YOUTUBE -1pMMIe4hb4]
   
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
   
@@ -1387,12 +1435,12 @@ attachment:
     filename: ssa_release
     pdf template file: ssa_release.pdf
     skip undefined: True
-    editable: False
+    editable: True
     fields:
       - "principal_name": ${ principal.name.full(middle='full') }
       - "principal_address": ${ principal.address.on_one_line(bare=True)}
       - "principal_birth": ${birth_date}
-      - "principal_ssn": ${principal_ssn}
+      - "principal_ssn": ${""}
       - "principal_phone": ${phone_number_formatted(principal_phone)}
       - "agent_name": ${ agent.name.full(middle='full')}
       - "agent_phone": ${ phone_number_formatted(agent.phone_number) }
@@ -1423,7 +1471,7 @@ attachment:
 objects:
   - poa_property: ALDocument.using(title="Power of attorney for property", filename="poa_property", enabled=True, has_addendum=False)
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
-  - ssa_release: ALDocument.using(title="Consent for release of information", filename="ssa_release", has_addendum=False)
+  - ssa_release: ALDocument.using(title="Consent for release of information - Social Security Administration", filename="ssa_release", has_addendum=False)
 ---
 code: |
   if which_powers['social'] and ssn_authority:
@@ -1547,6 +1595,45 @@ review:
     button: |
       **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
       ${word(yesno(ssn_authority))}
+    show if: which_powers['social']
+  - Edit: ssa_info
+    button: |
+      **What information should the Social Security Administration release?**
+
+      % if ssa_info['verify']:
+      * Verification of Social SEcurity Number
+      % endif
+      % if ssa_info['current_benefit']:
+      * Current monthly Social Security benefit amount
+      % endif
+      % if ssa_info['current_supplement']:
+      * Current montly Supplemental Security income payment amount
+      % endif
+      % if ssa_info['past_benefits']:
+      * Past Social Security benefit amounts
+      % endif
+      % if ssa_info['past_supplement']:
+      * Past Supplemental Security Income payment amounts
+      % endif
+      % if ssa_info['medicare']:
+      * Medicare entitlement
+      % endif
+      % if ssa_info['medical']:
+      * Medical records
+      % endif
+      % if ssa_info['other']:
+      * ${other_records_text}
+      % endif
+    show if: which_powers['social'] and ssn_authority
+  - Edit: principal_phone
+    button: |
+      % if for_yourself:
+      **Your phone number:**
+      % else:
+      **${principal.name.full(middle='full')}'s phone number:**
+      % endif
+      ${phone_number_formatted(principal_phone)}
+    show if: which_powers['social'] and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1613,7 +1700,6 @@ review:
       % else:
       Yes, at their discretion.
       % endif
-      ${word(yesno(agent_compensation))}
   - Edit: any_successors
     button: |
       % if for_yourself == True:
@@ -1830,6 +1916,45 @@ review:
     button: |
       **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
       ${word(yesno(ssn_authority))}
+    show if: which_powers['social']
+  - Edit: ssa_info
+    button: |
+      **What information do you want the Social Security Administration to release?**
+
+      % if ssa_info['verify']:
+      * Verification of Social SEcurity Number
+      % endif
+      % if ssa_info['current_benefit']:
+      * Current monthly Social Security benefit amount
+      % endif
+      % if ssa_info['current_supplement']:
+      * Current montly Supplemental Security income payment amount
+      % endif
+      % if ssa_info['past_benefits']:
+      * Past Social Security benefit amounts
+      % endif
+      % if ssa_info['past_supplement']:
+      * Past Supplemental Security Income payment amounts
+      % endif
+      % if ssa_info['medicare']:
+      * Medicare entitlement
+      % endif
+      % if ssa_info['medical']:
+      * Medical records
+      % endif
+      % if ssa_info['other']:
+      * ${other_records_text}
+      % endif
+    show if: which_powers['social'] and ssn_authority
+  - Edit: principal_phone
+    button: |
+      % if for_yourself:
+      **Your phone number:**
+      % else:
+      **${principal.name.full(middle='full')}'s phone number:**
+      % endif
+      ${phone_number_formatted(principal_phone)}
+    show if: which_powers['social'] and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1896,7 +2021,6 @@ review:
       % else:
       Yes, at their discretion.
       % endif
-      ${word(yesno(agent_compensation))}
 ---
 id: successor review screen
 continue button field: x.review_successor
