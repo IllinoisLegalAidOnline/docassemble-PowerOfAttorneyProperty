@@ -8,7 +8,6 @@ metadata:
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
-  - docassemble.ALToolbox:phone-number-validation.yml
   - docassemble.ILAO:ilao-interview-framework.yml
   - docassemble.ILAO:shared-basic-questions.yml
 ---
@@ -58,7 +57,6 @@ code: |
   if for_yourself == False:
     other_principal
   principal.name.first
-  grammar_code
   if in_illinois == False:
     illinois_kickout
   set_progress(20)
@@ -321,11 +319,6 @@ code: |
     me_them = "them"
     am_are = "are"
     you_they = "they"
-  grammar_code = True
----
-id: forgery warning
-question: |
-  
 ---
 id: other principal notice
 continue button field: other_principal
@@ -633,8 +626,6 @@ id: social security authority
 question: |
   % if for_yourself == True: 
   Do you want the Social Security Administration to release information to ${agent.name.full(middle='full')}?
-  
-  Do you want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
   % else:
   Does ${principal.name.full(middle='full')} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?
   % endif
@@ -668,7 +659,7 @@ continue button field: release_reminder
 question: |
   Completing the Consent for Release of Information form
 subquestion: |
-  ${capitalize(you_subject)} will need to add ${your_their} Social Security number to the Consent for Relase of Information form before signing it. ${capitalize(you_subject)} will need to sign it in front of two witnesses and include those witnesses' signatures and addresses.
+  ${capitalize(you_subject)} will need to add ${your_their} Social Security number to the Consent for Relase of Information form before submitting it to the local Social Security office. ${capitalize(you_subject)} will need to sign it in front of two witnesses. Those witnesses must sign and add their addresses to the Consent form.
 
   % if any_successors and successors.number_gathered() > 1:
   The witnesses must be at least 18 years old. ${agent.name.full(middle='full')}, ${successors.full_names()} cannot be witnesses.
@@ -721,36 +712,36 @@ fields:
   - note: What time range of past Social Security benefit amounts do you want to release?
     show if: ssa_info['past_benefits']
   - From: benefit_start_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_benefits']
   - To: benefit_end_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_benefits']
   - note: What time range of past Supplemental Social Security Income payment amounts do you want to release?
     show if: ssa_info['past_supplement']
   - From: supplemental_start_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_supplement']
   - To: supplemental_end_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['past_supplement']
   - note: What time range of Medicare entitlements do you want to release?
     show if: ssa_info['medicare']
   - From: medicare_start_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['medicare']
   - To: medicare_end_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     show if: ssa_info['medicare']
@@ -766,11 +757,11 @@ fields:
   - From: medical_records_start_date
     min: 08/14/1935
     max: ${ today() }
-    datatype: date
+    datatype: ThreePartsDate
     js show if:
       val("complete_or_dates") === "dates"
   - To: medical_records_end_date
-    datatype: date
+    datatype: ThreePartsDate
     min: 08/14/1935
     max: ${ today() }
     js show if:
@@ -778,6 +769,7 @@ fields:
   - Other records: other_records_text
     input type: area
     maxlength: 250
+    rows: 7
     show if: ssa_info['other']
     help: |
       This could include award notices, denial notices, benefit applications, appeals, or any other records.
@@ -841,7 +833,7 @@ fields:
   - Limits: agent_limits
     input type: area
     maxlength: 500
-    rows: 6
+    rows: 13
 ---
 #id: any additional powers
 #question: |
@@ -898,11 +890,11 @@ fields:
     datatype: checkboxes
     choices: 
       - The power to give my property to others as gifts: gifts
-      - The power to exercise powers of appointment.: appointment
+      - The power to exercise powers of appointment: appointment
       - The power to name or change beneficiaries or joint tenants: name
-      - The right to access my social media accounts.: social
+      - The right to access my social media accounts: social
       - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
-      - The power to revoke or amend a trust.: trust
+      - The power to revoke or amend a trust: trust
         help: |
           If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified. ${capitalize(you_subject)} may want to talk to an attorney before giving ${agent.name.full(middle='full')} power over a trust.
       - Another power (Explain below): other
@@ -913,7 +905,7 @@ fields:
     show if: additional_powers["other"]
     input type: area
     maxlength: 500
-    rows: 6
+    rows: 13
 ---
 id: delegate decisions
 question: |
@@ -1171,6 +1163,7 @@ fields:
   - "This power of attorney shall become effective on:": effective_date_text
     input type: area
     maxlength: 250
+    rows: 7
     js show if:
       val("effective_date_choice") === "other"
 terms:
@@ -1221,11 +1214,13 @@ subquestion: |
   
   % if for_yourself == True:
   This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
+
+  You can end a Power of Attorney by making a formal Revocation. To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
   % else:
   This Power of Attorney for Property will last until ${principal.name.full(middle='full')}'s death. However, they may choose to end it earlier.
+
+  ${principal.name.full(middle='full')} can end a Power of Attorney by making a formal Revocation. To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
   % endif
-  
-  ${collapse_template(revoke_later)}
 fields:
   - no label: end_at_death
     datatype: yesnoradio
@@ -1360,9 +1355,9 @@ event: get_docs_screen
 question: |
   Download
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
-  
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+
+  [YOUTUBE -1pMMIe4hb4]
   
   The Instructions page has important information. You can read it to find out what to do next. The Power of Attorney form has additional instructions. 
   
@@ -1471,7 +1466,7 @@ attachment:
 objects:
   - poa_property: ALDocument.using(title="Power of attorney for property", filename="poa_property", enabled=True, has_addendum=False)
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
-  - ssa_release: ALDocument.using(title="Consent for release of information - Social Security Administration", filename="ssa_release", has_addendum=False)
+  - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
 ---
 code: |
   if which_powers['social'] and ssn_authority:
@@ -1593,7 +1588,7 @@ review:
       ${word(yesno(is_guardian))}
   - Edit: ssn_authority
     button: |
-      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
       ${word(yesno(ssn_authority))}
     show if: which_powers['social']
   - Edit: ssa_info
@@ -1696,7 +1691,7 @@ review:
       % if agent_compensation == "expenses_only":
       Only for reasonable expenses.
       % elif agent_compensation == "with_limits":
-      Yes, no more than ${compensate_amount} ${compensate_time}.
+      Yes, no more than ${compensate_amount} ${compensate_time.lower()}.
       % else:
       Yes, at their discretion.
       % endif
@@ -1914,7 +1909,7 @@ review:
       ${word(yesno(is_guardian))}
   - Edit: ssn_authority
     button: |
-      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
       ${word(yesno(ssn_authority))}
     show if: which_powers['social']
   - Edit: ssa_info
@@ -2017,7 +2012,7 @@ review:
       % if agent_compensation == "expenses_only":
       Only for reasonable expenses.
       % elif agent_compensation == "with_limits":
-      Yes, no more than ${compensate_amount} ${compensate_time}.
+      Yes, no more than ${compensate_amount} ${compensate_time.lower()}.
       % else:
       Yes, at their discretion.
       % endif
