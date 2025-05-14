@@ -72,7 +72,7 @@ code: |
   file_bankruptcy
   is_guardian
   if which_powers['social']:
-    if ssn_authority:
+    if ssn_authority == "True":
       ssa_info
       #principal_ssn
       principal_phone
@@ -100,7 +100,7 @@ code: |
     preparer.phone_number
   set_progress(100)
   if which_powers['social']:
-    if ssn_authority:
+    if ssn_authority == "True":
       release_logic
       release_reminder
   nav.set_section('section_download')
@@ -147,7 +147,7 @@ subquestion: |
 
   This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
   
-  To learn more, read ILAO's article about [**starting a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/starting-power-attorney-property).
+  To learn more, read ILAO's article about [**setting up a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/how-set-power-attorney-property).
 field: sees_nav_bar
 ---
 template: video_intro
@@ -179,7 +179,7 @@ subquestion: |
   * Sign or break a lease
   * Keep up with mortgage payments
   * Hire a lawyer for you
-  * Talk to the Social Security office
+  * Ask for records from the Social Security Administration
   * File your taxes
 
   ${collapse_template(video_why)}
@@ -192,7 +192,7 @@ subquestion: |
   To use this program you will need to know:
 
   * The name, address, and phone number of the person you want to designate as the agent with power of attorney,
-  * The names, address, and phone numbers of any successor agents, 
+  * The names, addresses, and phone numbers of any successor agents, 
   * The property and finances you have, and
   * How much control you want the agent to have over your property.
     
@@ -448,8 +448,6 @@ subquestion: |
   % if for_yourself == False:
   The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property. 
   
-  An agent has a lot of power that they could potentially abuse. ${principal.name.full(middle='full')} should choose someone who they would trust with their life and everything they own.
-
   The agent is the person you trust to make decisions about  ${principal.name.full(middle='full')}'s' property for them. It is very important they talk to their agent about their wishes for their property and finances. Meaningful conversations will guide the agent's judgment and make sure they are on the same page.
 
   An agent has a lot of power, and it is possible that they could abuse that power.  ${principal.name.full(middle='full')} should choose someone they trust with their finances and everything they own.
@@ -632,10 +630,16 @@ question: |
 subquestion: |
   If you click **Yes**, a Consent for Release of Information form will be created in addition to this Power of Attorney for Property.
 
+  If you click **Yes, but I do not want to make a release form right now**, you may need to make a Consent for Release of Information form later.
+
   If you click **No**, ${agent.name.full(middle='full')} might not be able to make decisions about Social Security.
 fields:
   - no label: ssn_authority
-    datatype: yesnoradio
+    input type: radio
+    choices: 
+      - Yes: True
+      - Yes, but I do not want to make a release form right now.: no_release
+      - No: False                                                           
 ---
 #id: ssn
 #question: |
@@ -670,6 +674,10 @@ subquestion: |
   % endif
 
   Once you have completed and signed the form, follow the included instructions to send it to the Social Security Administration.
+
+  The Consent for Release of Information form is only valid for 1 year, or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
+
+  You may want to make ${agent.name.full(middle='full')} your representative payee. To learn more, read ILAO's article about [**representative payees for Social Security recipients**](https://www.illinoislegalaid.org/legal-information/representative-payee-ssa-benefits).
 ---
 id: principal phone
 question: |
@@ -1469,7 +1477,7 @@ objects:
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
 ---
 code: |
-  if which_powers['social'] and ssn_authority:
+  if which_powers['social'] and ssn_authority == "True":
     ssa_release.enabled = True
   else:
     ssa_release.enabled = False
@@ -1589,7 +1597,13 @@ review:
   - Edit: ssn_authority
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
-      ${word(yesno(ssn_authority))}
+      % if ssn_authority == "True":
+      Yes
+      % elif ssn_authority == "no_release":
+      Yes, but I do not want to make a release form now.
+      % else:
+      No
+      % endif
     show if: which_powers['social']
   - Edit: ssa_info
     button: |
@@ -1619,7 +1633,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority
+    show if: which_powers['social'] and ssn_authority == "True"
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1628,7 +1642,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority
+    show if: which_powers['social'] and ssn_authority == "True"
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1910,7 +1924,13 @@ review:
   - Edit: ssn_authority
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
-      ${word(yesno(ssn_authority))}
+      % if ssn_authority == "True":
+      Yes
+      % elif ssn_authority == "no_release":
+      Yes, but I do not want to make a release form now.
+      % else:
+      No
+      % endif
     show if: which_powers['social']
   - Edit: ssa_info
     button: |
@@ -1940,7 +1960,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority
+    show if: which_powers['social'] and ssn_authority == "True"
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1949,7 +1969,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority
+    show if: which_powers['social'] and ssn_authority == "True"
   - Edit: birth_date
     button: |
       % if for_yourself == True:
