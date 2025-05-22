@@ -1,5 +1,5 @@
 metadata:
-  title: Power of attorney for property
+  title: Power of Attorney for Property
   short title: POA property
   comment: This program helps you create documents to give another person access or control of your money and property.
   authors:
@@ -25,7 +25,7 @@ objects:
         there_are_any=True)
 ---
 code: |
-  ilao_easy_form_title = "Power of attorney for property"
+  ilao_easy_form_title = "Power of Attorney for Property"
   ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/power-attorney-property"
   github_user = 'IllinoisLegalAidOnline'
   github_repo_name = 'docassemble-PowerOfAttorneyProperty'
@@ -72,7 +72,7 @@ code: |
   file_bankruptcy
   is_guardian
   if which_powers['social']:
-    if ssn_authority == "True":
+    if ssn_authority:
       ssa_info
       #principal_ssn
       principal_phone
@@ -100,7 +100,7 @@ code: |
     preparer.phone_number
   set_progress(100)
   if which_powers['social']:
-    if ssn_authority == "True":
+    if ssn_authority:
       release_logic
       release_reminder
   nav.set_section('section_download')
@@ -141,13 +141,13 @@ code: |
 ---
 id: welcome
 question: |
-  Power of attorney for property
+  Power of Attorney for Property
 subquestion: |
-  Welcome to Illinois Legal Aid Online's **Power of attorney for property** Easy Form.
+  Welcome to Illinois Legal Aid Online's **Power of Attorney for Property** Easy Form.
 
   This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
   
-  To learn more, read ILAO's article about [**setting up a power of attorney for property**](https://www.illinoislegalaid.org/legal-information/how-set-power-attorney-property).
+  To learn more, read ILAO's article about [**Power of attorney for property basics**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 field: sees_nav_bar
 ---
 template: video_intro
@@ -630,16 +630,14 @@ question: |
 subquestion: |
   If you click **Yes**, a Consent for Release of Information form will be created in addition to this Power of Attorney for Property.
 
-  If you click **Yes, but I do not want to make a release form right now**, you may need to make a Consent for Release of Information form later.
+  ${capitalize(you_subject)} will need to add ${your_their} Social Security number to the Consent for Relase of Information form before submitting it to the local Social Security office. ${capitalize(you_subject)} will need to sign it in front of two witnesses. Those witnesses must sign and add their addresses to the Consent form. The witnesses must be at least 18 years old.
 
-  If you click **No**, ${agent.name.full(middle='full')} might not be able to make decisions about Social Security.
+  The Consent for Release of Information form is only valid for 1 year, or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
+
+  You may want to make ${agent.name.full(middle='full')} your representative payee. To learn more, read ILAO's article about [**representative payees for Social Security recipients**](https://www.illinoislegalaid.org/legal-information/representative-payee-ssa-benefits).
 fields:
   - no label: ssn_authority
-    input type: radio
-    choices: 
-      - Yes: True
-      - Yes, but I do not want to make a release form right now.: no_release
-      - No: False                                                           
+    datatype: yesnoradio                                                      
 ---
 #id: ssn
 #question: |
@@ -1391,7 +1389,7 @@ under: |
 generic object: ALDocumentBundle
 template: x.send_email_template
 subject: |
-  Power of attorney for property
+  Power of Attorney for Property
 content: |
   Your forms are attached.
   
@@ -1472,12 +1470,12 @@ attachment:
       - "other_records_text": ${other_records_text if ssa_info['other'] else""}
 ---
 objects:
-  - poa_property: ALDocument.using(title="Power of attorney for property", filename="poa_property", enabled=True, has_addendum=False)
+  - poa_property: ALDocument.using(title="Power of Attorney for Property", filename="poa_property", enabled=True, has_addendum=False)
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
 ---
 code: |
-  if which_powers['social'] and ssn_authority == "True":
+  if which_powers['social'] and ssn_authority:
     ssa_release.enabled = True
   else:
     ssa_release.enabled = False
@@ -1597,20 +1595,14 @@ review:
   - Edit: ssn_authority
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
-      % if ssn_authority == "True":
-      Yes
-      % elif ssn_authority == "no_release":
-      Yes, but I do not want to make a release form now.
-      % else:
-      No
-      % endif
+      ${word(yesno(ssn_authority))}
     show if: which_powers['social']
   - Edit: ssa_info
     button: |
       **What information should the Social Security Administration release?**
 
       % if ssa_info['verify']:
-      * Verification of Social SEcurity Number
+      * Verification of Social Security Number
       % endif
       % if ssa_info['current_benefit']:
       * Current monthly Social Security benefit amount
@@ -1633,7 +1625,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority == "True"
+    show if: which_powers['social'] and ssn_authority
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1642,7 +1634,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority == "True"
+    show if: which_powers['social'] and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1924,20 +1916,14 @@ review:
   - Edit: ssn_authority
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
-      % if ssn_authority == "True":
-      Yes
-      % elif ssn_authority == "no_release":
-      Yes, but I do not want to make a release form now.
-      % else:
-      No
-      % endif
+      ${word(yesno(ssn_authority))}
     show if: which_powers['social']
   - Edit: ssa_info
     button: |
       **What information do you want the Social Security Administration to release?**
 
       % if ssa_info['verify']:
-      * Verification of Social SEcurity Number
+      * Verification of Social Security Number
       % endif
       % if ssa_info['current_benefit']:
       * Current monthly Social Security benefit amount
@@ -1960,7 +1946,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority == "True"
+    show if: which_powers['social'] and ssn_authority
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1969,7 +1955,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority == "True"
+    show if: which_powers['social'] and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
