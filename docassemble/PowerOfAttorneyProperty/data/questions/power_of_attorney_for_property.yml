@@ -171,7 +171,7 @@ question: |
 subquestion: |
   [YOUTUBE -1pMMIe4hb4]
   
-  A Power of Attorney for property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property for you when you can't make decisions for yourself. Someone with this power is called an "agent."
+  A Power of Attorney for Property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property for you when you can't make decisions for yourself. Someone with this power is called an "agent."
 
   You can give an agent power to:
 
@@ -264,8 +264,8 @@ subquestion: |
   If you are making these forms for someone else, that person will be the principal.
 field: for_yourself
 choices:
-  - Yes, I am making a power of attorney for myself.: True
-  - No, I am making a power of attorney for somebody else.: False
+  - Yes, I am making a Power of Attorney for myself.: True
+  - No, I am making a Power of Attorney for somebody else.: False
 #fields:
 #  - no label: for_yourself
 #    datatype: yesnoradio
@@ -538,9 +538,9 @@ subquestion: |
   ${collapse_template(video_agent_powers)}
   
   % if for_yourself:
-  A Power of Attorney for property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **All of the above**.
+  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **All of the above**.
   %  else:
-   A Power of Attorney for property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **All of the above**.
+   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **All of the above**.
   % endif
 
   If you do not check an option, ${agent.name.full(middle='full')} will not be able to help with it. 
@@ -1199,7 +1199,7 @@ subquestion: |
 
   As an example, the event 'the birth of my child' is not specific. Instead, the event should specify which child: 'the birth of my first child.'
 fields:
-  - "This power of attorney shall become effective on...": effective_date
+  - "This Power of Attorney shall become effective on...": effective_date
     input type: area
 ---
 template: video_when_end
@@ -1263,7 +1263,7 @@ fields:
        - When ${agent.name.full(middle='full')} gets a note from ${my_subject} doctor that says ${i_they} can manage ${my_their} financial affairs.: doctor
        - When ${i_subject} ${have_has} been released from custody: custody
        - Other: other
-  - This power of attorney shall terminate on:: end_date_text
+  - This Power of Attorney shall terminate on:: end_date_text
     input type: area
     js show if:
       val("end_date_choice") === "other"
@@ -1738,7 +1738,7 @@ review:
       ${word(yesno(end_at_death))}
   - Edit: end_date_choice
     button: |
-      **This power of attorney shall terminate:**
+      **This Power of Attorney shall terminate:**
       % if end_date_choice == "doctor":
       When ${agent.name.full(middle='full')} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
       % elif end_date_choice == "custody":
@@ -2108,7 +2108,7 @@ review:
       ${word(yesno(end_at_death))}
   - Edit: end_date_choice
     button: |
-      **This power of attorney shall terminate:**
+      **This Power of Attorney shall terminate:**
       % if end_date_choice == "doctor":
       When ${agent.name.full(middle='full')} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
       % elif end_date_choice == "custody":
