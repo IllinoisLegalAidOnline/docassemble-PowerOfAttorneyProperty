@@ -632,7 +632,7 @@ subquestion: |
 
   ${capitalize(you_subject)} will need to add ${your_their} Social Security number to the Consent for Relase of Information form before submitting it to the local Social Security office. ${capitalize(you_subject)} will need to sign it in front of two witnesses. Those witnesses must sign and add their addresses to the Consent form. The witnesses must be at least 18 years old.
 
-  The Consent for Release of Information form is only valid for 1 year, or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
+  The Consent for Release of Information is a one-time use form. It is only valid for 1 year or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
 
   You may want to make ${agent.name.full(middle='full')} your representative payee. To learn more, read ILAO's article about [**representative payees for Social Security recipients**](https://www.illinoislegalaid.org/legal-information/representative-payee-ssa-benefits).
 fields:
@@ -673,7 +673,7 @@ subquestion: |
 
   Once you have completed and signed the form, follow the included instructions to send it to the Social Security Administration.
 
-  The Consent for Release of Information form is only valid for 1 year, or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
+  The Consent for Release of Information is a one-time use form. It is only valid for 1 year or 90 days for medical records. If you want the SSA to release information after that time, you will need to sign a new Consent for Release of Information.
 
   You may want to make ${agent.name.full(middle='full')} your representative payee. To learn more, read ILAO's article about [**representative payees for Social Security recipients**](https://www.illinoislegalaid.org/legal-information/representative-payee-ssa-benefits).
 ---
@@ -1166,7 +1166,7 @@ fields:
           % endif
       - Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
       - At another time. I will explain below.: other
-  - "This power of attorney shall become effective on:": effective_date_text
+  - "This Power of Attorney shall become effective on:": effective_date_text
     input type: area
     maxlength: 250
     rows: 7
@@ -1176,7 +1176,7 @@ terms:
   revoke: |
     To **revoke** a Power of Attorney means to undo, destroy, or void it.
   legal capacity: |
-    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney for Property if 
+    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney if 
     
        * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
        * ${capitalize(you_they)} know ${your_their} income and property.
