@@ -357,7 +357,7 @@ subquestion: |
 
   You should use the legal name on their identification. If they go by a name other than their legal one, you should click the checkbox by next to "They have another name." This will let you list two names.
 
-  If they have changed their name, you should click the checkbox by next to "They have another name." This will let you list your old name.
+  If they have changed their name, you should click the checkbox by next to "They have another name." This will let you list their old name.
   % else:
   You should use the legal name on your identification. If you go by a name other than your legal one, you should click the checkbox by next to "I have another name." This will let you list two names.
 
@@ -1690,17 +1690,11 @@ review:
       % if additional_powers['appointment']:
       * The power to exercise powers of appointment.
       % endif
-      % if additional_powers['name']:
-      * The power to name or change beneficiaries or joint tenants.
-      % endif
       % if additional_powers['social']:
       * The right to access my social media accounts.
       % endif
       % if additional_powers['online']:
       * The right to access my online accounts, such as online banking, utilities, and bill pay.
-      % endif
-      % if additional_powers['trust']:
-      * The power to revoke or amend the trust named ${trust_name}.
       % endif
       % if additional_powers['other']:
       * ${additional_powers_text}
@@ -2011,17 +2005,11 @@ review:
       % if additional_powers['appointment']:
       * The power to exercise powers of appointment.
       % endif
-      % if additional_powers['name']:
-      * The power to name or change beneficiaries or joint tenants.
-      % endif
       % if additional_powers['social']:
       * The right to access my social media accounts.
       % endif
       % if additional_powers['online']:
       * The right to access my online accounts, such as online banking, utilities, and bill pay.
-      % endif
-      % if additional_powers['trust']:
-      * The power to revoke or amend the trust named ${trust_name}.
       % endif
       % if additional_powers['other']:
       * ${additional_powers_text}
