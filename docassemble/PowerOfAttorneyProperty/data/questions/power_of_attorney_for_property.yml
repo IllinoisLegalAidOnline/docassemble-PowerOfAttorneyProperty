@@ -57,6 +57,8 @@ code: |
   if for_yourself == False:
     other_principal
   principal.name.first
+  if also_known_as:
+    formerly_or_also
   if in_illinois == False:
     illinois_kickout
   set_progress(20)
@@ -66,12 +68,12 @@ code: |
   agent.in_america
   agent.phone_number
   nav.set_section('section_powers')
-  which_powers
+  all_powers
   set_progress(40)
   life_insurance
   file_bankruptcy
   is_guardian
-  if which_powers['social']:
+  if social_powers:
     if ssn_authority:
       ssa_info
       #principal_ssn
@@ -80,7 +82,7 @@ code: |
   set_progress(60)
   if agent_limitations == True:
     agent_limits
-  additional_powers
+  additional_powers_check
   if no_powers == True:
     no_powers_kickout
   delegate_decisions 
@@ -99,7 +101,7 @@ code: |
     preparer.address.address
     preparer.phone_number
   set_progress(100)
-  if which_powers['social']:
+  if social_powers:
     if ssn_authority:
       release_logic
       release_reminder
@@ -111,7 +113,7 @@ code: |
 ---
 code: |
   stuff_to_snapshot = {
-  	'start_time': str(current_datetime().format_datetime()),
+  	'start_time': str(current_datetime()),
   	'started_interview': True, 
   	}
   
@@ -145,7 +147,9 @@ question: |
 subquestion: |
   Welcome to Illinois Legal Aid Online's **Power of Attorney for Property** Easy Form.
 
-  This program helps you create documents to give someone you trust power of attorney for your property. This means they will have access to or control of your money and property.
+  This program helps you create documents to give someone you trust power of attorney for your property, which includes your finances. This means they will have access to or control of your money and property. This can include managing your lease agreement, paying your bills, and handling Social Security payments.
+
+  This program has videos with information about making a Power of Attorney for Property. You do not have to watch them, but you may find them helpful.
   
   To learn more, read ILAO's article about [**Power of Attorney for Property basics**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 field: sees_nav_bar
@@ -162,6 +166,38 @@ subject: |
 content: |  
   [YOUTUBE -1pMMIe4hb4]
 ---
+id: accept terms
+question: |
+  Terms of use
+subquestion: |
+  This program does not provide legal advice. It does not take the place of advice from a lawyer.
+
+  Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
+
+  The videos in this program give information regarding common concerns in the advance planning process. These videos provide information only, not legal advice. They do not create an attorney-client relationship between you and the Center for Disability and Elder Law.
+
+  ${ collapse_template(get_legal_help) }  
+
+fields:
+  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use) and [**privacy policy**](https://www.illinoislegalaid.org/about/privacy-policy).: accept
+    datatype: checkboxes
+    none of the above: False
+    minlength: 1
+    choices:
+      - I accept the terms of use and privacy policy.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use and privacy policy.
+continue button field: accept_terms
+---
+template: get_legal_help
+subject: |
+  **What if I need legal advice?**
+content: |  
+  If you have questions or concerns about your legal problem and want legal advice, you should talk to a lawyer.
+  
+  Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+---
 #First Video Intro to Power of Attorney for Property
 #Second video: Why I made a Power of Attorney for Property and Finances"
 id: poa explainer
@@ -171,7 +207,7 @@ question: |
 subquestion: |
   [YOUTUBE -1pMMIe4hb4]
   
-  A Power of Attorney for Property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property for you when you can't make decisions for yourself. Someone with this power is called an "agent."
+  A Power of Attorney for Property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property and finances for you when you can't make decisions for yourself. Someone with this power is called an "agent."
 
   You can give an agent power to:
 
@@ -240,7 +276,7 @@ subquestion: |
 
   ${collapse_template(video_agent)}
 
-  **Note:** If you can communicate your choices, you are the decision maker.
+  **Note:** If you can communicate and understand your choices, you are the decision maker.
 
   To learn more, read ILAO's article about [**setting up a Power of Attorney for Property**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 ---
@@ -248,9 +284,7 @@ id: completion guide
 question: |
   Completing this form
 subquestion: |
-  At the end of the program, you can download your Power of Attorney for Property.  
-  
-  **Note:** the Power of Attorney for Property is not valid until it is signed in front of a notary and a witness. Most pages in the form will need to be initialed.
+  At the end of the program, you can download your Power of Attorney for Property. You will need to sign it in front of a witness and notary.  You do not need to know who the witness will be to use this program.
   
   Be sure to download and read the instructions at the end of the program.
 continue button field: completion_guide
@@ -376,6 +410,13 @@ fields:
     js show if:
       val('also_known_as') === true
 ---
+id: formerly or also
+question: |
+  Is ${principal.aka_name} a former legal name?
+fields:
+  - no label: formerly_or_also
+    datatype: yesnoradio
+---
 id: in illinois
 question: |
   % if for_yourself == True:
@@ -419,19 +460,33 @@ buttons:
   - Restart: restart
 ---
 depends on:
-  - which_powers
+  - real_powers
+  - financial_powers
+  - stock_powers
+  - tangible_powers
+  - insurance_powers
+  - safe_powers
+  - retirement_powers
+  - social_powers
+  - claims_powers
+  - tax_powers
+  - estate_powers
+  - commodity_powers
+  - borrowing_powers
+  - business_powers
+  - all_other_powers
   - life_insurance
   - file_bankruptcy
   - is_guardian
   - ssn_authority
-  - additional_powers
+  - additional_powers_check
 code: |
   no_powers = False
-  if which_powers.all_false() == True:
+  if not real_powers and not financial_powers and not stock_powers and not tangible_powers and not safe_powers and not insurance_powers and not retirement_powers and not social_powers and not retirement_powers and not social_powers and not claims_powers and not tax_powers and not estate_powers and not commodity_powers and not borrowing_powers and not business_powers and not all_other_powers:
     if life_insurance == False:
       if file_bankruptcy == False:
         if is_guardian == False:
-          if additional_powers.all_false():
+          if not additional_powers_check:
             no_powers = True
 ---
 id: principal address
@@ -555,65 +610,82 @@ subquestion: |
   ${collapse_template(video_agent_powers)}
   
   % if for_yourself:
-  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **All of the above**.
+  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers.*.
   %  else:
-   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **All of the above**.
+   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers.**.
   % endif
 
   If you do not check an option, ${agent.name.full(middle='full')} will not be able to help with it. 
 fields: 
-  - no label: which_powers
-    datatype: checkboxes
-    all of the above: True
-    none of the above: True
-    choices:
-      - Real estate transactions: real
-        help: |
-          Some examples of **real estate transactions** are buying a house or renting an apartment.
-      - Financial institution transactions: financial
-        help: |
-          Some examples of **financial institution transactions** are depositing or taking out money from an account or writing checks.
-      - Stock and bond transactions: stock
-        help: |
-          Some examples of **stock and bond transactions** are buying stock and safekeeping any interest or shares of that stock.
-      - Tangible personal property transactions: tangible
-        help: |
-          Personal property means physical things like furniture, jewelry, or pictures.
-
-          Some examples of **tangible personal property transactions** are selling furniture, storing pictures, and repairing appliances.
-      - Safe deposit transactions: safe
-        help: |
-          Some examples of **safe deposit transactions** are renewing safe deposits, closing the safe deposit, or being able to get into the safe deposit box.
-      - Insurance and annuity transactions: insurance
-        help: |
-          Some examples of **insurance and annuity transactions** are buying health insurance, paying for car insurance, or ending life insurance.
-      - Retirement plan transactions: retirement
-        help: |
-          Some examples of **retirement plan transactions** are putting money into a retirement plan, or taking money out of a retirement plan or an employee savings account.
-      - Social Security, employment and military service benefits: social
-        help: |
-          Some examples of **Social Security, unemployment, and military service benefit transactions** are filing applications for these services or filing or settling any claims regarding these services.
-      - Tax matters: tax
-        help: |
-          An example of a **tax matter** is filing federal and state income tax returns.
-      - Claims and litigation: claims
-        help: |
-          Some examples of **claims and litigation** are the power to sue someone, to settle a claim, or to hire an attorney.
-      - Commodity and option transactions: commodity
-        help: |
-          Some examples of **commodity and option transactions** are buying stock options and continuing to use a stock broker.
-      - Business operations: business
-        help: |
-          Some examples of **business transactions** are selling, expanding, or remodeling the principal's business. For example, if the principal owned a store, then the agent could sell the store, make the store bigger, or remodel it. The agent could also hire or fire employees.
-      - Borrowing transactions: borrowing
-        help: |
-          Some examples of **borrowing transactions** are taking out a loan in the principal's name, paying any current loans, or taking out a mortgage on the principal's home.
-      - Estate transactions: estate
-        help: |
-          Some examples of **estate transactions** are accepting money or a gift on behalf of the principal.
-      - All other property transactions: all
-        help: |
-          By selecting **all other property transactions**, the agent can perform any transaction with the principal's property even if is not listed above.
+  - ${i_subject} want ${agent.name.full(middle='full')} to have all these powers.: all_powers
+    datatype: yesnowide       
+    check others: True
+  - Real estate transactions: real_powers
+    datatype: yesnowide
+    help: |
+      Some examples of **real estate transactions** are buying a house or renting an apartment.
+  - Financial institution transactions: financial_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **financial institution transactions** are depositing or taking out money from an account or writing checks.
+  - Stock and bond transactions: stock_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **stock and bond transactions** are buying stock and safekeeping any interest or shares of that stock.
+  - Tangible personal property transactions: tangible_powers
+    datatype: yesnowide   
+    help: |
+      Personal property means physical things like furniture, jewelry, or pictures.
+      
+      Some examples of **tangible personal property transactions** are selling furniture, storing pictures, and repairing appliances.
+  - Safe deposit transactions: safe_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **safe deposit transactions** are renewing safe deposits, closing the safe deposit, or being able to get into the safe deposit box.
+  - Insurance and annuity transactions: insurance_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **insurance and annuity transactions** are buying health insurance, paying for car insurance, or ending life insurance.
+  - Retirement plan transactions: retirement_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **retirement plan transactions** are putting money into a retirement plan, or taking money out of a retirement plan or an employee savings account.
+  - Social Security, employment and military service benefits: social_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **Social Security, unemployment, and military service benefit transactions** are filing applications for these services or filing or settling any claims regarding these services.
+  - Tax matters: tax_powers
+    datatype: yesnowide   
+    help: |
+      An example of a **tax matter** is filing federal and state income tax returns.
+  - Claims and litigation: claims_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **claims and litigation** are the power to sue someone, to settle a claim, or to hire an attorney.
+  - Commodity and option transactions: commodity_powers
+    datatype: yesnowide
+    help: |
+      Some examples of **commodity and option transactions** are buying stock options and continuing to use a stock broker.
+  - Business operations: business_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **business transactions** are selling, expanding, or remodeling the principal's business. For example, if the principal owned a store, then the agent could sell the store, make the store bigger, or remodel it. The agent could also hire or fire employees.
+  - Borrowing transactions: borrowing_powers
+    datatype: yesnowide 
+    help: |
+      Some examples of **borrowing transactions** are taking out a loan in the principal's name, paying any current loans, or taking out a mortgage on the principal's home.
+  - Estate transactions: estate_powers
+    datatype: yesnowide   
+    help: |
+      Some examples of **estate transactions** are accepting money or a gift on behalf of the principal.
+  - All other property transactions: all_other_powers
+    #This was formerly "all"
+    datatype: yesnowide   
+    help: |
+      By selecting **all other property transactions**, the agent can perform any transaction with the principal's property even if is not listed above.
+  - None of the above: none_powers
+    datatype: yesnowide
+    uncheck others: True
 ---
 id: life insurance
 question: |
@@ -655,23 +727,6 @@ subquestion: |
 fields:
   - no label: ssn_authority
     datatype: yesnoradio                                                      
----
-#id: ssn
-#question: |
-#  % if for_yourself:
-#  What is your Social Security number?
-#  % else:
-#  What is ${principal.name.full(middle='full')}'s Social Security number?
-#  % endif
-#subquestion: |
-#  % if for_yourself:
-#  The Consent for Release of Information form needs to list your Social Security number.
-#  % else:
-#  The Consent for Release of Information form needs to list ${principal.name.full(middle='full')}'s Social Security number.
-#  % endif
-#fields:
-#  - Social Security number: principal_ssn
-#    maxlength: 12
 ---
 id: ssa release completion reminder
 continue button field: release_reminder
@@ -855,43 +910,7 @@ subquestion: |
 fields:
   - Limits: agent_limits
     input type: area
-    #maxlength: 500
     rows: 13
----
-#id: any additional powers
-#question: |
-#  % if for_yourself == True:
-#  Do you want to give any additional powers to ${agent.name.full(middle='full')}?
-#  % else:
-#  Does ${ principal.name.full(middle='full')} want to give any additional powers to ${agent.name.full(middle='full')}?
-#  % endif
-#subquestion: |
-#  % if for_yourself == True:
-#  If desired, you may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
-#  % else:
-#  If desired, ${principal.name.full(middle='full')} may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
-#  % endif
-#
-#  Other powers may include: 
-#  
-#  * The power to give my property to others as gifts, 
-#  * The power to exercise powers of appointment 
-#  * The power to name or change beneficiaries or joint tenants, or 
-#  * The power to revoke or amend any trust. 
-#  
-#  If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
-#fields:
-#  - no label: any_additional_powers
-#    datatype: yesnoradio
-#---
-#id: additional powers
-#question: |
-#  Complete the sentence: "In addition to the powers granted above, ${agent.name.full(middle='full')} is granted the following powers: "
-#subquestion: |
-#  For example: The agent will have the right to transfer my money from my savings account to my checking account.
-#fields:
-#  - Additional powers: additional_powers
-#    input type: area
 ---
 id: any additional powers
 question: |
@@ -906,29 +925,37 @@ subquestion: |
   % else:
   If ${principal.name.full(middle='full')} wants, they may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
   % endif 
+
+  ${collapse_template(powers_example)}
 fields:
-  - no label: additional_powers
-    all of the above: True
-    none of the above: False
-    datatype: checkboxes
-    choices: 
-      - The power to give my property to others as gifts: gifts
-      - The power to exercise powers of appointment: appointment
-      #- The power to name or change beneficiaries or joint tenants: name
-      - The right to access my social media accounts: social
-      - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
-      #- The power to revoke or amend a trust: trust
-      #  help: |
-      #    If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified. ${capitalize(you_subject)} may want to talk to an attorney before giving ${agent.name.full(middle='full')} power over a trust.
-      - Another power (Explain below): other
-  #- Name of trust: trust_name
-    #maxlength: 50
-  #  show if: additional_powers["trust"]
-  - In addition to the powers granted above, ${agent.name.full(middle='full')} is granted the following powers:: additional_powers_text
-    show if: additional_powers["other"]
+  - no label: additional_powers_check
+    datatype: yesnoradio
+    #all of the above: True
+    #none of the above: False
+    #datatype: checkboxes
+    #choices: 
+    #  - The power to give my property to others as gifts: gifts
+    #  - The power to exercise powers of appointment: appointment
+    #  - The right to access my social media accounts: social
+    #  - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
+    #  - Another power (Explain below): other
+  - ${agent.name.full(middle='full')} is granted the following powers:: additional_powers_text
+    show if: additional_powers_check
     input type: area
-    #maxlength: 500
     rows: 13
+---
+template: powers_example
+subject: |
+  Examples of additional powers
+content: |
+  Some other powers a principal might give an agent include:
+  
+  * The power to give your property to others as gifts,
+  * The power to exercise powers of appointment,
+  * The power to name or change beneficiaries or joint tenants,
+  * The right to access your social media accounts,
+  * The power to revoke or amend a trust, and
+  * The right to access your online accounts, such as online banking, utilities, and bill pay.
 ---
 id: delegate decisions
 question: |
@@ -1176,14 +1203,14 @@ fields:
     input type: radio
     choices:
       - Immediately.: immediately
-      - Only during times when a doctor has decided that ${i_subject} cannot make decisions for ${myself_their_self}.: doctor
+      - Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.: doctor
         help: |
           % if for_yourself:
           If you choose this, ${agent.name.full(middle='full')} will have authority as your personal representative under HIPAA to speak with your doctor and request a written statement whether or not you can make financial decisons.
           % else:
           If ${principal.name.full(middle='full')} chooses this, ${agent.name.full(middle='full')} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
           % endif
-      - Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
+      #- Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
       - At another time. I will explain below.: other
   - "This Power of Attorney shall become effective on:": effective_date_text
     input type: area
@@ -1304,9 +1331,9 @@ subquestion: |
   To "nominate" means to suggest or propose a person a court can choose to act as guardian.
 
   % if for_yourself == True:
-  A court may find it necessary to appoint a legal guardian to manage your health and well-being. A guardian is able to make decisions on matters other than health care and would typically have rights, powers, and duties over you similar to the ones parents have over their minor children. 
+  A court may find it necessary to appoint a legal guardian to make decisions about your financial affairs. A guardian of your estate would have rights, powers, and duties over your property and finances.
   % else:
-  A court may find it necessary to appoint a legal guardian to manage ${principal.name.full(middle='full')}'s health and well-being. A guardian is able to make decisions on matters other than health care and would typically have rights, powers, and duties over ${principal.name.full(middle='full')} similar to the ones parents have over their minor children
+  A court may find it necessary to appoint a legal guardian to make decisions about ${principal.name.full(middle='full')}'s financial affairs. A guardian of their estate would have rights, powers, and duties over their property and finances.
   % endif
   
   If you click **No**, then a court may appoint someone other than ${agent.name.full(middle='full')} to be guardian if needed. Even if you click **Yes**, a court may still appoint someone else as guardian if they find that ${agent.name.full(middle='full')} is breaching their duty.
@@ -1500,7 +1527,7 @@ objects:
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
 ---
 code: |
-  if which_powers['social'] and ssn_authority:
+  if social_powers and ssn_authority:
     ssa_release.enabled = True
   else:
     ssa_release.enabled = False
@@ -1527,7 +1554,20 @@ review:
       % else:
       **The principal's name:**
       % endif
-      ${principal.name.full(middle="full")}
+      % if also_known_as:
+      % if formerly_or_also:
+      ${ principal.name.full(middle='full') }, formerly known as ${principal.aka_name}
+      % else:
+      ${ principal.name.full(middle='full') }, also known as ${principal.aka_name}
+      % endif
+      % else:
+      ${ principal.name.full(middle='full') }
+      % endif
+  - Edit: formerly_or_also
+    button: |
+      **Is ${principal.aka_name} a former legal name?**
+      ${word(yesno(formerly_or_also))}
+    show if: also_known_as
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
@@ -1552,53 +1592,53 @@ review:
     button: |
       **${agent.name.full(middle='full')}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
-  - Edit: which_powers
+  - Edit: real_powers
     button: |
       **${agent.name.full(middle='full')} will have power over:**
       
-      % if which_powers['real'] == True:
+      % if real_powers == True:
       * Real estate transactions
       % endif
-      % if which_powers['financial'] == True:
+      % if financial_powers == True:
       * Financial institution transactions
       % endif
-      % if which_powers['stock'] == True:
+      % if stock_powers == True:
       * Stock and bond transactions
       % endif
-      % if which_powers['tangible'] == True:
+      % if tangible_powers == True:
       * Tangible personal property transactions
       % endif
-      % if which_powers['safe'] == True:
+      % if safe_powers == True:
       * Safe deposit transactions
       % endif
-      % if which_powers['insurance'] == True:
+      % if insurance_powers == True:
       * Insurance and annuity transactions
       % endif
-      % if which_powers['retirement'] == True:
+      % if retirement_powers == True:
       * Retirement plan transactions
       % endif
-      % if which_powers['social'] == True:
+      % if social_powers == True:
       * Social Security, employment and military service benefits
       % endif
-      % if which_powers['tax'] == True:
+      % if tax_powers == True:
       * Tax matters
       % endif
-      % if which_powers['claims'] == True:
+      % if claims_powers == True:
       * Claims and litigation
       % endif
-      % if which_powers['commodity'] == True:
+      % if commodity_powers == True:
       * Commodity and option transactions
       % endif
-      % if which_powers['business'] == True:
+      % if business_powers == True:
       * Business operations
       % endif
-      % if which_powers['borrowing'] == True:
+      % if borrowing_powers == True:
       * Borrowing transactions
       % endif
-      % if which_powers['estate'] == True:
+      % if estate_powers == True:
       * Estate transactions
       % endif
-      % if which_powers['all'] == True:
+      % if all_other_powers == True:
       * All other property powers and transactions
       % endif
   - Edit: life_insurance
@@ -1621,7 +1661,7 @@ review:
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
       ${word(yesno(ssn_authority))}
-    show if: which_powers['social']
+    show if: social_powers
   - Edit: ssa_info
     button: |
       **What information should the Social Security Administration release?**
@@ -1650,7 +1690,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority
+    show if: social_powers and ssn_authority
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1659,7 +1699,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority
+    show if: social_powers and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1677,28 +1717,14 @@ review:
       **Limits on ${agent.name.full(middle='full')}'s power:**
       ${agent_limits}
     show if: agent_limitations
-  - Edit: additional_powers
+  - Edit: additional_powers_check
     button: |
-      % if additional_powers.all_false():
+      % if not additional_powers_check:
       **${agent.name.full(middle='full')} is not granted any additional powers.**
       % else:
       **${agent.name.full(middle='full')} is granted these additional powers:**
 
-      % if additional_powers['gifts']:
-      * The power to give my property to others as gifts.
-      % endif
-      % if additional_powers['appointment']:
-      * The power to exercise powers of appointment.
-      % endif
-      % if additional_powers['social']:
-      * The right to access my social media accounts.
-      % endif
-      % if additional_powers['online']:
-      * The right to access my online accounts, such as online banking, utilities, and bill pay.
-      % endif
-      % if additional_powers['other']:
-      * ${additional_powers_text}
-      % endif
+      ${additional_powers_text}
       % endif
   - Edit: delegate_decisions
     button: |
@@ -1741,7 +1767,7 @@ review:
       % if effective_date_choice == "immediately":
       Immediately
       % elif effective_date_choice == "doctor":
-      Only during times when a doctor has decided that ${i_subject} cannot make decisions for ${myself_their_self}.
+      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
       % elif effective_date_choice == "detained":
       Only if ${i_subject} ${am_is} arrested, detained, or deported.
       % elif effective_date_choice == "other":
@@ -1809,7 +1835,20 @@ review:
       % else:
       **The principal's name:**
       % endif
-      ${principal.name.full(middle="full")}
+      % if also_known_as:
+      % if formerly_or_also:
+      ${ principal.name.full(middle='full') }, formerly known as ${principal.aka_name}
+      % else:
+      ${ principal.name.full(middle='full') }, also known as ${principal.aka_name}
+      % endif
+      % else:
+      ${ principal.name.full(middle='full') }
+      % endif
+  - Edit: formerly_or_also
+    button: |
+      **Is ${principal.aka_name} a former legal name?**
+      ${word(yesno(formerly_or_also))}
+    show if: also_known_as
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
@@ -1867,53 +1906,53 @@ question: |
 subquestion: |
   Edit your answers below.
 review:
-  - Edit: which_powers
+  - Edit: real_powers
     button: |
       **${agent.name.full(middle='full')} will have power over:**
       
-      % if which_powers['real'] == True:
+      % if real_powers == True:
       * Real estate transactions
       % endif
-      % if which_powers['financial'] == True:
+      % if financial_powers == True:
       * Financial institution transactions
       % endif
-      % if which_powers['stock'] == True:
+      % if stock_powers == True:
       * Stock and bond transactions
       % endif
-      % if which_powers['tangible'] == True:
+      % if tangible_powers == True:
       * Tangible personal property transactions
       % endif
-      % if which_powers['safe'] == True:
+      % if safe_powers == True:
       * Safe deposit transactions
       % endif
-      % if which_powers['insurance'] == True:
+      % if insurance_powers == True:
       * Insurance and annuity transactions
       % endif
-      % if which_powers['retirement'] == True:
+      % if retirement_powers == True:
       * Retirement plan transactions
       % endif
-      % if which_powers['social'] == True:
+      % if social_powers == True:
       * Social Security, employment and military service benefits
       % endif
-      % if which_powers['tax'] == True:
+      % if tax_powers == True:
       * Tax matters
       % endif
-      % if which_powers['claims'] == True:
+      % if claims_powers == True:
       * Claims and litigation
       % endif
-      % if which_powers['commodity'] == True:
+      % if commodity_powers == True:
       * Commodity and option transactions
       % endif
-      % if which_powers['business'] == True:
+      % if business_powers == True:
       * Business operations
       % endif
-      % if which_powers['borrowing'] == True:
+      % if borrowing_powers == True:
       * Borrowing transactions
       % endif
-      % if which_powers['estate'] == True:
+      % if estate_powers == True:
       * Estate transactions
       % endif
-      % if which_powers['all'] == True:
+      % if all_other_powers == True:
       * All other property powers and transactions
       % endif
   - Edit: life_insurance
@@ -1936,7 +1975,7 @@ review:
     button: |
       **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name.full(middle='full')}?**
       ${word(yesno(ssn_authority))}
-    show if: which_powers['social']
+    show if: social_powers
   - Edit: ssa_info
     button: |
       **What information do you want the Social Security Administration to release?**
@@ -1965,7 +2004,7 @@ review:
       % if ssa_info['other']:
       * ${other_records_text}
       % endif
-    show if: which_powers['social'] and ssn_authority
+    show if: social_powers and ssn_authority
   - Edit: principal_phone
     button: |
       % if for_yourself:
@@ -1974,7 +2013,7 @@ review:
       **${principal.name.full(middle='full')}'s phone number:**
       % endif
       ${phone_number_formatted(principal_phone)}
-    show if: which_powers['social'] and ssn_authority
+    show if: social_powers and ssn_authority
   - Edit: birth_date
     button: |
       % if for_yourself == True:
@@ -1992,28 +2031,14 @@ review:
       **Limits on ${agent.name.full(middle='full')}'s power:**
       ${agent_limits}
     show if: agent_limitations
-  - Edit: additional_powers
+  - Edit: additional_powers_check
     button: |
-      % if additional_powers.all_false():
+      % if not additional_powers_check:
       **${agent.name.full(middle='full')} is not granted any additional powers.**
       % else:
       **${agent.name.full(middle='full')} is granted these additional powers:**
 
-      % if additional_powers['gifts']:
-      * The power to give my property to others as gifts.
-      % endif
-      % if additional_powers['appointment']:
-      * The power to exercise powers of appointment.
-      % endif
-      % if additional_powers['social']:
-      * The right to access my social media accounts.
-      % endif
-      % if additional_powers['online']:
-      * The right to access my online accounts, such as online banking, utilities, and bill pay.
-      % endif
-      % if additional_powers['other']:
-      * ${additional_powers_text}
-      % endif
+      ${additional_powers_text}
       % endif
   - Edit: delegate_decisions
     button: |
@@ -2097,7 +2122,7 @@ review:
       % if effective_date_choice == "immediately":
       Immediately
       % elif effective_date_choice == "doctor":
-      Only during times when a doctor has decided that ${i_subject} cannot make decisions for ${myself_their_self}.
+      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
       % elif effective_date_choice == "detained":
       Only if ${i_subject} ${am_is} arrested, detained, or deported.
       % elif effective_date_choice == "other":
