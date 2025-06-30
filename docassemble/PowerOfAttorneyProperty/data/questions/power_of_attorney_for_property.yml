@@ -57,8 +57,9 @@ code: |
   if for_yourself == False:
     other_principal
   principal.name.first
-  if also_known_as:
-    formerly_or_also
+  #if also_known_as:
+  #  formerly_or_also
+  birth_date
   if in_illinois == False:
     illinois_kickout
   set_progress(20)
@@ -78,7 +79,7 @@ code: |
       ssa_info
       #principal_ssn
       principal_phone
-  birth_date
+  
   set_progress(60)
   if agent_limitations == True:
     agent_limits
@@ -106,7 +107,7 @@ code: |
       release_logic
       release_reminder
   nav.set_section('section_download')
-  
+  witness_info
   forms_assembling
   snapshot_forms
   get_docs_screen
@@ -174,7 +175,7 @@ subquestion: |
 
   Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
 
-  The videos in this program give information regarding common concerns in the advance planning process. These videos provide information only, not legal advice. They do not create an attorney-client relationship between you and the Center for Disability and Elder Law.
+  The videos in this program give important information about the advance planning process. They provide information only, not legal advice. They do not create an attorney-client relationship between you and the Center for Disability and Elder Law or its employees.
 
   ${ collapse_template(get_legal_help) }  
 
@@ -206,8 +207,8 @@ question: |
   About Power of Attorney
 subquestion: |
   [YOUTUBE -1pMMIe4hb4]
-  
-  A Power of Attorney for Property lets you choose a person you trust to make decisions about your property for you. The person you choose will be able to make decisions about your property and finances for you when you can't make decisions for yourself. Someone with this power is called an "agent."
+
+  A Power of Attorney for Property lets you choose a person you trust to make decisions for you about your property and finances when you can't make decisions for yourself. Someone with this power is called an "agent."
 
   You can give an agent power to:
 
@@ -227,12 +228,12 @@ question: |
 subquestion: |  
   To use this program you will need to know:
 
-  * The name, address, and phone number of the person you want to designate as the agent with power of attorney,
+  * The name, address, and phone number of the person you want to name as the agent with power of attorney,
   * The names, addresses, and phone numbers of any successor agents, 
   * The property and finances you have, and
   * How much control you want the agent to have over your property.
     
-  Set aside 15 to 30 minutes to finish this program, aa=nd an additional 15? minutes if you watch the instructional videos. You can log in and save your work to return to later. 
+  Set aside 15 to 30 minutes to finish this program, and more if you watch the videos. You can log in and save your work to return to later. 
   
   ${ collapse_template(help_example) }  
 
@@ -284,7 +285,7 @@ id: completion guide
 question: |
   Completing this form
 subquestion: |
-  At the end of the program, you can download your Power of Attorney for Property. You will need to sign it in front of a witness and notary.  You do not need to know who the witness will be to use this program.
+  At the end of the program, you can download your Power of Attorney for Property. It is not official until you sign it in front of a witness and a notary public. You will need to sign it in front of a witness and a notary public. You do not need to know who the witness will be to use this program.
   
   Be sure to download and read the instructions at the end of the program.
 continue button field: completion_guide
@@ -293,7 +294,7 @@ id: for yourself
 question: |
   Are you making these forms for yourself?
 subquestion: |
-  In other words, are you the **{principal}** who wants to designate an **{agent}**?
+  In other words, are you the **{principal}** who wants to name an **{agent}**?
 
   If you are making these forms for someone else, that person will be the principal.
 field: for_yourself
@@ -334,6 +335,7 @@ code: |
     me_them = "me"
     am_are = "am"
     you_they = "you"
+    want_wants = "want"
   else:
     my_their = "their"
     my_subject = principal.name.full(middle='full')
@@ -353,6 +355,7 @@ code: |
     me_them = "them"
     am_are = "are"
     you_they = "they"
+    want_wants = "wants"
 ---
 id: other principal notice
 continue button field: other_principal
@@ -389,13 +392,13 @@ subquestion: |
   % if for_yourself == False:
   The principal is the person who chooses an agent to make decisions about the their money and property.
 
-  You should use the legal name on their identification. If they go by a name other than their legal one, you should click the checkbox by next to "They have another name." This will let you list two names.
+  They should enter the legal name on their government-issued identification.
 
-  If they have changed their name, you should click the checkbox by next to "They have another name." This will let you list their old name.
+  If they go by a name other than their legal one, or if they have legally changed their name, click **They have another name.** You can then enter their current name in the **Additional name** field. This will list both names on their forms, which is required for notarization.
   % else:
-  You should use the legal name on your identification. If you go by a name other than your legal one, you should click the checkbox by next to "I have another name." This will let you list two names.
+  You should enter the legal name on your government-issued identification.
 
-  If you have changed your name, you should click the checkbox by next to "I have another name." This will let you list your old name.
+  If you go by a name other than your legal one, or if you have legally changed your name, click **I have another name.** You can then enter your current name in the **Additional name** field. This will list both names on your forms, which is required for notarization.
   % endif
 fields:
   - First: principal.name.first
@@ -520,11 +523,11 @@ subquestion: |
   % if for_yourself == False:
   The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property. 
   
-  The agent is the person you trust to make decisions about  ${principal.name.full(middle='full')}'s' property for them. It is very important they talk to their agent about their wishes for their property and finances. Meaningful conversations will guide the agent's judgment and make sure they are on the same page.
+  The agent is the person ${principal.name.full(middle='full')} trusts to make decisions about  their property and finances. It is very important they talk to their agent about their wishes for their finances and everything they own. Meaningful conversations will guide the agent's judgment and make sure they are on the same page.
 
   An agent has a lot of power, and it is possible that they could abuse that power.  ${principal.name.full(middle='full')} should choose someone they trust with their finances and everything they own.
   % else:
-  Your agent is the person you trust to make decisions about your property for you. It is very important to talk to your agent about your wishes for your property and finances. Meaningful conversations with you will guide their judgment and make sure you are on the same page.
+  Your agent is the person you trust to make decisions about your property and finances. It is very important to talk to your agent about your wishes for your finances and everything you own. Meaningful conversations with you will guide their judgment and make sure you are on the same page.
 
   An agent has a lot of power, and it is possible that they could abuse that power. You should choose someone you trust with your finances and everything you own.
   % endif
@@ -573,9 +576,9 @@ fields:
 ---
 template: intl_address_help
 subject: |
-  **What if my agent does not have a United States address?**
+  **Does the agent have to live in the United States or be a US citizen?**
 content: |
-  You are able to list someone outside of the United States as your agent. Your agent does not need to be a United States citizen. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  No. You are able to list someone outside of the United States as the agent. The agent does not need to be a United States citizen. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
   
   For international addresses, there will be space for two lines to enter the address. You should enter the international address using the English alphabet.
 ---
@@ -610,14 +613,14 @@ subquestion: |
   ${collapse_template(video_agent_powers)}
   
   % if for_yourself:
-  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers.*.
+  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name.full(middle='full')} to make decisions about all your property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers**.
   %  else:
-   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers.**.
+   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name.full(middle="full")} wants ${agent.name.full(middle='full')} to make decisions about all their property, you can click **${i_subject} want ${agent.name.full(middle='full')} to have all these powers.**
   % endif
 
   If you do not check an option, ${agent.name.full(middle='full')} will not be able to help with it. 
 fields: 
-  - ${i_subject} want ${agent.name.full(middle='full')} to have all these powers.: all_powers
+  - ${i_subject} ${want_wants} ${agent.name.full(middle='full')} to have all these powers.: all_powers
     datatype: yesnowide       
     check others: True
   - Real estate transactions: real_powers
@@ -939,14 +942,14 @@ fields:
     #  - The right to access my social media accounts: social
     #  - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
     #  - Another power (Explain below): other
-  - ${agent.name.full(middle='full')} is granted the following powers:: additional_powers_text
+  - ${agent.name.full(middle='full')} is granted the following additional powers:: additional_powers_text
     show if: additional_powers_check
     input type: area
     rows: 13
 ---
 template: powers_example
 subject: |
-  Examples of additional powers
+  **Examples of additional powers**
 content: |
   Some other powers a principal might give an agent include:
   
@@ -1142,9 +1145,9 @@ fields:
 ---
 template: success_intl_address_help
 subject: |
-  **What if my sucessor agent does not have a United States address?**
+  **Does the sucessor agent have to live in the United States or be a US citizen?**
 content: |
-  You are able to list someone outside of the United States as your agent. Your successor  agent does not need to be a United States citizen. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  No. You are able to list someone outside of the United States as the successor agent. The successor agent does not need to be a United States citizen. However, there may issues if a bank or financial organization is unable to reach them. You may want to ask a lawyer for advice. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
   
   For international addresses, there will be space for two lines to enter the address. You should enter the international address using the English alphabet.
 ---
@@ -1391,6 +1394,53 @@ fields:
     datatype: al_international_phone
     required: False
 ---
+id: witness info
+continue button field: witness_info
+question: |
+  About witnesses
+subquestion: |
+  % if for_yourself == True:
+  When you sign the Power of Attorney, you will need a witness and a notary public to watch you sign it and then sign the document themselves.
+
+  The witness must be 18 or older and:
+ 
+  % if any_successors == True: 
+  * Cannot be related by blood or marriage to you, to the agent (${agent.name.full(middle='full')}), or to the successor agents (${comma_list(successors.complete_elements().full_names())}),
+  % else:
+  * Cannot be related by blood or marriage to you or to the agent (${agent.name.full(middle='full')}),
+  % endif
+  * Cannot be named as the agent or a successor agent with power of attorney, 
+  * Cannot be a paid caregiver, and
+  * Cannot be providing you with medical treatment (such as your doctor or nurse) or related to anyone providing you with medical treatment.
+  % else:
+  When ${principal.name.full(middle='full')} signs the Power of Attorney, they will need witnesses to watch them sign it and then sign the document themselves.
+
+  The witness must be 18 or older and:
+
+  % if any_successors == True: 
+  * Cannot be related by blood or marriage to ${principal.name.full(middle='full')}, to the agent (${agent.name.full(middle='full')}), or to the successor agents (${comma_list(successors.complete_elements().full_names())}),
+  % else:
+  * Cannot be related by blood or marriage to ${principal.name.full(middle='full')} or to the agent (${agent.name.full(middle='full')}),
+  % endif
+  * Cannot be named as the agent or a successor agent with power of attorney, 
+  * Cannot be a paid caregiver, and
+  * Cannot be providing ${principal.name.full(middle='full')} with medical treatment (such as their doctor or nurse) or related to anyone providing them with medical treatment.
+  % endif
+
+  ${collapse_template(finding_witnesses)}
+---
+template: finding_witnesses
+subject: |
+  % if for_yourself == True:
+  **How can I find a witness?**
+  % else:
+  **How can ${principal.name.full(middle='full')} find a witness?**
+  % endif
+content: | 
+  A witness should be someone you trust and who can be reached by phone to verify that the Power of Attorney is legitimate.
+
+  Neighbors, friends, acquaintances, members of a religious or social group, and social workers all could serve as a witness.
+---
 id: forms assembling
 continue button field: forms_assembling
 question: |
@@ -1427,7 +1477,7 @@ subquestion: |
 
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
   
-  **Note:** This program does not send your form. You will need to do this yourself.
+  **Note:** The Power of Attorney needs to be signed in front of a notary public and at least one witness to become official.
 
   Thank you for using ILAO Easy Forms!
 under: |
@@ -1555,11 +1605,7 @@ review:
       **The principal's name:**
       % endif
       % if also_known_as:
-      % if formerly_or_also:
-      ${ principal.name.full(middle='full') }, formerly known as ${principal.aka_name}
-      % else:
       ${ principal.name.full(middle='full') }, also known as ${principal.aka_name}
-      % endif
       % else:
       ${ principal.name.full(middle='full') }
       % endif
@@ -1568,6 +1614,14 @@ review:
       **Is ${principal.aka_name} a former legal name?**
       ${word(yesno(formerly_or_also))}
     show if: also_known_as
+  - Edit: birth_date
+    button: |
+      % if for_yourself == True:
+      **Your birth date:**
+      % else:
+      **${principal.name.full(middle='full')}'s birth date:**
+      % endif
+      ${birth_date}
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
@@ -1700,14 +1754,6 @@ review:
       % endif
       ${phone_number_formatted(principal_phone)}
     show if: social_powers and ssn_authority
-  - Edit: birth_date
-    button: |
-      % if for_yourself == True:
-      **Your birth date:**
-      % else:
-      **${principal.name.full(middle='full')}'s birth date:**
-      % endif
-      ${birth_date}
   - Edit: agent_limitations
     button: |
       **Are ${agent.name.full(middle='full')}'s powers limited?**
@@ -1836,11 +1882,7 @@ review:
       **The principal's name:**
       % endif
       % if also_known_as:
-      % if formerly_or_also:
-      ${ principal.name.full(middle='full') }, formerly known as ${principal.aka_name}
-      % else:
       ${ principal.name.full(middle='full') }, also known as ${principal.aka_name}
-      % endif
       % else:
       ${ principal.name.full(middle='full') }
       % endif
@@ -1849,6 +1891,14 @@ review:
       **Is ${principal.aka_name} a former legal name?**
       ${word(yesno(formerly_or_also))}
     show if: also_known_as
+  - Edit: birth_date
+    button: |
+      % if for_yourself == True:
+      **Your birth date:**
+      % else:
+      **${principal.name.full(middle='full')}'s birth date:**
+      % endif
+      ${birth_date}
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
@@ -2014,14 +2064,6 @@ review:
       % endif
       ${phone_number_formatted(principal_phone)}
     show if: social_powers and ssn_authority
-  - Edit: birth_date
-    button: |
-      % if for_yourself == True:
-      **Your birth date:**
-      % else:
-      **${principal.name.full(middle='full')}'s birth date:**
-      % endif
-      ${birth_date}
   - Edit: agent_limitations
     button: |
       **Are ${agent.name.full(middle='full')}'s powers limited?**
