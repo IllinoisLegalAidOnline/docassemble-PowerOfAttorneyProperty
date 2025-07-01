@@ -247,7 +247,7 @@ question: |
   % if for_yourself == True:
   Are you a resident of Illinois?
   % else:
-  Is ${principal.name.full(middle='full')} a resident of Illinois?
+  Is ${principal.name_full()} a resident of Illinois?
   % endif
 fields:
   - no label: in_illinois
@@ -261,7 +261,7 @@ subquestion: |
   % if for_yourself == True:
   You must be an Illinois resident to use this form.
   % else:
-  ${principal.name.full(middle='full')} must be an Illinois resident to use this form.
+  ${principal.name_full()} must be an Illinois resident to use this form.
   % endif
   
   If you do not live in Illinois, use [**the Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
@@ -275,9 +275,9 @@ question: |
   Sorry
 subquestion: |
   % if for_yourself == True:
-  You have not given ${agent.name.full(middle='full')} any power over your property. This form is intended for giving someone power of attorney over your property.
+  You have not given ${agent.name_full()} any power over your property. This form is intended for giving someone power of attorney over your property.
   % else:
-  You have not given ${agent.name.full(middle='full')} any power over ${principal.name.full(middle='full')}'s property. This form is intended for giving someone power of attorney over their property.
+  You have not given ${agent.name_full()} any power over ${principal.name_full()}'s property. This form is intended for giving someone power of attorney over their property.
   % endif
   Please use the back button or the review buttons to change your answers.
 buttons:
@@ -306,7 +306,7 @@ question: |
   % if for_yourself == True:
   What is your address?
   % else:
-  What is ${principal.name.full(middle='full')}'s address?
+  What is ${principal.name_full()}'s address?
   % endif
 fields:
   - Street address: principal.address.address
@@ -324,13 +324,13 @@ question: |
   % if for_yourself == True:
   Who do you want to name as your agent?
   % else:
-  Who does ${principal.name.full(middle='full')} want to name as their agent?
+  Who does ${principal.name_full()} want to name as their agent?
   % endif
 subquestion: |
   % if for_yourself == False:
-  The agent is the person who will make decisions about ${principal.name.full(middle='full')}'s money or property. 
+  The agent is the person who will make decisions about ${principal.name_full()}'s money or property. 
   
-  An agent has a lot of power that they could potentially abuse. ${principal.name.full(middle='full')} should choose someone who they would trust with their life and everything they own.
+  An agent has a lot of power that they could potentially abuse. ${principal.name_full()} should choose someone who they would trust with their life and everything they own.
   % else:
   The agent is the person who will make decisions about your money or property. 
   
@@ -344,11 +344,11 @@ fields:
 ---
 id: agent address
 question: |
-  Enter ${agent.name.full(middle='full')}'s address
+  Enter ${agent.name_full()}'s address
 subquestion: |
   ${collapse_template(intl_address_help)}
 fields:
-  - Does ${agent.name.full(middle='full')} have a United States address?: agent.in_america
+  - Does ${agent.name_full()} have a United States address?: agent.in_america
     datatype: yesnoradio
     default: True
     help: |
@@ -386,7 +386,7 @@ content: |
 ---
 id: agent phone
 question: |
-  What is ${agent.name.full(middle='full')}'s phone number?
+  What is ${agent.name_full()}'s phone number?
 subquestion: |
   If you do not know this, leave this blank.
 fields:
@@ -397,9 +397,9 @@ fields:
 id: which powers
 question: |
   % if for_yourself == True:
-  What do you want ${agent.name.full(middle='full')} to have power over?
+  What do you want ${agent.name_full()} to have power over?
   % else:
-  What does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power over?
+  What does ${principal.name_full()} want ${agent.name_full()} to have power over?
   % endif
 fields: 
   - no label: which_powers
@@ -458,9 +458,9 @@ fields:
 id: life insurance
 question: |
   % if for_yourself == True:
-  Do you want ${agent.name.full(middle='full')} to have power to change your life insurance beneficiaries?
+  Do you want ${agent.name_full()} to have power to change your life insurance beneficiaries?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to change their life insurance beneficiaries?
+  Does ${principal.name_full()} want ${agent.name_full()} to have power to change their life insurance beneficiaries?
   % endif
 fields:
   - no label: life_insurance
@@ -469,9 +469,9 @@ fields:
 id: bankruptcy
 question: |
   % if for_yourself == True:
-  Do you want ${agent.name.full(middle='full')} to have power to file a bankruptcy on your behalf?
+  Do you want ${agent.name_full()} to have power to file a bankruptcy on your behalf?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to file a bankruptcy on ${principal.name.full(middle='full')}'s behalf?
+  Does ${principal.name_full()} want ${agent.name_full()} to have power to file a bankruptcy on ${principal.name_full()}'s behalf?
   % endif
 fields:
   - no label: file_bankruptcy
@@ -480,9 +480,9 @@ fields:
 id: designate successors
 question: |
   % if for_yourself == True:
-  Do you want ${agent.name.full(middle='full')} to have power to designate a successor agent if the need arises and you are incapable of doing so?
+  Do you want ${agent.name_full()} to have power to designate a successor agent if the need arises and you are incapable of doing so?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to designate a successor agent if the need arises and ${principal.name.full(middle='full')} is incapable of doing so?
+  Does ${principal.name_full()} want ${agent.name_full()} to have power to designate a successor agent if the need arises and ${principal.name_full()} is incapable of doing so?
   % endif
 fields:
   - no label: designate_successors
@@ -491,9 +491,9 @@ fields:
 id: social security authority
 question: |
   % if for_yourself == True: 
-  Do you want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
+  Do you want ${agent.name_full()} to have power to discuss matters with the Social Security Administration?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have power to discuss matters with the Social Security Administration?
+  Does ${principal.name_full()} want ${agent.name_full()} to have power to discuss matters with the Social Security Administration?
   % endif
 subquestion: |
   If you select **Yes**, a separate authorization will be created in addition to this Power of Attorney for Property.
@@ -506,7 +506,7 @@ question: |
   % if for_yourself == True:
   What is your date of birth?
   % else:
-  What is ${principal.name.full(middle='full')}'s date of birth?
+  What is ${principal.name_full()}'s date of birth?
   % endif
 fields:
   - Date: birth_date
@@ -515,15 +515,15 @@ fields:
 id: agent limitation
 question: |
   % if for_yourself == True:
-  Do you want to set special rules to limit ${agent.name.full(middle='full')}'s powers?
+  Do you want to set special rules to limit ${agent.name_full()}'s powers?
   % else:
-  Does ${principal.name.full(middle='full')} want to set special rules to limit ${agent.name.full(middle='full')}'s powers?
+  Does ${principal.name_full()} want to set special rules to limit ${agent.name_full()}'s powers?
   % endif
 subquestion: |
   % if for_yourself == True:
   You may limit any of the powers given to an agent. You may also list any specific powers you do not want the agent to have.
   % else:
-  ${principal.name.full(middle='full')} may limit any of the powers given to an agent. They may also list any specific powers they do not want the agent to have.
+  ${principal.name_full()} may limit any of the powers given to an agent. They may also list any specific powers they do not want the agent to have.
   % endif
 fields:
   - no label: agent_limitations
@@ -534,13 +534,13 @@ question: |
   % if for_yourself == True:
   What limits or special rules do you want to include?
   % else:
-  What limits or special rules does ${principal.name.full(middle='full')} want to include?
+  What limits or special rules does ${principal.name_full()} want to include?
   % endif
 subquestion: |
   % if for_yourself == True:
-    For example, you can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name.full(middle='full')}.
+    For example, you can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name_full()}.
   % else:
-  For example, they can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name.full(middle='full')}.
+  For example, they can place conditions on the sale of real estate or make special rules on borrowing by ${agent.name_full()}.
   % endif
 fields:
   - Limits: agent_limits
@@ -549,15 +549,15 @@ fields:
 id: any additional powers
 question: |
   % if for_yourself == True:
-  Do you want to give any additional powers to ${agent.name.full(middle='full')}?
+  Do you want to give any additional powers to ${agent.name_full()}?
   % else:
-  Does ${ principal.name.full(middle='full')} want to give any additional powers to ${agent.name.full(middle='full')}?
+  Does ${ principal.name_full()} want to give any additional powers to ${agent.name_full()}?
   % endif
 subquestion: |
   % if for_yourself == True:
-  If desired, you may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
+  If desired, you may give other powers to ${agent.name_full()}. These powers will be in addition to the ones already provided.
   % else:
-  If desired, ${principal.name.full(middle='full')} may give other powers to ${agent.name.full(middle='full')}. These powers will be in addition to the ones already provided.
+  If desired, ${principal.name_full()} may give other powers to ${agent.name_full()}. These powers will be in addition to the ones already provided.
   % endif
 
   Other powers may include: 
@@ -567,14 +567,14 @@ subquestion: |
   * The power to name or change beneficiaries or joint tenants, or 
   * The power to revoke or amend any trust. 
   
-  If ${agent.name.full(middle='full')} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
+  If ${agent.name_full()} is given the authority to revoke or amend a trust, the name of the trust must be specifically identified.
 fields:
   - no label: any_additional_powers
     datatype: yesnoradio
 ---
 id: additional powers
 question: |
-  Complete the sentence: "In addition to the powers granted above, ${agent.name.full(middle='full')} is granted the following powers: "
+  Complete the sentence: "In addition to the powers granted above, ${agent.name_full()} is granted the following powers: "
 subquestion: |
   For example: The agent will have the right to transfer my money from my savings account to my checking account.
 fields:
@@ -584,9 +584,9 @@ fields:
 id: delegate decisions
 question: |
   % if for_yourself == True:
-  Do you want to give ${agent.name.full(middle='full')} the right to delegate discretionary decision making powers to others?
+  Do you want to give ${agent.name_full()} the right to delegate discretionary decision making powers to others?
   % else:
-  Does ${principal.name.full(middle='full')} want to give ${agent.name.full(middle='full')} the right to delegate discretionary decision making powers to others?
+  Does ${principal.name_full()} want to give ${agent.name_full()} the right to delegate discretionary decision making powers to others?
   % endif
 subquestion: |
   ${ collapse_template(delegate_meaning) }  
@@ -598,30 +598,30 @@ template: delegate_meaning
 subject: |
   **What does "delegating discretionary decision making powers" mean?**
 content: |  
-  As agent, ${agent.name.full(middle='full')} has the authority to employ other people necessary to carry out the powers granted in this form, but ${agent.name.full(middle='full')} will still have to make all the decisions.
+  As agent, ${agent.name_full()} has the authority to employ other people necessary to carry out the powers granted in this form, but ${agent.name_full()} will still have to make all the decisions.
 
   % if for_yourself == True:
-  However, you may decide to give ${agent.name.full(middle='full')} the option to let others make decisions. This is called "delegating discretionary decision making powers."
+  However, you may decide to give ${agent.name_full()} the option to let others make decisions. This is called "delegating discretionary decision making powers."
   % else:
-  However, ${principal.name.full(middle='full')} may decide to give ${agent.name.full(middle='full')} the option to let others make decisions. This is called "delegating discretionary decision making powers."
+  However, ${principal.name_full()} may decide to give ${agent.name_full()} the option to let others make decisions. This is called "delegating discretionary decision making powers."
   % endif
 ---
 id: agent compensation
 question: |
   % if for_yourself == True:
-  Do you want ${agent.name.full(middle='full')} to have the right to reasonable payment for services as your agent?
+  Do you want ${agent.name_full()} to have the right to reasonable payment for services as your agent?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to have the right to reasonable payment for services as their agent?
+  Does ${principal.name_full()} want ${agent.name_full()} to have the right to reasonable payment for services as their agent?
   % endif
 subquestion: |  
   % if for_yourself == True:
-  ${agent.name.full(middle='full')} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
+  ${agent.name_full()} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
 
-  You can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
+  You can also give ${agent.name_full()} the right to reasonable payment for services as agent.
   % else:
-  ${agent.name.full(middle='full')} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
+  ${agent.name_full()} will have the right to get paid back for all reasonable expenses as a result of carrying out this power of attorney.
 
-  They can also give ${agent.name.full(middle='full')} the right to reasonable payment for services as agent.
+  They can also give ${agent.name_full()} the right to reasonable payment for services as agent.
   % endif
 fields:
   - no label: agent_compensation
@@ -632,13 +632,13 @@ question: |
   % if for_yourself == True:
   Do you want to name successor agents?
   % else:
-  Does ${principal.name.full(middle='full')} want to name successor agents?
+  Does ${principal.name_full()} want to name successor agents?
   % endif
 subquestion: |
   % if for_yourself == True:
-  The person named as a successor agent will have power of attorney for property for you if ${agent.name.full(middle='full')} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
+  The person named as a successor agent will have power of attorney for property for you if ${agent.name_full()} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
   % else:
-  The person named as a successor agent will have power of attorney for property for ${principal.name.full(middle='full')} if ${agent.name.full(middle='full')} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
+  The person named as a successor agent will have power of attorney for property for ${principal.name_full()} if ${agent.name_full()} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
   % endif
 fields:
   - no label: any_successors
@@ -658,7 +658,7 @@ question: |
   % if for_yourself == True:
   Do you want to name another successor agent?
   % else:
-  Does ${principal.name.full(middle='full')} want to name another successor agent?
+  Does ${principal.name_full()} want to name another successor agent?
   % endif
 subquestion: |
   So far you have told us about ${comma_and_list(successors.complete_elements().full_names())}.
@@ -687,11 +687,11 @@ id: successor address
 sets:
   - successors[i].in_america
 question: |
-  Enter ${successors[i].name.full(middle='full')}'s address
+  Enter ${successors[i].name_full()}'s address
 subquestion: |
   ${collapse_template(success_intl_address_help)}
 fields:
-  - Does ${successors[i].name.full(middle='full')} have a United States address?: successors[i].in_america
+  - Does ${successors[i].name_full()} have a United States address?: successors[i].in_america
     datatype: yesnoradio
     default: True
     help: |
@@ -731,7 +731,7 @@ id: successor phone
 sets:
   - successors[i].phone_number
 question: |
-  What is ${successors[i].name.full(middle='full')}'s phone number?
+  What is ${successors[i].name_full()}'s phone number?
 subquestion: |
   If you do not know this, leave this blank.
 fields:
@@ -744,17 +744,17 @@ question: |
   % if for_yourself == True:
   Do you want this Power of Attorney to go into effect immediately after you sign it?
   % else:
-  Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
+  Does ${principal.name_full()} want this Power of Attorney to go into effect immediately after they sign it?
   % endif
 subquestion: |
   % if for_yourself == True:
   This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
   
-  You will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for you when you are unable to.
+  You will still have the authority to make decisions. ${agent.name_full()} will be able to make decisions for you when you are unable to.
   % else:
-  This Power of Attorney will go into effect when ${principal.name.full(middle='full')} signs the form unless they state that it should take effect at a later time.
+  This Power of Attorney will go into effect when ${principal.name_full()} signs the form unless they state that it should take effect at a later time.
   
-  ${principal.name.full(middle='full')} will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for them when they are unable to.
+  ${principal.name_full()} will still have the authority to make decisions. ${agent.name_full()} will be able to make decisions for them when they are unable to.
   % endif
 fields:
   - no label: effective_immediately
@@ -765,13 +765,13 @@ question: |
   % if for_yourself == True:
   When do you want the Power of Attorney to take effect?
   % else:
-  When does ${principal.name.full(middle='full')} want the Power of Attorney to take effect?
+  When does ${principal.name_full()} want the Power of Attorney to take effect?
   % endif
 subquestion: |
   % if for_yourself == True:
   To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
   % else:
-  To make the Power of Attorney take effect at a later time, ${principal.name.full(middle='full')} must give a date or event when it should start.
+  To make the Power of Attorney take effect at a later time, ${principal.name_full()} must give a date or event when it should start.
   % endif
   
   The event chosen must be limited to a specific future date or occurrence. The event chosen should also be as specific as possible.
@@ -786,13 +786,13 @@ question: |
   % if for_yourself == True:
   Do you want this Power of Attorney to last until your death?
   % else:
-  Does ${principal.name.full(middle='full')} want this Power of Attorney to last until their death?
+  Does ${principal.name_full()} want this Power of Attorney to last until their death?
   % endif
 subquestion: |
   % if for_yourself == True:
   This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
   % else:
-  This Power of Attorney for Property will last until ${principal.name.full(middle='full')}'s death. However, they may choose to end it earlier.
+  This Power of Attorney for Property will last until ${principal.name_full()}'s death. However, they may choose to end it earlier.
   % endif
   
   ${collapse_template(revoke_later)}
@@ -813,7 +813,7 @@ question: |
   % if for_yourself == True:
   When do you want the Power of Attorney to end?
   % else:
-  When does ${principal.name.full(middle='full')} want the Power of Attorney to end?
+  When does ${principal.name_full()} want the Power of Attorney to end?
   % endif
 subquestion: |
   % if for_yourself == True:
@@ -821,7 +821,7 @@ subquestion: |
 
   For example, the Power of Attorney could end upon a court determination of your disability.
   % else:
-  To make the Power of Attorney end before ${principal.name.full(middle='full')}'s death, they must give a date or an event upon which the Power of Attorney will end.
+  To make the Power of Attorney end before ${principal.name_full()}'s death, they must give a date or an event upon which the Power of Attorney will end.
 
   For example, the Power of Attorney could end upon a court determination of their disability.
   % endif
@@ -832,22 +832,22 @@ fields:
 id: agent as guardian
 question: |
   % if for_yourself == True:
-  Do you want ${agent.name.full(middle='full')} appointed as your legal guardian, if needed?
+  Do you want ${agent.name_full()} appointed as your legal guardian, if needed?
   % else:
-  Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} appointed as their legal guardian, if needed?
+  Does ${principal.name_full()} want ${agent.name_full()} appointed as their legal guardian, if needed?
   % endif
 subquestion: |
   % if for_yourself == True:
-  You can make ${agent.name.full(middle='full')} the guardian of your estate property if a court decides that a guardian should be appointed.
+  You can make ${agent.name_full()} the guardian of your estate property if a court decides that a guardian should be appointed.
 
-  However, you are not required to name ${agent.name.full(middle='full')} as guardian of your estate. The court may appoint ${agent.name.full(middle='full')} as guardian if it decides that this would serve your best interests.
+  However, you are not required to name ${agent.name_full()} as guardian of your estate. The court may appoint ${agent.name_full()} as guardian if it decides that this would serve your best interests.
   % else:
-  ${principal.name.full(middle='full')} can make ${agent.name.full(middle='full')} the guardian of their estate property if a court decides that a guardian should be appointed.
+  ${principal.name_full()} can make ${agent.name_full()} the guardian of their estate property if a court decides that a guardian should be appointed.
 
-  However, they are not required to name ${agent.name.full(middle='full')} as guardian of your estate. The court may appoint ${agent.name.full(middle='full')} as guardian if it decides that this would serve their best interests.
+  However, they are not required to name ${agent.name_full()} as guardian of your estate. The court may appoint ${agent.name_full()} as guardian if it decides that this would serve their best interests.
   % endif
   
-  If you click **No**, then a court may appoint someone other than ${agent.name.full(middle='full')} to be guardian if needed.
+  If you click **No**, then a court may appoint someone other than ${agent.name_full()} to be guardian if needed.
 fields:
   - no label: is_guardian
     datatype: yesnoradio
@@ -856,7 +856,7 @@ id: include preparer
 question: |
   Do you want to include your name and address as the preparer of the form?
 subquestion: |
-  You do not have to include your information. However, you may be asked to answer questions about the Power of Attorney if ${principal.name.full(middle='full')} cannot do so.
+  You do not have to include your information. However, you may be asked to answer questions about the Power of Attorney if ${principal.name_full()} cannot do so.
 fields:
   - no label: include_preparer
     datatype: yesnoradio 
@@ -994,22 +994,22 @@ review:
       % else:
       **The principal's name:**
       % endif
-      ${principal.name.full(middle="full")}
+      ${principal.name_full()}
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
       **Your address:**
       % else:
-      **${principal.name.full(middle='full')}'s address:**
+      **${principal.name_full()}'s address:**
       % endif
       ${principal.address.on_one_line(bare=True)}
   - Edit: agent.name.first
     button: |
       **The agent's name:**
-      ${agent.name.full(middle='full')}
+      ${agent.name_full()}
   - Edit: agent.in_america
     button: |
-      **${agent.name.full(middle='full')}'s address:**
+      **${agent.name_full()}'s address:**
       % if agent.in_america == True:
       ${agent.address.on_one_line(bare=True)}
       % else:
@@ -1017,11 +1017,11 @@ review:
       % endif
   - Edit: agent.phone_number
     button: |
-      **${agent.name.full(middle='full')}'s phone number:**
+      **${agent.name_full()}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
   - Edit: which_powers
     button: |
-      **${agent.name.full(middle='full')} will have power over:**
+      **${agent.name_full()} will have power over:**
       
       % if which_powers['real'] == True:
       * Real estate transactions
@@ -1070,68 +1070,68 @@ review:
       % endif
   - Edit: life_insurance
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to change life insurance beneficiaries?**
+      **Does ${agent.name_full()} have the power to change life insurance beneficiaries?**
       ${word(yesno(life_insurance))}
   - Edit: file_bankruptcy
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to file for bankruptcy?**
+      **Does ${agent.name_full()} have the power to file for bankruptcy?**
       ${word(yesno(file_bankruptcy))}    
   - Edit: designate_successors
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to designate a successor agent?**
+      **Does ${agent.name_full()} have the power to designate a successor agent?**
       ${word(yesno(designate_successors))}
   - Edit: is_guardian
     button: |
       % if for_yourself == True:
-      **Do you want ${agent.name.full(middle='full')} to serve as your legal guardian?**
+      **Do you want ${agent.name_full()} to serve as your legal guardian?**
       % else:
-      **Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to serve as their legal guardian?**
+      **Does ${principal.name_full()} want ${agent.name_full()} to serve as their legal guardian?**
       % endif
       ${word(yesno(is_guardian))}
   - Edit: ssn_authority
     button: |
-      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      **Does ${agent.name_full()} have the authority to discuss things with the Social Security Administration?**
       ${word(yesno(ssn_authority))}
   - Edit: birth_date
     button: |
       % if for_yourself == True:
       **Your birth date:**
       % else:
-      **${principal.name.full(middle='full')}'s birth date:**
+      **${principal.name_full()}'s birth date:**
       % endif
       ${birth_date}
   - Edit: agent_limitations
     button: |
-      **Are ${agent.name.full(middle='full')}'s powers limited?**
+      **Are ${agent.name_full()}'s powers limited?**
       ${word(yesno(agent_limitations))}
   - Edit: agent_limits
     button: |
-      **Limits on ${agent.name.full(middle='full')}'s power:**
+      **Limits on ${agent.name_full()}'s power:**
       ${agent_limits}
     show if: agent_limitations
   - Edit: any_additional_powers
     button: |
-      **Does ${agent.name.full(middle='full')} have additional powers?**
+      **Does ${agent.name_full()} have additional powers?**
       ${word(yesno(any_additional_powers))}
   - Edit: additional_powers
     button: |
-      **${agent.name.full(middle='full')} is granted these additional powers:**
+      **${agent.name_full()} is granted these additional powers:**
       ${additional_powers}
     show if: any_additional_powers
   - Edit: delegate_decisions
     button: |
-      **Can ${agent.name.full(middle='full')} delegate decision making powers?**
+      **Can ${agent.name_full()} delegate decision making powers?**
       ${word(yesno(delegate_decisions))}
   - Edit: agent_compensation
     button: |
-      **Will ${agent.name.full(middle='full')} be paid?**
+      **Will ${agent.name_full()} be paid?**
       ${word(yesno(agent_compensation))}
   - Edit: any_successors
     button: |
       % if for_yourself == True:
       **Do you want to name successor agents?**
       % else:
-      **Does ${principal.name.full(middle='full')} want to name successor agents?**
+      **Does ${principal.name_full()} want to name successor agents?**
       % endif
       ${word(yesno(any_successors))}
   - Edit: successors.revisit
@@ -1139,7 +1139,7 @@ review:
       **Successors: (Edit to change names, addresses, and phone numbers)**
 
       % for person in successors:
-        * ${ person.name.full(middle="full") }
+        * ${ person.name_full() }
       % endfor
   - Edit: effective_immediately
     button: |
@@ -1155,7 +1155,7 @@ review:
       % if for_yourself == True:
       **Will this Power of Attorney last until your death?**
       % else:
-      **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
+      **Will this Power of Attorney last until ${principal.name_full()}'s death?**
       % endif
       ${word(yesno(end_at_death))}
   - Edit: end_date
@@ -1170,7 +1170,7 @@ review:
   - Edit: preparer.name.first
     button: |
       **Your name:**
-      ${preparer.name.full(middle='full')}
+      ${preparer.name_full()}
     show if: for_yourself == False and include_preparer == True
   - Edit: preparer.address.address
     button: |
@@ -1206,19 +1206,19 @@ review:
       % else:
       **The principal's name:**
       % endif
-      ${principal.name.full(middle="full")}
+      ${principal.name_full()}
   - Edit: principal.address.address
     button: |
       % if for_yourself == True:
       **Your address:**
       % else:
-      **${principal.name.full(middle='full')}'s address:**
+      **${principal.name_full()}'s address:**
       % endif
       ${principal.address.on_one_line(bare=True)} 
   - Edit: preparer.name.first
     button: |
       **Your name:**
-      ${preparer.name.full(middle='full')}
+      ${preparer.name_full()}
     show if: for_yourself == False
   - Edit: preparer.address.address
     button: |
@@ -1242,10 +1242,10 @@ review:
   - Edit: agent.name.first
     button: |
       **The agent's name:**
-      ${agent.name.full(middle='full')}
+      ${agent.name_full()}
   - Edit: agent.in_america
     button: |
-      **${agent.name.full(middle='full')}'s address:**
+      **${agent.name_full()}'s address:**
       % if agent.in_america == True:
       ${agent.address.on_one_line(bare=True)}
       % else:
@@ -1253,7 +1253,7 @@ review:
       % endif
   - Edit: agent.phone_number
     button: |
-      **${agent.name.full(middle='full')}'s phone number:**
+      **${agent.name_full()}'s phone number:**
       ${phone_number_formatted(agent.phone_number)}
 ---
 section: Powers
@@ -1266,7 +1266,7 @@ subquestion: |
 review:
   - Edit: which_powers
     button: |
-      **${agent.name.full(middle='full')} will have power over:**
+      **${agent.name_full()} will have power over:**
       
       % if which_powers['real'] == True:
       * Real estate transactions
@@ -1315,76 +1315,76 @@ review:
       % endif
   - Edit: life_insurance
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to change life insurance beneficiaries?**
+      **Does ${agent.name_full()} have the power to change life insurance beneficiaries?**
       ${word(yesno(life_insurance))}
   - Edit: file_bankruptcy
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to file for bankruptcy?**
+      **Does ${agent.name_full()} have the power to file for bankruptcy?**
       ${word(yesno(file_bankruptcy))}    
   - Edit: designate_successors
     button: |
-      **Does ${agent.name.full(middle='full')} have the power to designate a successor agent?**
+      **Does ${agent.name_full()} have the power to designate a successor agent?**
       ${word(yesno(designate_successors))}
   - Edit: is_guardian
     button: |
       % if for_yourself == True:
-      **Do you want ${agent.name.full(middle='full')} to serve as your legal guardian?**
+      **Do you want ${agent.name_full()} to serve as your legal guardian?**
       % else:
-      **Does ${principal.name.full(middle='full')} want ${agent.name.full(middle='full')} to serve as their legal guardian?**
+      **Does ${principal.name_full()} want ${agent.name_full()} to serve as their legal guardian?**
       % endif
       ${word(yesno(is_guardian))}
   - Edit: ssn_authority
     button: |
-      **Does ${agent.name.full(middle='full')} have the authority to discuss things with the Social Security Administration?**
+      **Does ${agent.name_full()} have the authority to discuss things with the Social Security Administration?**
       ${word(yesno(ssn_authority))}
   - Edit: birth_date
     button: |
       % if for_yourself == True:
       **Your birth date:**
       % else:
-      **${principal.name.full(middle='full')}'s birth date:**
+      **${principal.name_full()}'s birth date:**
       % endif
       ${birth_date}
   - Edit: agent_limitations
     button: |
-      **Are ${agent.name.full(middle='full')}'s powers limited?**
+      **Are ${agent.name_full()}'s powers limited?**
       ${word(yesno(agent_limitations))}
   - Edit: agent_limits
     button: |
-      **Limits on ${agent.name.full(middle='full')}'s power:**
+      **Limits on ${agent.name_full()}'s power:**
       ${agent_limits}
     show if: agent_limitations
   - Edit: any_additional_powers
     button: |
-      **Does ${agent.name.full(middle='full')} have additional powers?**
+      **Does ${agent.name_full()} have additional powers?**
       ${word(yesno(any_additional_powers))}
   - Edit: additional_powers
     button: |
-      **${agent.name.full(middle='full')} is granted these additional powers:**
+      **${agent.name_full()} is granted these additional powers:**
       ${additional_powers}
     show if: any_additional_powers
   - Edit: delegate_decisions
     button: |
-      **Can ${agent.name.full(middle='full')} delegate decision making powers?**
+      **Can ${agent.name_full()} delegate decision making powers?**
       ${word(yesno(delegate_decisions))}
   - Edit: agent_compensation
     button: |
-      **Will ${agent.name.full(middle='full')} be paid?**
+      **Will ${agent.name_full()} be paid?**
       ${word(yesno(agent_compensation))}
 ---
 id: successor review screen
 continue button field: x.review_successor
 generic object: ALIndividual
 question: |
-  Edit ${x.name.full(middle='full')}'s information
+  Edit ${x.name_full()}'s information
 review: 
   - Edit: x.name.first
     button: |
       **Successor name:**
-      ${ x.name.full(middle="full")  }
+      ${ x.name_full()  }
   - Edit: x.in_america
     button: |
-      **${ x.name.full(middle="full") }'s address:**
+      **${ x.name_full() }'s address:**
       % if x.in_america == True:
       ${ x.address.on_one_line(bare=True) }
       % else:
@@ -1392,7 +1392,7 @@ review:
       % endif
   - Edit: x.phone_number
     button: |
-      **${ x.name.full(middle="full") }'s phone number:**
+      **${ x.name_full() }'s phone number:**
       ${ phone_number_formatted(x.phone_number) }
 ---
 section: Successor agents
@@ -1408,7 +1408,7 @@ review:
       % if for_yourself == True:
       **Do you want to name successor agents?**
       % else:
-      **Does ${principal.name.full(middle='full')} want to name successor agents?**
+      **Does ${principal.name_full()} want to name successor agents?**
       % endif
       ${word(yesno(any_successors))}
   - Edit: successors.revisit
@@ -1416,7 +1416,7 @@ review:
       **Successors: (Edit to change names, addresses, and phone numbers)**
 
       % for person in successors:
-        * ${ person.name.full(middle="full") }
+        * ${ person.name_full() }
       % endfor
 ---
 section: Other information
@@ -1441,7 +1441,7 @@ review:
       % if for_yourself == True:
       **Will this Power of Attorney last until your death?**
       % else:
-      **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
+      **Will this Power of Attorney last until ${principal.name_full()}'s death?**
       % endif
       ${word(yesno(end_at_death))}
   - Edit: end_date
@@ -1456,7 +1456,7 @@ review:
   - Edit: preparer.name.first
     button: |
       **Your name:**
-      ${preparer.name.full(middle='full')}
+      ${preparer.name_full()}
     show if: for_yourself == False and include_preparer == True
   - Edit: preparer.address.address
     button: |
@@ -1474,7 +1474,7 @@ table: successors.table
 rows: successors
 columns:
   - Successor: |
-      row_item.name.full(middle="full") if defined("row_item.name.first") else ""
+      row_item.name_full() if defined("row_item.name.first") else ""
   - Name, address, and phone number: |
       action_button_html(url_action(row_item.attr_name("review_successor")), label="Edit", icon="pencil-alt")
 delete buttons: True
