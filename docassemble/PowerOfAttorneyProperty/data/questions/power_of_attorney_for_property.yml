@@ -1241,9 +1241,9 @@ template: prove_capacity
 subject: |
   **Proving legal capacity**
 content: |
-  ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${capitalize(you_they)} know ${your_their} income and property.
+  ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${you_they} know ${your_their} income and property.
   
-  If there is doubt whether ${you_subject} has legal capacity, ${you_they} may want to get a doctor to make a statement saying if they have capacity.
+  If there is doubt whether ${you_subject} ${have_has} legal capacity, ${you_they} may want to get a doctor to make a statement saying if they have capacity.
 ---
 id: effective date
 question: |
