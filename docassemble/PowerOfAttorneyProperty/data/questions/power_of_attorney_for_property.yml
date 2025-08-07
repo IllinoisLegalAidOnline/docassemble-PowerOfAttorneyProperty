@@ -84,10 +84,9 @@ code: |
   #This program currently does not ask about witnesses because the statutory short form only seems to have space for their signatures. If we end up using a different form, this may change. 
   nav.set_section('section_other')
   set_progress(80)
-  if effective_immediately == False:
-    effective_date
+  effective_date_choice
   if end_at_death == False:
-    end_date
+    end_date_choice
   if for_yourself == False:
     preparer.name.first
     preparer.address.address
@@ -205,9 +204,51 @@ terms:
   principal: |
     The principal is the person who chooses somone (an agent) to make decisions about the their money and property.
 ---
-id: forgery warning
-question: |
-  
+depends on: 
+  - for_yourself
+  - principal.name.first
+  - principal.name.middle
+  - principal.name.last
+  - principal.name.suffix
+code: |
+  if for_yourself:
+    my_their = "my"
+    my_subject = "my"
+    your_their = "your"
+    your_subject = "your"
+    do_does = "do"
+    you_subject = "you"
+    i_subject = "I"
+    myself_their_self = "myself"
+    yourself_their_self = "yourself"
+    am_is = "am"
+    have_has = "have"
+    i_they = "I"
+    me_subject = "me"
+    me_them = "me"
+    am_are = "am"
+    you_they = "you"
+    want_wants = "want"
+  else:
+    my_their = "their"
+    my_subject = principal.name_full()
+    my_subject += "'s"
+    your_subject = principal.name_full()
+    your_subject += "'s"
+    your_their = "their"
+    you_subject = principal.name_full()
+    i_subject = principal.name_full()
+    do_does = " does"
+    myself_their_self = "their self"
+    yourself_their_self = "their self"
+    am_is = "is"
+    have_has = "has"
+    i_they = "they"
+    me_subject = principal.name_full()
+    me_them = "them"
+    am_are = "are"
+    you_they = "they"
+    want_wants = "wants"
 ---
 id: other principal notice
 continue button field: other_principal
@@ -742,44 +783,112 @@ fields:
 id: effective date option
 question: |
   % if for_yourself == True:
-  Do you want this Power of Attorney to go into effect immediately after you sign it?
+  When do you want this Power of Attorney to go into effect?
   % else:
-  Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
+  When does ${principal.name_full()} want this Power of Attorney to go into effect?
   % endif
 subquestion: |
   % if for_yourself == True:
   This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
   
-  You will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for you when you are unable to.
-  % else:
-  This Power of Attorney will go into effect when ${principal.name.full(middle='full')} signs the form unless they state that it should take effect at a later time.
-  
-  ${principal.name.full(middle='full')} will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for them when they are unable to.
-  % endif
-fields:
-  - no label: effective_immediately
-    datatype: yesnoradio
----
-id: effective date
-question: |
-  % if for_yourself == True:
-  When do you want the Power of Attorney to take effect?
-  % else:
-  When does ${principal.name.full(middle='full')} want the Power of Attorney to take effect?
-  % endif
-subquestion: |
-  % if for_yourself == True:
-  To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
-  % else:
-  To make the Power of Attorney take effect at a later time, ${principal.name.full(middle='full')} must give a date or event when it should start.
-  % endif
-  
-  The event chosen must be limited to a specific future date or occurrence. The event chosen should also be as specific as possible.
+  You will still have the authority to make decisions. ${agent.name_full()} will be able to make decisions for you when you are unable to.
 
-  As an example, the event 'the birth of my child' is not specific. Instead, the event should specify which child: 'the birth of my first child.'
+  You can still change your mind and **{revoke}** the Power of Attorney after you sign it, as long as you have the required **{legal capacity}**.
+  % else:
+  This Power of Attorney will go into effect when ${principal.name_full()} signs the form unless they state that it should take effect at a later time.
+  
+  ${principal.name_full()} will still have the authority to make decisions. ${agent.name_full()} will be able to make decisions for them when they are unable to.
+
+  This Power of Attorney will go into effect when ${principal.name_full()} signs the form unless they state that it should take effect at a later time.
+  
+  They will still have the authority to make decisions. ${agent.name_full()} will be able to make decisions for them when they are unable to.
+
+  ${principal.name_full()} can still change their mind and **{revoke}** the Power of Attorney after they sign it, as long as they have the required **{legal capacity}**.
+  % endif
+
+  ${collapse_template(prove_capacity)}
 fields:
-  - "This power of attorney shall become effective on...": effective_date
+  - no label: effective_date_choice
+    input type: radio
+    choices:
+      - Immediately.: immediately
+      - Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.: doctor
+        help: |
+          % if for_yourself:
+          If you choose this, ${agent.name_full()} will have authority as your personal representative under HIPAA to speak with your doctor and request a written statement whether or not you can make financial decisons.
+          % else:
+          If ${principal.name_full()} chooses this, ${agent.name_full()} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
+          % endif
+      #- Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
+      - When an Adverse Immigration Action stops ${me_subject} from managing ${my_their} property.: immigration
+        help: |
+          An Adverse Immigration Action is a federal action that stops ${you_subject} from being in or managing ${your_their} property in the United States. An arrest, detention, or apprehension by ICE, CBP, or DHS can be an Adverse Immigration Action.
+      - At another time. I will explain below.: other
+  - "This Power of Attorney shall become effective on:": effective_date_text
     input type: area
+    #maxlength: 250
+    rows: 7
+    js show if:
+      val("effective_date_choice") === "other"
+terms:
+  revoke: |
+    To **revoke** a Power of Attorney means to undo, destroy, or void it.
+  legal capacity: |
+    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney if 
+    
+       * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
+       * ${capitalize(you_they)} know ${your_their} income and property.
+---
+template: prove_capacity
+subject: |
+  **Proving legal capacity**
+content: |
+  ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${you_they} know ${your_their} income and property.
+  
+  If there is doubt whether ${you_subject} ${have_has} legal capacity, ${you_they} may want to get a doctor to make a statement saying if they have capacity.
+---
+---
+#id: effective date option
+#question: |
+#  % if for_yourself == True:
+#  Do you want this Power of Attorney to go into effect immediately after you sign it?
+#  % else:
+#  Does ${principal.name.full(middle='full')} want this Power of Attorney to go into effect immediately after they sign it?
+#  % endif
+#subquestion: |
+#  % if for_yourself == True:
+#  This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
+#  
+#  You will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for you when you are unable to.
+#  % else:
+#  This Power of Attorney will go into effect when ${principal.name.full(middle='full')} signs the form unless they state that it should take effect at a later time.
+#  
+#  ${principal.name.full(middle='full')} will still have the authority to make decisions. ${agent.name.full(middle='full')} will be able to make decisions for them when they are unable to.
+#  % endif
+#fields:
+#  - no label: effective_immediately
+#    datatype: yesnoradio
+#---
+#id: effective date
+#question: |
+#  % if for_yourself == True:
+#  When do you want the Power of Attorney to take effect?
+#  % else:
+#  When does ${principal.name.full(middle='full')} want the Power of Attorney to take effect?
+#  % endif
+#subquestion: |
+#  % if for_yourself == True:
+#  To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
+#  % else:
+#  To make the Power of Attorney take effect at a later time, ${principal.name.full(middle='full')} must give a date or event when it should start.
+#  % endif
+#  
+#  The event chosen must be limited to a specific future date or occurrence. The event chosen should also be as specific as possible.
+#
+#  As an example, the event 'the birth of my child' is not specific. Instead, the event should specify which child: 'the birth of my first child.'
+#fields:
+#  - "This power of attorney shall become effective on...": effective_date
+#    input type: area
 ---
 id: revocation option
 question: |
@@ -813,7 +922,7 @@ question: |
   % if for_yourself == True:
   When do you want the Power of Attorney to end?
   % else:
-  When does ${principal.name.full(middle='full')} want the Power of Attorney to end?
+  When does ${principal.name_full()} want the Power of Attorney to end?
   % endif
 subquestion: |
   % if for_yourself == True:
@@ -821,13 +930,30 @@ subquestion: |
 
   For example, the Power of Attorney could end upon a court determination of your disability.
   % else:
-  To make the Power of Attorney end before ${principal.name.full(middle='full')}'s death, they must give a date or an event upon which the Power of Attorney will end.
+  To make the Power of Attorney end before ${principal.name_full()}'s death, they must give a date or an event upon which the Power of Attorney will end.
 
   For example, the Power of Attorney could end upon a court determination of their disability.
   % endif
 fields:
-  - "This power of attorney shall terminate on...": end_date
+  - no label: end_date_choice
+    input type: radio
+    choices:
+       - When ${agent.name_full()} gets a note from ${my_subject} doctor that says ${i_they} can manage ${my_their} financial affairs.: doctor
+       - When ${i_subject} ${have_has} been released from custody.: custody
+       - When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again. : immigration
+         help: |
+           An Adverse Immigration Action ends when it is resolved. Resolution can be: 
+             
+           * execution or cancellation of a removal order, 
+           * grant of immigration relief or protection, 
+           * end of removal proceedings, or 
+           * release from immigration detention.
+         show if: effective_date_choice == "immigration"
+       - Other: other
+  - This Power of Attorney shall terminate on:: end_date_text
     input type: area
+    js show if:
+      val("end_date_choice") === "other"
 ---
 id: agent as guardian
 question: |
@@ -1141,15 +1267,20 @@ review:
       % for person in successors:
         * ${ person.name.full(middle="full") }
       % endfor
-  - Edit: effective_immediately
+  - Edit: effective_date_choice
     button: |
-      **Is this Power of Attorney effective immediately?**
-      ${word(yesno(effective_immediately))}
-  - Edit: effective_date
-    button: |
-      **This power of attorney shall become effective on:**
-      ${effective_date}
-    show if: effective_immediately == False
+      **This Power of Attorney will take effect:**
+      % if effective_date_choice == "immediately":
+      Immediately
+      % elif effective_date_choice == "doctor":
+      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
+      % elif effective_date_choice == "detained":
+      Only if ${i_subject} ${am_is} arrested, detained, or deported.
+      % elif effective_date_choice == "immigration":
+      When an Adverse Immigration Action stops ${me_them} from managing ${my_their} property.
+      % elif effective_date_choice == "other":
+      ${effective_date_text}
+      % endif
   - Edit: end_at_death
     button: |
       % if for_yourself == True:
@@ -1158,10 +1289,18 @@ review:
       **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
       % endif
       ${word(yesno(end_at_death))}
-  - Edit: end_date
+  - Edit: end_date_choice
     button: |
-      **This power of attorney shall terminate on...**
-      ${end_date}
+      **This Power of Attorney shall terminate:**
+      % if end_date_choice == "doctor":
+      When ${agent.name_full()} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
+      % elif end_date_choice == "custody":
+      When ${i_subject} ${have_has} been released from custody.
+      % elif end_date_choice == "immigration":
+      When the Adverse Immigration Action ends, and ${i_they} state in writing ${i_they} will manage ${my_their} property again.
+      % elif end_date_choice == "other":
+      On ${end_date_text}.
+      % endif
     show if: end_at_death == False
   - Edit: include_preparer
     button: |
@@ -1427,15 +1566,20 @@ question: |
 subquestion: |
   Edit your answers below.
 review:
-  - Edit: effective_immediately
+  - Edit: effective_date_choice
     button: |
-      **Is this Power of Attorney effective immediately?**
-      ${word(yesno(effective_immediately))}
-  - Edit: effective_date
-    button: |
-      **This power of attorney shall become effective on:**
-      ${effective_date}
-    show if: effective_immediately == False
+      **This Power of Attorney will take effect:**
+      % if effective_date_choice == "immediately":
+      Immediately
+      % elif effective_date_choice == "doctor":
+      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
+      % elif effective_date_choice == "detained":
+      Only if ${i_subject} ${am_is} arrested, detained, or deported.
+      % elif effective_date_choice == "immigration":
+      When an Adverse Immigration Action stops ${me_them} from managing ${my_their} property.
+      % elif effective_date_choice == "other":
+      ${effective_date_text}
+      % endif
   - Edit: end_at_death
     button: |
       % if for_yourself == True:
@@ -1444,10 +1588,18 @@ review:
       **Will this Power of Attorney last until ${principal.name.full(middle='full')}'s death?**
       % endif
       ${word(yesno(end_at_death))}
-  - Edit: end_date
+  - Edit: end_date_choice
     button: |
-      **This power of attorney shall terminate on...**
-      ${end_date}
+      **This Power of Attorney shall terminate:**
+      % if end_date_choice == "doctor":
+      When ${agent.name_full()} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
+      % elif end_date_choice == "custody":
+      When ${i_subject} ${have_has} been released from custody.
+      % elif end_date_choice == "immigration":
+      When the Adverse Immigration Action ends, and ${i_they} state in writing ${i_they} will manage ${my_their} property again.
+      % elif end_date_choice == "other":
+      On ${end_date_text}.
+      % endif
     show if: end_at_death == False
   - Edit: include_preparer
     button: |
