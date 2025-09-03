@@ -398,7 +398,7 @@ question: |
   % endif
 subquestion: |
   % if for_yourself == False:
-  The principal is the person who chooses an agent to make decisions about the their money and property.
+  The principal is the person who chooses an agent to make decisions about their money and property.
 
   You should enter their legal name on their government-issued identification. If they go by a name other than their legal name, or if they have legally changed they name, click **They have another name.** You can then enter that name in the **Additional name** field.
 
