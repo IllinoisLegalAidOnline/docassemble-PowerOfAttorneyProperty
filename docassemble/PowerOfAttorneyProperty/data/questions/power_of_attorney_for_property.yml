@@ -73,12 +73,13 @@ code: |
   life_insurance
   file_bankruptcy
   is_guardian
-  if social_powers:
-    if ssn_authority:
-      ssa_info
-      #principal_ssn
-      principal_phone
-      birth_date
+  social_powers
+  #if social_powers:
+  #  if ssn_authority:
+  #    ssa_info
+  #    #principal_ssn
+  #    principal_phone
+  #    birth_date
   
   set_progress(60)
   if agent_limitations == True:
@@ -102,10 +103,10 @@ code: |
     preparer.address.address
     preparer.phone_number
   
-  if social_powers:
-    if ssn_authority:
-      release_logic
-      release_reminder
+  #if social_powers:
+  #  if ssn_authority:
+  #    release_logic
+  #    release_reminder
   
   witness_info
   nav.set_section('section_download')
@@ -399,11 +400,11 @@ subquestion: |
   % if for_yourself == False:
   The principal is the person who chooses an agent to make decisions about the their money and property.
 
-  If their current name is not on their government-issued identification, you may want to click **They have another name.** You can then enter the name on their ID in the **Additional name** field.
+  You should enter their legal name on their government-issued identification. If they go by a name other than their legal name, or if they have legally changed they name, click **They have another name.** You can then enter that name in the **Additional name** field.
 
   ${collapse_template(changed_name)}
   % else:
-  If your current name is not on your government-issued identification, you may want to click **I have another name.** You can then enter the name on your ID in the **Additional name** field.
+  You should enter your legal name on your government-issued identification. If you go by a name other than your legal name, or if you have legally changed your name, click **I have another name.** You can then enter that name in the **Additional name** field.
 
   ${collapse_template(changed_name)}
   % endif
@@ -977,9 +978,8 @@ content: |
   * The power to give your property to others as gifts,
   * The power to exercise powers of appointment,
   * The power to name or change beneficiaries or joint tenants,
-  * The right to access your social media accounts,
-  * The power to revoke or amend a trust, and
-  * The right to access your online accounts, such as online banking, utilities, and bill pay.
+  * The right to access your social media accounts, and
+  * The power to revoke or amend a trust.
 ---
 id: delegate decisions
 question: |
@@ -1085,7 +1085,8 @@ terms:
   incompetent: |
     **Incompetent** means unable to handle one's own affairs due to illness, disability, or age. A person can be declared incompetent or legally disabled by a court. A person may be certified by a doctor as unable to make decisions or handle business affairs.
   successor agent: |
-    A **successor agent** is a back-up agent who will act as your agent if your first agent is unavailable, passes away, or stops being your agent.
+    A **successor agent** is a back-up agent. They would have power of attorney if the first dies, becomes incompetent, quits, or refuses to act as your power of attorney agent.
+
 ---
 code: |
   successors[i].name.first
@@ -1345,12 +1346,12 @@ fields:
        - When ${i_subject} ${have_has} been released from custody.: custody
        - When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again. : immigration
          help: |
-           An Adverse Immigration Action ends when it is resolved. Resolution can be: 
+           An Adverse Immigration Action ends when it is resolved. Resolution can be:
              
-           * execution or cancellation of a removal order, 
-           * grant of immigration relief or protection, 
-           * end of removal proceedings, or 
-           * release from immigration detention.
+           * Execution or cancellation of a removal order, 
+           * Grant of immigration relief or protection, 
+           * End of removal proceedings, or 
+           * Release from immigration detention.
          show if: effective_date_choice == "immigration"
        - Other: other
   - This Power of Attorney shall terminate on:: end_date_text
@@ -1535,8 +1536,8 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, ssa_release], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, ssa_release], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
   - name: poa_property
@@ -1611,11 +1612,11 @@ objects:
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
 ---
-code: |
-  if social_powers and ssn_authority:
-    ssa_release.enabled = True
-  else:
-    ssa_release.enabled = False
+#code: |
+#  if social_powers and ssn_authority:
+#    ssa_release.enabled = True
+#  else:
+#    ssa_release.enabled = False
 ---
 id: review screen
 event: review_answers
