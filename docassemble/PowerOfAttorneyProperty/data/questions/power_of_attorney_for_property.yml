@@ -400,11 +400,25 @@ subquestion: |
   % if for_yourself == False:
   The principal is the person who chooses an agent to make decisions about their money and property.
 
-  You should enter their legal name on their government-issued identification. If they go by a name other than their legal name, or if they have legally changed they name, click **They have another name.** You can then enter that name in the **Additional name** field.
+  You should enter their legal name on their government-issued identification.
+
+  You may want to click **They have another name** if:
+
+  * If they go by a name other than their legal name, or
+  * They have changed their name and also have an old legal name.
+  
+  You can then enter that name in the **Additional name** field.
 
   ${collapse_template(changed_name)}
   % else:
-  You should enter your legal name on your government-issued identification. If you go by a name other than your legal name, or if you have legally changed your name, click **I have another name.** You can then enter that name in the **Additional name** field.
+  You should enter your legal name on your government-issued identification.
+
+  You may want to click **I have another name** if:
+
+  * You go by a name other than your legal name, or
+  * You have changed your name and also have an old legal name.
+  
+  You can then enter that name in the **Additional name** field.
 
   ${collapse_template(changed_name)}
   % endif
@@ -1744,49 +1758,49 @@ review:
       **Does ${principal.name_full()} want ${agent.name_full()} to serve as their legal guardian?**
       % endif
       ${word(yesno(is_guardian))}
-  - Edit: ssn_authority
-    button: |
-      **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name_full()}?**
-      ${word(yesno(ssn_authority))}
-    show if: social_powers
-  - Edit: ssa_info
-    button: |
-      **What information should the Social Security Administration release?**
-
-      % if ssa_info['verify']:
-      * Verification of Social Security Number
-      % endif
-      % if ssa_info['current_benefit']:
-      * Current monthly Social Security benefit amount
-      % endif
-      % if ssa_info['current_supplement']:
-      * Current montly Supplemental Security income payment amount
-      % endif
-      % if ssa_info['past_benefits']:
-      * Past Social Security benefit amounts
-      % endif
-      % if ssa_info['past_supplement']:
-      * Past Supplemental Security Income payment amounts
-      % endif
-      % if ssa_info['medicare']:
-      * Medicare entitlement
-      % endif
-      % if ssa_info['medical']:
-      * Medical records
-      % endif
-      % if ssa_info['other']:
-      * ${other_records_text}
-      % endif
-    show if: social_powers and ssn_authority
-  - Edit: principal_phone
-    button: |
-      % if for_yourself:
-      **Your phone number:**
-      % else:
-      **${principal.name_full()}'s phone number:**
-      % endif
-      ${phone_number_formatted(principal_phone)}
-    show if: social_powers and ssn_authority
+  #- Edit: ssn_authority
+  #  button: |
+  #    **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name_full()}?**
+  #    ${word(yesno(ssn_authority))}
+  #  show if: social_powers
+  #- Edit: ssa_info
+  #  button: |
+  #    **What information should the Social Security Administration release?**
+#
+  #    % if ssa_info['verify']:
+  #    * Verification of Social Security Number
+  #    % endif
+  #    % if ssa_info['current_benefit']:
+  #    * Current monthly Social Security benefit amount
+  #    % endif
+  #    % if ssa_info['current_supplement']:
+  #    * Current montly Supplemental Security income payment amount
+  #    % endif
+  #    % if ssa_info['past_benefits']:
+  #    * Past Social Security benefit amounts
+  #    % endif
+  #    % if ssa_info['past_supplement']:
+  #    * Past Supplemental Security Income payment amounts
+  #    % endif
+  #    % if ssa_info['medicare']:
+  #    * Medicare entitlement
+  #    % endif
+  #    % if ssa_info['medical']:
+  #    * Medical records
+  #    % endif
+  #    % if ssa_info['other']:
+  #    * ${other_records_text}
+  #    % endif
+  #  show if: social_powers and ssn_authority
+  #- Edit: principal_phone
+  #  button: |
+  #    % if for_yourself:
+  #    **Your phone number:**
+  #    % else:
+  #    **${principal.name_full()}'s phone number:**
+  #    % endif
+  #    ${phone_number_formatted(principal_phone)}
+  #  show if: social_powers and ssn_authority
   - Edit: agent_limitations
     button: |
       **Are ${agent.name_full()}'s powers limited?**
@@ -2055,49 +2069,49 @@ review:
       **Does ${principal.name_full()} want ${agent.name_full()} to serve as their legal guardian?**
       % endif
       ${word(yesno(is_guardian))}
-  - Edit: ssn_authority
-    button: |
-      **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name_full()}?**
-      ${word(yesno(ssn_authority))}
-    show if: social_powers
-  - Edit: ssa_info
-    button: |
-      **What information do you want the Social Security Administration to release?**
-
-      % if ssa_info['verify']:
-      * Verification of Social Security Number
-      % endif
-      % if ssa_info['current_benefit']:
-      * Current monthly Social Security benefit amount
-      % endif
-      % if ssa_info['current_supplement']:
-      * Current montly Supplemental Security income payment amount
-      % endif
-      % if ssa_info['past_benefits']:
-      * Past Social Security benefit amounts
-      % endif
-      % if ssa_info['past_supplement']:
-      * Past Supplemental Security Income payment amounts
-      % endif
-      % if ssa_info['medicare']:
-      * Medicare entitlement
-      % endif
-      % if ssa_info['medical']:
-      * Medical records
-      % endif
-      % if ssa_info['other']:
-      * ${other_records_text}
-      % endif
-    show if: social_powers and ssn_authority
-  - Edit: principal_phone
-    button: |
-      % if for_yourself:
-      **Your phone number:**
-      % else:
-      **${principal.name_full()}'s phone number:**
-      % endif
-      ${phone_number_formatted(principal_phone)}
-    show if: social_powers and ssn_authority
+  #- Edit: ssn_authority
+  #  button: |
+  #    **${capitalize(do_does)} ${you_subject} want the Social Security Administration to release information to ${agent.name_full()}?**
+  #    ${word(yesno(ssn_authority))}
+  #  show if: social_powers
+  #- Edit: ssa_info
+  #  button: |
+  #    **What information do you want the Social Security Administration to release?**
+#
+  #    % if ssa_info['verify']:
+  #    * Verification of Social Security Number
+  #    % endif
+  #    % if ssa_info['current_benefit']:
+  #    * Current monthly Social Security benefit amount
+  #    % endif
+  #    % if ssa_info['current_supplement']:
+  #    * Current montly Supplemental Security income payment amount
+  #    % endif
+  #    % if ssa_info['past_benefits']:
+  #    * Past Social Security benefit amounts
+  #    % endif
+  #    % if ssa_info['past_supplement']:
+  #    * Past Supplemental Security Income payment amounts
+  #    % endif
+  #    % if ssa_info['medicare']:
+  #    * Medicare entitlement
+  #    % endif
+  #    % if ssa_info['medical']:
+  #    * Medical records
+  #    % endif
+  #    % if ssa_info['other']:
+  #    * ${other_records_text}
+  #    % endif
+  #  show if: social_powers and ssn_authority
+  #- Edit: principal_phone
+  #  button: |
+  #    % if for_yourself:
+  #    **Your phone number:**
+  #    % else:
+  #    **${principal.name_full()}'s phone number:**
+  #    % endif
+  #    ${phone_number_formatted(principal_phone)}
+  #  show if: social_powers and ssn_authority
   - Edit: agent_limitations
     button: |
       **Are ${agent.name_full()}'s powers limited?**
