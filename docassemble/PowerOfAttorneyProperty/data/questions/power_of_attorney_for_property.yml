@@ -1550,8 +1550,8 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, planning, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
   - name: poa_property
@@ -1563,7 +1563,17 @@ attachment:
   - name: instructions
     variable name: instructions[i]
     filename: instructions
-    docx template file: instructions_poa_property.docx
+    docx template file: poa_property_instructions_cdel.docx
+---
+attachment:
+  - name: Power of Planning
+    variable name: planning[i]
+    filename: planning
+    pdf template file: power_of_planning.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${}
 ---
 reconsider: True
 code: |
@@ -1625,6 +1635,7 @@ objects:
   - poa_property: ALDocument.using(title="Power of Attorney for Property", filename="poa_property", enabled=True, has_addendum=False)
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
+  - planning: ALDocument.using(title="Power of Planning", filename="power_of_planning", has_addendum=False, enabled=True)
 ---
 #code: |
 #  if social_powers and ssn_authority:
