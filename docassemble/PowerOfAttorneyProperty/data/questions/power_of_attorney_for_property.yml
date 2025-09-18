@@ -19,6 +19,7 @@ objects:
   - agent: ALIndividual
   - delegate: ALIndividual
   - preparer: ALIndividual
+  - preview: DAStaticFile.using(filename="power_of_planning.pdf")
   - successors: ALPeopleList.using(
         object_type=ALIndividual,
         complete_attribute='complete',
@@ -294,6 +295,8 @@ question: |
   Completing this form
 subquestion: |
   At the end of the program, you can download your Power of Attorney for Property. It is not official until you sign it in front of a witness and a notary public. You do not need to know who the witness will be to use this program.
+
+   If you would like to know more about planning for disability or end of life care, you can review ILAO and CDEL's guide to the [**Power of Planning**](${ preview.url_for() }).
   
   Be sure to download and read the instructions at the end of the program.
 continue button field: completion_guide
@@ -1550,7 +1553,7 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, planning, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
@@ -1564,16 +1567,6 @@ attachment:
     variable name: instructions[i]
     filename: instructions
     docx template file: poa_property_instructions_cdel.docx
----
-attachment:
-  - name: Power of Planning
-    variable name: planning[i]
-    filename: planning
-    pdf template file: power_of_planning.pdf
-    skip undefined: True
-    editable: False
-    fields:
-      - "fake": ${}
 ---
 reconsider: True
 code: |
