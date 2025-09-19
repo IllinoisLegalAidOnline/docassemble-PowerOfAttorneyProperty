@@ -1566,7 +1566,11 @@ attachment:
   - name: instructions
     variable name: instructions[i]
     filename: instructions
-    docx template file: poa_property_instructions_cdel.docx
+    pdf template file: cdel_poa_property_instructions.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
 ---
 reconsider: True
 code: |
