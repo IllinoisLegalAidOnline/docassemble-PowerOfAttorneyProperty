@@ -146,6 +146,21 @@ code: |
   reconsider('snapshot_interview_state')
   snapshot_forms = True
 ---
+imports:
+  - random
+---
+code: |
+  if 'from' in url_args:
+    user_path = url_args['from']
+  else:
+    random_path = random.randint(1, 3)
+    if random_path == 1:
+      user_path = "Frederico"
+    elif random_path == 2:
+      user_path = "Lisa"
+    else:
+      user_path = "Shirley"
+---
 id: welcome
 question: |
   Power of Attorney for Property
@@ -155,6 +170,14 @@ subquestion: |
   This program helps you create documents to give someone you trust power of attorney for your property, which includes your finances. This means they will have access to or control of your money and property. This can include managing your lease agreement, paying your bills, and handling Social Security payments.
 
   This program has videos with information about making a Power of Attorney for Property. You do not have to watch them, but you may find them helpful.
+
+  % if user_path == "Shirley":
+  [YOUTUBE iVmpNj-Hzd4]
+  % elif user_path == "Frederico":
+  [YOUTUBE hR_zxp7YB-g]
+  % elif user_path == "Lisa":
+  [YOUTUBE Dgjy-p6sRPo]
+  % endif
   
   To learn more, read ILAO's article about [**Power of Attorney for Property basics**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 field: sees_nav_bar
@@ -210,9 +233,15 @@ continue button field: poa_explainer
 question: |
   About Power of Attorney
 subquestion: |
-  [YOUTUBE -1pMMIe4hb4]
-
   A Power of Attorney for Property lets you choose a person you trust to make decisions for you about your property and finances when you can't make decisions for yourself. Someone with this power is called an "agent."
+
+  % if user_path == "Shirley":
+  [YOUTUBE KKRyIL5LuCY]
+  % elif user_path == "Frederico":
+  [YOUTUBE 15dTSIHpSEA]
+  % elif user_path == "Lisa":
+  [YOUTUBE BMlVt6txyNg]
+  % endif
 
   You can give an agent power to:
 
@@ -222,8 +251,6 @@ subquestion: |
   * Hire a lawyer for you
   * Ask for records from the Social Security Administration
   * File your taxes
-
-  ${collapse_template(video_why)}
 ---
 id: instructions
 continue button field: how_to_use
@@ -272,7 +299,7 @@ subject: |
 content: |
   [YOUTUBE -1pMMIe4hb4]
 ---
-#Add video Who should I pick as my agent?
+#Re add video collapse template Who should I pick as my agent?
 id: about agents
 continue button field: about_agents
 question: |
@@ -283,8 +310,6 @@ subquestion: |
   The agent must be at least 18 years old. The agent does not have to be a family member but it should be someone you trust. Your agent does not need to be a United States citizen. 
 
   You can select successor agents as backup if the first agent becomes unable to make these decisions.
-
-  ${collapse_template(video_agent)}
 
   **Note:** If you can communicate and understand your choices, you are the decision maker.
 
@@ -636,7 +661,13 @@ template: video_agent_powers
 subject: |
   **Video: What powers am I giving my agent?**
 content: |
-  [YOUTUBE -1pMMIe4hb4]
+  % if user_path == "Shirley":
+  [YOUTUBE GWLxQyetyWE]
+  % elif user_path == "Frederico":
+  [YOUTUBE ZChMJaeQmPo]
+  % elif user_path == "Lisa":
+  [YOUTUBE I81CaReGbaE]
+  % endif
 ---
 #Add video "What powers am I giving my agent?"
 id: which powers
@@ -1211,6 +1242,7 @@ subject: |
 content: |
   [YOUTUBE -1pMMIe4hb4]
 ---
+#Re add video_when_effect template
 id: effective date option
 question: |
   % if for_yourself == True:
@@ -1219,8 +1251,6 @@ question: |
   When does ${principal.name_full()} want this Power of Attorney to go into effect?
   % endif
 subquestion: |
-  ${collapse_template(video_when_effect)}
-  
   % if for_yourself == True:
   This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
   
@@ -1307,6 +1337,7 @@ subject: |
 content: |
   [YOUTUBE -1pMMIe4hb4]
 ---
+#Re add video_when_end template
 id: revocation option
 question: |
   % if for_yourself == True:
@@ -1315,8 +1346,6 @@ question: |
   Does ${principal.name_full()} want this Power of Attorney to last until their death?
   % endif
 subquestion: |
-  ${collapse_template(video_when_end)}
-  
   % if for_yourself == True:
   This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
 
@@ -1505,12 +1534,6 @@ subquestion: |
   
   [NEWLINE]
 ---
-template: video_congrats
-subject: |
-  **Video: Congratulations and call to action**
-content: |
-  [YOUTUBE -1pMMIe4hb4]
----
 id: get docs screen
 event: get_docs_screen
 question: |
@@ -1518,7 +1541,13 @@ question: |
 subquestion: |
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
 
-  [YOUTUBE -1pMMIe4hb4]
+  % if user_path == "Shirley":
+  [YOUTUBE NE0faXuz5v4]
+  % elif user_path == "Frederico":
+  [YOUTUBE g5Vdv0hWJ6g]
+  % elif user_path == "Lisa":
+  [YOUTUBE F2QbdrhcZ0g]
+  % endif
   
   The Instructions page has important information. You can read it to find out what to do next. The Power of Attorney form has additional instructions. 
   
@@ -1553,7 +1582,7 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_bundle], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
@@ -1567,6 +1596,57 @@ attachment:
     variable name: instructions[i]
     filename: instructions
     pdf template file: cdel_poa_property_instructions.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+attachment:
+  - name: Power of Planning - Powers of Attorney
+    variable name: pop_powers[i]
+    filename: pop_powers
+    pdf template file: POP_-_Powers_of_Attorney.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+attachment:
+  - name: Power of Planning - Memory Loss
+    variable name: pop_memory[i]
+    filename: pop_memory
+    pdf template file: POP_-_Memory_Loss_&_Advance_Planning.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+attachment:
+  - name: Power of Planning - Caregivers
+    variable name: pop_caregivers[i]
+    filename: pop_caregivers
+    pdf template file: POP_-_Caregivers.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+
+attachment:
+  - name: Power of Planning - Other Advance Planning
+    variable name: pop_other[i]
+    filename: pop_other
+    pdf template file: POP_-_Other_Advance_Planning.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+attachment:
+  - name: Power of Planning - What is Advance Planning
+    variable name: pop_what[i]
+    filename: pop_what
+    pdf template file: POP_-_What_is_Advance_Planning.pdf
     skip undefined: True
     editable: False
     fields:
@@ -1633,6 +1713,14 @@ objects:
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
   - planning: ALDocument.using(title="Power of Planning", filename="power_of_planning", has_addendum=False, enabled=True)
+  - pop_caregivers: ALDocument.using(title="Power of Planning - Caregivers", filename="pop_caregivers", enabled=True, has_addendum=False)
+  - pop_powers: ALDocument.using(title="Power of Planning - Powers of Attorney", filename="pop_powers", enabled=True, has_addendum=False)
+  - pop_memory: ALDocument.using(title="Power of Planning - Memory Loss & Advance Planning", filename="pop_memory", enabled=True, has_addendum=False)
+  - pop_what: ALDocument.using(title="Power of Planning - What is Advance Planning", filename="pop_what", enabled=True, has_addendum=False)
+  - pop_other: ALDocument.using(title="Power of Planning - Other Advance Planning", filename="pop_other", enabled=True, has_addendum=False)
+---
+objects:
+  - pop_bundle: ALDocumentBundle.using(elements=[pop_powers, pop_caregivers, pop_memory, pop_other], filename="power_of_planning_information", enabled=True, title= "Info sheets")
 ---
 #code: |
 #  if social_powers and ssn_authority:
