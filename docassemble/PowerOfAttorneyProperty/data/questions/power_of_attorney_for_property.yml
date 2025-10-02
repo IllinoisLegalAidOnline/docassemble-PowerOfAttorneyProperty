@@ -1582,7 +1582,7 @@ content: |
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_bundle], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
 ---
 attachment:
@@ -1714,7 +1714,7 @@ objects:
   - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
   - planning: ALDocument.using(title="Power of Planning", filename="power_of_planning", has_addendum=False, enabled=True)
   - pop_caregivers: ALDocument.using(title="Power of Planning - Caregivers", filename="pop_caregivers", enabled=True, has_addendum=False)
-  - pop_powers: ALDocument.using(title="Power of Planning - Powers of Attorney", filename="pop_powers", enabled=True, has_addendum=False)
+  - pop_powers: ALDocument.using(title="Power of Attorney info sheet", filename="pop_powers", enabled=True, has_addendum=False)
   - pop_memory: ALDocument.using(title="Power of Planning - Memory Loss & Advance Planning", filename="pop_memory", enabled=True, has_addendum=False)
   - pop_what: ALDocument.using(title="Power of Planning - What is Advance Planning", filename="pop_what", enabled=True, has_addendum=False)
   - pop_other: ALDocument.using(title="Power of Planning - Other Advance Planning", filename="pop_other", enabled=True, has_addendum=False)
