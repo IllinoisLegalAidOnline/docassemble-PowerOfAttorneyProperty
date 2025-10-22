@@ -132,6 +132,8 @@ code: |
   stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
   
   stuff_to_snapshot['user_is_principal'] = showifdef('for_yourself')
+
+  stuff_to_snapshot['video_path'] = showifdef('snapshot_path')
   
   store_variables_snapshot(
   	data=stuff_to_snapshot, persistent=True
@@ -152,7 +154,9 @@ imports:
 code: |
   if 'from' in url_args:
     user_path = url_args['from']
+    snapshot_path = url_args['from']
   else:
+    snapshot_path = "random"
     random_path = random.randint(1, 3)
     if random_path == 1:
       user_path = "Frederico"
@@ -181,18 +185,6 @@ subquestion: |
   
   To learn more, read ILAO's article about [**Power of Attorney for Property basics**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 field: sees_nav_bar
----
-template: video_intro
-subject: |
-  **Video: Intro to Power of Attorney for Property**
-content: |  
-  [YOUTUBE -1pMMIe4hb4]
----
-template: video_why
-subject: |
-  **Video: Why I made a Power of Attorney for Property and Finances**
-content: |  
-  [YOUTUBE -1pMMIe4hb4]
 ---
 id: accept terms
 question: |
@@ -297,9 +289,14 @@ template: video_agent
 subject: |
   **Video: Who should I pick as my agent?**
 content: |
-  [YOUTUBE -1pMMIe4hb4]
+  % if user_path == "Shirley":
+  [YOUTUBE s7aUF4HKIzk]
+  % elif user_path == "Frederico":
+  [YOUTUBE zpJhrzaSRGA]
+  % elif user_path == "Lisa":
+  [YOUTUBE RZm4KAS8CtY]
+  % endif
 ---
-#Re add video collapse template Who should I pick as my agent?
 id: about agents
 continue button field: about_agents
 question: |
@@ -310,6 +307,8 @@ subquestion: |
   The agent must be at least 18 years old. The agent does not have to be a family member but it should be someone you trust. Your agent does not need to be a United States citizen. 
 
   You can select successor agents as backup if the first agent becomes unable to make these decisions.
+
+  ${collapse_template(video_agent)}
 
   **Note:** If you can communicate and understand your choices, you are the decision maker.
 
@@ -1240,9 +1239,14 @@ template: video_when_effect
 subject: |
   **Video: When does a POA for Property go into effect?**
 content: |
-  [YOUTUBE -1pMMIe4hb4]
+  % if user_path == "Shirley":
+  [YOUTUBE TB5zr804MT4]
+  % elif user_path == "Frederico":
+  [YOUTUBE 91-jZQBqIFs]
+  % elif user_path == "Lisa":
+  [YOUTUBE dYfra7eRTx0]
+  % endif
 ---
-#Re add video_when_effect template
 id: effective date option
 question: |
   % if for_yourself == True:
@@ -1251,6 +1255,8 @@ question: |
   When does ${principal.name_full()} want this Power of Attorney to go into effect?
   % endif
 subquestion: |
+  ${collapse_template(video_when_effect)}
+  
   % if for_yourself == True:
   This Power of Attorney will go into effect when you sign the form unless you state that it should take effect at a later time.
   
@@ -1318,6 +1324,8 @@ question: |
   When does ${principal.name_full()} want the Power of Attorney to take effect?
   % endif
 subquestion: |
+  ${collapse_template(video_when_effect)}
+  
   % if for_yourself == True:
   To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
   % else:
@@ -1335,7 +1343,13 @@ template: video_when_end
 subject: |
   **Video: When does my Power of Attorney end?**
 content: |
-  [YOUTUBE -1pMMIe4hb4]
+  % if user_path == "Shirley":
+  [YOUTUBE 1F6ogUQHaTA]
+  % elif user_path == "Frederico":
+  [YOUTUBE dq2xc4tMg_g]
+  % elif user_path == "Lisa":
+  [YOUTUBE 8SLjaI_mfuE]
+  % endif
 ---
 #Re add video_when_end template
 id: revocation option
@@ -1346,6 +1360,8 @@ question: |
   Does ${principal.name_full()} want this Power of Attorney to last until their death?
   % endif
 subquestion: |
+  ${collapse_template(video_when_end)}
+  
   % if for_yourself == True:
   This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
 
