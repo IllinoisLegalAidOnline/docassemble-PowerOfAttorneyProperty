@@ -356,7 +356,6 @@ code: |
   if for_yourself:
     my_their = "my"
     my_subject = "my"
-    your_their = "your"
     your_subject = "your"
     do_does = "do"
     you_subject = "you"
@@ -365,11 +364,9 @@ code: |
     yourself_their_self = "yourself"
     am_is = "am"
     have_has = "have"
-    i_they = "I"
     me_subject = "me"
     me_them = "me"
     am_are = "am"
-    you_they = "you"
     want_wants = "want"
   else:
     my_their = "their"
@@ -377,7 +374,6 @@ code: |
     my_subject += "'s"
     your_subject = principal.name_full()
     your_subject += "'s"
-    your_their = "their"
     you_subject = principal.name_full()
     i_subject = principal.name_full()
     do_does = " does"
@@ -385,11 +381,9 @@ code: |
     yourself_their_self = "their self"
     am_is = "is"
     have_has = "has"
-    i_they = "they"
     me_subject = principal.name_full()
     me_them = "them"
     am_are = "are"
-    you_they = "they"
     want_wants = "wants"
 ---
 id: other principal notice
@@ -413,8 +407,12 @@ depends on:
 code: |
   if for_yourself:
     i_they = "I"
+    your_their = "your"
+    you_they = "you"
   else:
     i_they = "they"
+    your_their = "their"
+    you_they = "they"
 ---
 id: principal name
 question: |
