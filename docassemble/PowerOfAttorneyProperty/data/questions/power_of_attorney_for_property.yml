@@ -425,7 +425,7 @@ subquestion: |
   % if for_yourself == False:
   The principal is the person who chooses an agent to make decisions about their money and property.
 
-  You should enter their legal name on their government-issued identification.
+  You should enter the legal name listed on their government-issued identification.
 
   You may want to click **They have another name** if:
 
@@ -436,7 +436,7 @@ subquestion: |
 
   ${collapse_template(changed_name)}
   % else:
-  You should enter your legal name on your government-issued identification.
+  You should enter the legal name listed on your government-issued identification.
 
   You may want to click **I have another name** if:
 
@@ -1304,13 +1304,13 @@ terms:
     ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney if 
     
        * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
-       * ${capitalize(you_they)} know ${your_their} income and property.
+       * ${capitalize(you_they)} know what income and property ${you_they} have.
 ---
 template: prove_capacity
 subject: |
   **Proving legal capacity**
 content: |
-  ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${you_they} know ${your_their} income and property.
+  ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${you_they} know what income and property ${you_they} have.
   
   If there is doubt whether ${you_subject} ${have_has} legal capacity, ${you_they} may want to get a doctor to make a statement saying if they have capacity.
 ---
@@ -1945,7 +1945,7 @@ review:
       % if agent_compensation == "expenses_only":
       Only for reasonable expenses.
       % elif agent_compensation == "with_limits":
-      Yes, no more than ${compensate_amount} ${compensate_time.lower()}.
+      Yes, no more than ${currency(compensate_amount)} ${compensate_time.lower()}.
       % else:
       Yes, at their discretion.
       % endif
@@ -2256,7 +2256,7 @@ review:
       % if agent_compensation == "expenses_only":
       Only for reasonable expenses.
       % elif agent_compensation == "with_limits":
-      Yes, no more than ${compensate_amount} ${compensate_time.lower()}.
+      Yes, no more than ${currency(compensate_amount)} ${compensate_time.lower()}.
       % else:
       Yes, at their discretion.
       % endif
