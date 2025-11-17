@@ -251,8 +251,8 @@ question: |
 subquestion: |  
   To use this program you will need to know:
 
-  * The name, address, and phone number of the person you want to name as the **{agent}** with power of attorney,
-  * The names, addresses, and phone numbers of any **{successor agents}**, 
+  * The name, city, state, and phone number of the person you want to name as the **{agent}** with power of attorney,
+  * The names, cities, states, and phone numbers of any **{successor agents}**, 
   * The property and finances you have, and
   * How much control you want the agent to have over your property and finances.
     
@@ -302,15 +302,15 @@ continue button field: about_agents
 question: |
   About agents
 subquestion: |
-  Your agent is a person you trust and choose to make decisions about your property for you, if you ever need help. 
+  Your agent is a person you trust and choose to make decisions about your property and finances for you, if you ever need help. 
 
-  The agent must be at least 18 years old. The agent does not have to be a family member but it should be someone you trust. Your agent does not need to be a United States citizen. 
+  Your agent must be at least 18 years old. Your agent does not have to be a family member, but it should be someone you trust. Your agent does not need to be a United States citizen. 
 
   You can select successor agents as backup if the first agent becomes unable to make these decisions.
 
   ${collapse_template(video_agent)}
 
-  **Note:** If you can communicate and understand your choices, you are the decision maker.
+  **Note:** If you can communicate and understand your choices, you are the final decision maker.
 
   To learn more, read ILAO's article about [**setting up a Power of Attorney for Property**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 ---
@@ -341,10 +341,10 @@ choices:
 #    datatype: yesnoradio
 terms:
   principal: |
-    The **principal** is the person who chooses someone they trust to make decisions about their property. If this is your document, you are the principal. 
+    The **principal** is the person who chooses someone they trust to make decisions about their property and finances. If this is your document, you are the principal. 
 
   agent: |
-    The **agent** is the person the principal trusts and chooses to make decisions about their property for them, if the principal ever needs help. If this is your document, you are giving the agent power to make decisions about your property for you, if you ever need help.
+    The **agent** is the person the principal trusts and chooses to make decisions about their property and finances for them, if the principal ever needs help. If this is your document, you are giving the agent power to make decisions about your property and finances for you, if you ever need help.
 ---
 depends on: 
   - for_yourself
@@ -678,9 +678,9 @@ subquestion: |
   ${collapse_template(video_agent_powers)}
   
   % if for_yourself:
-  A Power of Attorney for Property usually gives an agent power over all the principal's property. If you want ${agent.name_full()} to make decisions about all your property, you can click **${i_subject} want ${agent.name_full()} to have all these powers**.
+  A Power of Attorney for Property usually gives an agent power to manage all the principal's property and finances. If you want ${agent.name_full()} to be able tomake decisions about all your property and finances, you can click **${i_subject} want ${agent.name_full()} to have all these powers**.
   %  else:
-   A Power of Attorney for Property usually gives an agent power over all the principal's property. If ${principal.name_full()} wants ${agent.name_full()} to make decisions about all their property, you can click **${i_subject} want ${agent.name_full()} to have all these powers.**
+   A Power of Attorney for Property usually gives an agent power to manage all the principal's property and finances. If ${principal.name_full()} wants ${agent.name_full()} to be able to make decisions about all their property and finances, you can click **${i_subject} want ${agent.name_full()} to have all these powers.**
   % endif
 
   If you do not check an option, ${agent.name_full()} will not be able to help with it. 
@@ -1312,30 +1312,7 @@ subject: |
 content: |
   ${capitalize(you_subject)} can revoke a Power of Attorney if ${you_they} understand what revoking the Power of Attorney will do, and ${you_they} know what income and property ${you_they} have.
   
-  If there is doubt whether ${you_subject} ${have_has} legal capacity, ${you_they} may want to get a doctor to make a statement saying if they have capacity.
----
-id: effective date
-question: |
-  % if for_yourself == True:
-  When do you want the Power of Attorney to take effect?
-  % else:
-  When does ${principal.name_full()} want the Power of Attorney to take effect?
-  % endif
-subquestion: |
-  ${collapse_template(video_when_effect)}
-  
-  % if for_yourself == True:
-  To make the Power of Attorney take effect at a later time, you must give a date or event when it should start.
-  % else:
-  To make the Power of Attorney take effect at a later time, ${principal.name_full()} must give a date or event when it should start.
-  % endif
-  
-  The event chosen must be limited to a specific future date or occurrence. The event chosen should also be as specific as possible.
-
-  As an example, the event 'the birth of my child' is not specific. Instead, the event should specify which child: 'the birth of my first child.'
-fields:
-  - "This Power of Attorney shall become effective on...": effective_date
-    input type: area
+  If there is doubt whether ${you_subject} ${have_has} legal capacity, ${you_they} may want to get a doctor to make a statement saying if they think ${you_subject} ${have_has} capacity.
 ---
 template: video_when_end
 subject: |
@@ -1361,11 +1338,11 @@ subquestion: |
   ${collapse_template(video_when_end)}
   
   % if for_yourself == True:
-  This Power of Attorney for Property will last until your death. However, you may choose to end it earlier.
+  This Power of Attorney for Property will last until your death. However, you may choose to end it earlier. If you only want the Power of Attorney to last for a specific time, click **No**.
 
   You can end a Power of Attorney by making a formal Revocation. To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
   % else:
-  This Power of Attorney for Property will last until ${principal.name_full()}'s death. However, they may choose to end it earlier.
+  This Power of Attorney for Property will last until ${principal.name_full()}'s death. However, they may choose to end it earlier. If they only want the Power of Attorney to last for a specific time, click **No**.
 
   ${principal.name_full()} can end a Power of Attorney by making a formal Revocation. To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
   % endif

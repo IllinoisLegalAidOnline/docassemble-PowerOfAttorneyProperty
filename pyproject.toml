@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.PowerOfAttorneyProperty"
-version = "1.0.38"
+version = "1.0.39"
 description = "A docassemble extension."
 readme = "README.md"
 authors = [
