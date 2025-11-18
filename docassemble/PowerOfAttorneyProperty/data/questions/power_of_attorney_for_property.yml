@@ -159,7 +159,7 @@ code: |
     snapshot_path = "random"
     random_path = random.randint(1, 3)
     if random_path == 1:
-      user_path = "Frederico"
+      user_path = "Federico"
     elif random_path == 2:
       user_path = "Lisa"
     else:
@@ -177,7 +177,7 @@ subquestion: |
 
   % if user_path == "Shirley":
   [YOUTUBE iVmpNj-Hzd4]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE hR_zxp7YB-g]
   % elif user_path == "Lisa":
   [YOUTUBE Dgjy-p6sRPo]
@@ -229,7 +229,7 @@ subquestion: |
 
   % if user_path == "Shirley":
   [YOUTUBE KKRyIL5LuCY]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE 15dTSIHpSEA]
   % elif user_path == "Lisa":
   [YOUTUBE BMlVt6txyNg]
@@ -291,7 +291,7 @@ subject: |
 content: |
   % if user_path == "Shirley":
   [YOUTUBE s7aUF4HKIzk]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE zpJhrzaSRGA]
   % elif user_path == "Lisa":
   [YOUTUBE RZm4KAS8CtY]
@@ -332,13 +332,12 @@ subquestion: |
   In other words, are you the **{principal}** who wants to name an **{agent}**?
 
   If you are making these forms for someone else, that person will be the principal.
-field: for_yourself
-choices:
-  - Yes, I am making a Power of Attorney for myself.: True
-  - No, I am making a Power of Attorney for somebody else.: False
-#fields:
-#  - no label: for_yourself
-#    datatype: yesnoradio
+fields: 
+  - no label: for_yourself
+    input type: radio
+    choices:
+      - Yes, I am making a Power of Attorney for myself.: True
+      - No, I am making a Power of Attorney for somebody else.: False
 terms:
   principal: |
     The **principal** is the person who chooses someone they trust to make decisions about their property and finances. If this is your document, you are the principal. 
@@ -660,7 +659,7 @@ subject: |
 content: |
   % if user_path == "Shirley":
   [YOUTUBE GWLxQyetyWE]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE ZChMJaeQmPo]
   % elif user_path == "Lisa":
   [YOUTUBE I81CaReGbaE]
@@ -1239,7 +1238,7 @@ subject: |
 content: |
   % if user_path == "Shirley":
   [YOUTUBE TB5zr804MT4]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE 91-jZQBqIFs]
   % elif user_path == "Lisa":
   [YOUTUBE dYfra7eRTx0]
@@ -1320,7 +1319,7 @@ subject: |
 content: |
   % if user_path == "Shirley":
   [YOUTUBE 1F6ogUQHaTA]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE dq2xc4tMg_g]
   % elif user_path == "Lisa":
   [YOUTUBE 8SLjaI_mfuE]
@@ -1534,7 +1533,7 @@ subquestion: |
 
   % if user_path == "Shirley":
   [YOUTUBE NE0faXuz5v4]
-  % elif user_path == "Frederico":
+  % elif user_path == "Federico" or user_path == "Frederico":
   [YOUTUBE g5Vdv0hWJ6g]
   % elif user_path == "Lisa":
   [YOUTUBE F2QbdrhcZ0g]
