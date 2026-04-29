@@ -118,7 +118,7 @@ code: |
 ---
 code: |
   stuff_to_snapshot = {
-  	'start_time': str(current_datetime()),
+  	'start_time': str(current_datetime().format_datetime()),
   	'started_interview': True, 
   	}
   

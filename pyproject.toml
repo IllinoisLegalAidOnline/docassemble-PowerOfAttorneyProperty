@@ -1,12 +1,12 @@
 [build-system]
 requires = [
-    "setuptools==80.9.0",
+    "setuptools>=80.9.0",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.PowerOfAttorneyProperty"
-version = "2.0.1"
+version = "2.0.2"
 description = "A docassemble extension."
 readme = "README.md"
 authors = [
