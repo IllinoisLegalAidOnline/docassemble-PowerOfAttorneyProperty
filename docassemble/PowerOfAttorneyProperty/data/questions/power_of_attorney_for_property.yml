@@ -127,7 +127,7 @@ code: |
   except:
     pass
   
-  stuff_to_snapshot['user_zip'] = showifdef('users[0].address.zip')
+  stuff_to_snapshot['user_zip'] = showifdef('principal.address.zip')
 
   stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
   
