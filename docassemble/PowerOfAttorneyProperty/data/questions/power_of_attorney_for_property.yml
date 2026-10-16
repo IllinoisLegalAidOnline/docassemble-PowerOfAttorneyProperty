@@ -1,6 +1,17 @@
+translations:
+  - poa_property_es.xlsx
+---
+initial: True
+code: |
+  al_interview_languages = ["en", "es"]
+---
 metadata:
-  title: Power of Attorney for Property
-  short title: POA property
+  title: 
+    "en*": Power of Attorney for Property
+    "es": Poder Notarial para la Propiedad y Finanzas
+  short title: 
+    "en*": POA property
+    "es": Poder Propiedad
   comment: This program helps you create documents to give another person access or control of your money and property.
   authors:
     - Vivian McNaughton
@@ -28,19 +39,27 @@ objects:
 code: |
   ilao_easy_form_title = "Power of Attorney for Property"
   ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/power-attorney-property"
+  ilao_easy_form_title_es = "Poder Notarial para la Propiedad y Finanzas"
+  ilao_easy_form_url_es = "https://es.illinoislegalaid.org/legal-information/power-attorney-property"
   github_user = 'IllinoisLegalAidOnline'
   github_repo_name = 'docassemble-PowerOfAttorneyProperty'
 ---
 # Road map
 sections:
   - section_intro: Start
-  #- section_qualify: Do you qualify?
   - section_principal: Principal
   - section_agent: Agent
   - section_powers: Powers
   - section_successors: Successor agents
   - section_other: Other information
   - section_download: Download
+---
+initial: True
+code: |
+  if not defined('used_spanish'):
+    used_spanish = False
+  if get_language() == 'es':
+    used_spanish = True
 ---
 # interview order block
 mandatory: True
@@ -134,6 +153,16 @@ code: |
   stuff_to_snapshot['user_is_principal'] = showifdef('for_yourself')
 
   stuff_to_snapshot['video_path'] = showifdef('snapshot_path')
+
+  try:
+    stuff_to_snapshot['language'] = get_language()
+  except:
+    pass
+
+  try:
+    stuff_to_snapshot['used_spanish'] = used_spanish
+  except:
+    pass
   
   store_variables_snapshot(
   	data=stuff_to_snapshot, persistent=True
@@ -169,6 +198,12 @@ id: welcome
 question: |
   Power of Attorney for Property
 subquestion: |
+  % if get_language() == 'en':
+  :globe: English | [Español](${ interview_url(new_session=1, lang="es") })
+  % else:
+  :globe: [English](${ interview_url(new_session=1, lang="en") }) | Español
+  % endif
+  
   Welcome to Illinois Legal Aid Online's **Power of Attorney for Property** Easy Form.
 
   This program helps you create documents to give someone you trust power of attorney for your property, which includes your finances. This means they will have access to or control of your money and property. This can include managing your lease agreement, paying your bills, and handling Social Security payments.
@@ -185,6 +220,12 @@ subquestion: |
   
   To learn more, read ILAO's article about [**Power of Attorney for Property basics**](https://www.illinoislegalaid.org/legal-information/setting-power-attorney-property).
 field: sees_nav_bar
+css: |
+  <style>
+    a {
+      font-weight:bold; 
+    }
+  </style>
 ---
 id: accept terms
 question: |
