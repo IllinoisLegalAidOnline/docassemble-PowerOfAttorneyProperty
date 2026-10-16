@@ -54,6 +54,16 @@ sections:
   - section_other: Other information
   - section_download: Download
 ---
+language: es
+sections:
+  - section_intro: Introducción
+  - section_principal: Otorgante
+  - section_agent: Agente
+  - section_powers: Poderes
+  - section_successors: Agentes sucesores
+  - section_other: Otra información
+  - section_download: Descargar
+---
 initial: True
 code: |
   if not defined('used_spanish'):
@@ -198,12 +208,12 @@ id: welcome
 question: |
   Power of Attorney for Property
 subquestion: |
-  % if get_language() == 'en':
-  :globe: English | [Español](${ interview_url(new_session=1, lang="es") })
+  % if get_language() == "en":
+  :globe: English | [Español](${ interview_url(new_session=1, lang='es') })
   % else:
-  :globe: [English](${ interview_url(new_session=1, lang="en") }) | Español
+  :globe: [English](${ interview_url(new_session=1, lang='en') }) | Español
   % endif
-  
+
   Welcome to Illinois Legal Aid Online's **Power of Attorney for Property** Easy Form.
 
   This program helps you create documents to give someone you trust power of attorney for your property, which includes your finances. This means they will have access to or control of your money and property. This can include managing your lease agreement, paying your bills, and handling Social Security payments.
@@ -386,45 +396,87 @@ terms:
   agent: |
     The **agent** is the person the principal trusts and chooses to make decisions about their property and finances for them, if the principal ever needs help. If this is your document, you are giving the agent power to make decisions about your property and finances for you, if you ever need help.
 ---
-depends on: 
-  - for_yourself
-  - principal.name.first
-  - principal.name.middle
-  - principal.name.last
-  - principal.name.suffix
+reconsider: True
 code: |
   if for_yourself:
     my_their = "my"
-    my_subject = "my"
-    your_subject = "your"
     do_does = "do"
-    you_subject = "you"
-    i_subject = "I"
     myself_their_self = "myself"
     yourself_their_self = "yourself"
     am_is = "am"
     have_has = "have"
-    me_subject = "me"
     me_them = "me"
     am_are = "am"
     want_wants = "want"
   else:
     my_their = "their"
+    do_does = " does"
+    myself_their_self = "their self"
+    yourself_their_self = "their self"
+    am_is = "is"
+    have_has = "has"
+    me_them = "them"
+    am_are = "are"
+    want_wants = "wants"
+---
+language: es
+reconsider: True
+code: |
+  if for_yourself:
+    my_their = "mi"
+    do_does = "haces"
+    myself_their_self = "mí mismo"
+    yourself_their_self = "tú mismo"
+    am_is = "eres"
+    have_has = "tienes"
+    me_them = "me"
+    am_are = "estás"
+    want_wants = "quiero"
+  else:
+    my_their = "su"
+    do_does = " haces"
+    myself_their_self = "sí mismo"
+    yourself_their_self = "tú mismo"
+    am_is = "eres"
+    have_has = "tienes"
+    me_them = "ellos"
+    am_are = "están"
+    want_wants = "quiere"
+---
+reconsider: True
+code: |
+  if for_yourself:
+    my_subject = "my"
+    your_subject = "your"
+    you_subject = "you"
+    i_subject = "I"
+    me_subject = "me"
+  else:
     my_subject = principal.name_full()
     my_subject += "'s"
     your_subject = principal.name_full()
     your_subject += "'s"
     you_subject = principal.name_full()
     i_subject = principal.name_full()
-    do_does = " does"
-    myself_their_self = "their self"
-    yourself_their_self = "their self"
-    am_is = "is"
-    have_has = "has"
     me_subject = principal.name_full()
-    me_them = "them"
-    am_are = "are"
-    want_wants = "wants"
+---
+language: es
+reconsider: True
+code: |
+  if for_yourself:
+    my_subject = "mi"
+    your_subject = "tu"
+    you_subject = "you"
+    i_subject = "Yo"
+    me_subject = "mi"
+  else:
+    my_subject = principal.name_full()
+    my_subject += "'s"
+    your_subject = principal.name_full()
+    your_subject += "'s"
+    you_subject = principal.name_full()
+    i_subject = principal.name_full()
+    me_subject = principal.name_full()
 ---
 id: other principal notice
 continue button field: other_principal
@@ -442,8 +494,7 @@ subquestion: |
   
   **Warning:** If you make a Power of Attorney for someone else, and the form does not follow their instructions, you could face legal consequences. You could be charged with identity theft, forgery, elder abuse, or other crimes which can be punished with jail time.
 ---
-depends on:
-  - for_yourself
+reconsider: True
 code: |
   if for_yourself:
     i_they = "I"
@@ -452,7 +503,18 @@ code: |
   else:
     i_they = "they"
     your_their = "their"
-    you_they = "they"
+    you_they = "tú"
+---
+language: es
+code: |
+  if for_yourself:
+    i_they = "yo"
+    your_their = "tu"
+    you_they = "you"
+  else:
+    i_they = "ellos"
+    your_their = "su"
+    you_they = "ellos"
 ---
 id: principal name
 question: |
@@ -504,6 +566,63 @@ fields:
     js show if:
       val('also_known_as') === true
 ---
+language: es
+id: principal name
+question: |
+  % if for_yourself == True:
+  ¿Cuál es tu nombre?
+  % else:
+  ¿Cómo se llama el otorgante?
+  % endif
+subquestion: |
+  % if for_yourself == False:
+  El otorgante es la persona que elige a un agente para tomar decisiones sobre su dinero y su propiedad.
+  
+  Debes ingresar su nombre legal tal como aparece en su identificación oficial emitida por el gobierno.
+  
+  Es posible que debas hacer clic en **Tiene otro nombre** si:
+  
+  * Usa un nombre distinto de su nombre legal, o
+  * Ha cambiado su nombre y también tiene un nombre legal anterior que no aparece en su identificación.
+  
+  Luego puedes ingresar ese nombre en el campo **Nombre adicional**.
+  
+  ${collapse_template(changed_name_other)}
+  % else:
+  Debes ingresar tu nombre legal tal como aparece en tu identificación oficial emitida por el gobierno.
+  
+  Es posible que debas hacer clic en **Tengo otro nombre** si:
+  
+  * Usas un nombre distinto a tu nombre legal, o
+  * Has cambiado tu nombre y también tienes un nombre legal anterior que no aparece en tu identificación.
+  
+  Luego puedes ingresar ese nombre en el campo **Nombre adicional**.
+  
+  ${collapse_template(changed_name)}
+  % endif
+fields:
+  - Nombre: principal.name.first
+  - Segundo nombre: principal.name.middle
+    required: False
+  - Apellido: principal.name.last
+  - "Tengo otro nombre.": also_known_as
+    datatype: yesnowide
+    show if:
+      code: |
+        for_yourself
+  - "Tiene otro nombre.": also_known_as
+    datatype: yesnowide
+    show if:
+      code: |
+        not for_yourself
+  - Nombre adicional: principal.aka_name
+    js show if:
+      val('also_known_as') === true
+  - ¿El nombre adicional corresponde a un nombre legal anterior?: formerly_or_also
+    datatype: yesnoradio
+    js show if:
+      val('also_known_as') === true
+---
 template: changed_name
 subject: |
   **What if ${i_they} have gotten a legal name change?**
@@ -512,12 +631,38 @@ content: |
 
   This is important to do if ${you_they} have property records or other documents that use ${your_their} old name.
 ---
-id: formerly or also
-question: |
-  Is ${principal.aka_name} a former legal name?
-fields:
-  - no label: formerly_or_also
-    datatype: yesnoradio
+language: es
+template: changed_name
+subject: |
+  **¿Qué pasa si he cambiado legalmente mi nombre?**
+content: |
+  Si has cambiado legalmente tu nombre, debes hacer clic en **Tengo otro nombre** y escribir tu nombre legal anterior en el campo **Nombre adicional**. Esto hará que ambos nombres aparezcan en tu formulario.
+
+  Es importante hacerlo si tienes registros médicos u otros documentos que usan tu nombre anterior.
+---
+template: changed_name_other
+subject: |
+  **What if they have a legal name change?**
+content: |
+  If they have legally changed their name, you should click **They have another name** and list their old legal name in the **Additional name** field. This will list both names on the form.
+
+  This is important to do if they have medical records or other documents that use their old name.
+---
+language: es
+template: changed_name_other
+subject: |
+  **¿Qué pasa si el otorgante ha cambiado legalmente su nombre?**
+content: |
+  Si el otorgante ha cambiado legalmente su nombre, debes hacer clic en **Tiene otro nombre** y escribir su nombre legal anterior en el campo **Nombre adicional**. Esto hará que ambos nombres aparezcan en el formulario.
+
+  Es importante hacerlo si el otorgante tiene registros médicos u otros documentos que usan su nombre anterior.
+---
+#id: formerly or also
+#question: |
+#  Is ${principal.aka_name} a former legal name?
+#fields:
+#  - no label: formerly_or_also
+#    datatype: yesnoradio
 ---
 id: in illinois
 question: |
