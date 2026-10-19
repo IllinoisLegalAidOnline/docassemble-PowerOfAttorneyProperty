@@ -1356,10 +1356,10 @@ fields:
     js show if: 
       val("agent_compensation") === "with_limits"
     choices:
-      - Hourly
-      - Daily
-      - Weekly
-      - Monthly
+      - Hourly: per hour
+      - Daily: per day
+      - Weekly: per week
+      - Monthly: per month
 ---
 id: any successors
 question: |
@@ -1544,7 +1544,7 @@ fields:
       - When an Adverse Immigration Action stops ${me_subject} from managing ${my_their} property.: immigration
         help: |
           An Adverse Immigration Action is a federal action that stops ${you_subject} from being in or managing ${your_their} property in the United States. An arrest, detention, or apprehension by ICE, CBP, or DHS can be an Adverse Immigration Action.
-      - At another time. I will explain below.: other
+      - At another time. (Explain below): other
   - "This Power of Attorney shall become effective on:": effective_date_text
     input type: area
     rows: 7
@@ -1621,7 +1621,7 @@ fields:
       </div>
     js show if: |
       val("effective_date_choice") === "other" && ${ json.dumps(for_yourself) } === false
-  - "Este poder notarial entrará en vigor el:[NEWLINE]**(En inglés)**": effective_date_text
+  - "Este poder notarial entrará en vigor cuando:[NEWLINE]**(En inglés)**": effective_date_text
     input type: area
     rows: 7
     js show if:
@@ -1687,7 +1687,7 @@ content: |
   
   To make a Power of Attorney Revocation, use ILAO's [**Power of Attorney Revocation Easy Form**](https://www.illinoislegalaid.org/legal-information/power-attorney-revocation).
 ---
-id: revocation
+id: termination
 question: |
   % if for_yourself == True:
   When do you want the Power of Attorney to end?
@@ -1710,7 +1710,7 @@ fields:
     choices:
        - When ${agent.name_full()} gets a note from ${my_subject} doctor that says ${i_they} can manage ${my_their} financial affairs.: doctor
        - When ${i_subject} ${have_has} been released from custody.: custody
-       - When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again. : immigration
+       - When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again.: immigration
          help: |
            An Adverse Immigration Action ends when it is resolved. Resolution can be:
              
@@ -1719,11 +1719,67 @@ fields:
            * End of removal proceedings, or 
            * Release from immigration detention.
          show if: effective_date_choice == "immigration"
-       - Other: other
+       - Other (Explain below): other
   - This Power of Attorney shall terminate on:: end_date_text
     input type: area
     js show if:
       val("end_date_choice") === "other"
+---
+language: es
+id: termination
+question: |
+  % if for_yourself == True:
+  ¿Cuándo quieres que termine el poder notarial?
+  % else:
+  ¿Cuándo quiere ${principal.name_full()} que termine el poder notarial?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  Para hacer que el poder notarial termine antes de su muerte, debe indicar una fecha o un evento mediante el cual terminará el poder notarial.
+  
+  Por ejemplo, el poder notarial podría terminar ante una determinación judicial de su discapacidad.
+  % else:
+  Para hacer que el poder notarial termine antes de la muerte de ${principal.name_full()}, deben indicar una fecha o un evento mediante el cual terminará el poder notarial.
+  
+  Por ejemplo, el poder notarial podría terminar tras una determinación judicial de su discapacidad.
+  % endif
+fields:
+  - no label: end_date_choice
+    input type: radio
+    choices:
+       - "Cuando ${agent.name_full()} recibe una nota del médico de ${my_subject} que dice que ${i_they} puede gestionar ${my_their} asuntos financieros.": doctor
+       - "Cuando ${i_subject} ${have_has} sido puesto en libertad.": custody
+       - "Cuando termine la Acción de Inmigración Adversa, y ${capitalize(i_subject)} declare por escrito ${capitalize(i_subject)} gestionará la propiedad de ${my_their} de nuevo.": immigration
+         help: |
+           Una Acción Migratoria Adversa termina cuando se resuelve. La resolución puede ser:
+           
+           * Ejecución o cancelación de una orden de deportación,
+           * Concesión de alivio migratorio o protección,
+           * Fin de los procedimientos de deportación, o
+           * Liberación de la detención migratoria.
+         show if: effective_date_choice == "immigration"
+       - "Otro (Explica abajo)": other
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("end_date_choice") === "other" && ${ json.dumps(for_yourself) } === true      
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("end_date_choice") === "other" && ${ json.dumps(for_yourself) } === false         
+  - "Este poder notarial terminará cuando:[NEWLINE]**(En inglés)**": end_date_text
+    input type: area
+    js show if:
+      val("end_date_choice") === "other"
+
 ---
 id: agent as guardian
 question: |
@@ -1854,6 +1910,18 @@ subquestion: |
   
   [NEWLINE]
 ---
+language: es
+id: forms assembling
+continue button field: forms_assembling
+question: |
+  Casi listo
+subquestion: |
+  Después de hacer clic en **Continuar**, el programa puede tardar unos momentos en terminar de preparar tus formularios.
+  
+  ###### No necesitas actualizar tu pantalla. ¡Ánimo!
+  
+  [NEWLINE]
+---
 id: get docs screen
 event: get_docs_screen
 question: |
@@ -1890,6 +1958,47 @@ under: |
  
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
+language: es
+id: get docs screen
+event: get_docs_screen
+question: |
+  Descargar
+subquestion: |
+  Tus formularios están listos. Puedes verlos y descargarlos abajo. Haz clic en **:edit: Hacer cambios** para corregir cualquier error.
+
+  [YOUTUBE vuN6YBYEh6k]
+  
+  La página de Instrucciones tiene información importante. Puede leerla para saber qué hacer a continuación. El formulario de Poder Notarial tiene instrucciones adicionales. 
+  
+  ${ action_button_html(url_action('review_answers'), label=':edit: Hacer cambios', color='success', size="md") }
+
+  ${ al_user_bundle.download_list_html() }
+ 
+  &nbsp;
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  **Nota:** El Poder Notarial debe ser firmado ante un notario público y al menos un testigo para que tenga validez.
+
+  ¡Gracias por usar ILAO Easy Forms!
+under: |
+  % if not user_logged_in():
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} **Iniciar sesión**](${url_of('login', next=interview_url())}) o [**crear**](${url_of('register', next=interview_url())}) una cuenta de Formularios Fáciles de ILAO para guardar tu progreso (opcional).
+  % endif
+
+ 
+    ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", lang="es", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title_es, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: ¿Fue útil este programa?', color="#181c36", size="md", new_window=True) }
+script: |
+  <script>
+    $(document).on('daPageLoad', function() {
+      function setEmailPlaceholder() {
+        $('.al_email_address input[type="email"]').attr('placeholder', 'Correo electrónico');
+      }
+      // Call it to add the placeholder
+      setEmailPlaceholder();
+    });
+  </script>
+---
 generic object: ALDocumentBundle
 template: x.send_email_template
 subject: |
@@ -1901,15 +2010,47 @@ content: |
   
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
-objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[poa_property], filename="power_of_attorney_for_property.pdf", title="All forms", enabled=True)
+language: es
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+  Poder Notarial para la Propiedad y Finanzas
+content: |
+  Tus formularios están adjuntos.
+
+  ¡Gracias por usar los Formularios Fáciles de ILAO!
+
+  [Illinois Legal Aid Online](https://es.illinoislegalaid.org)
 ---
-attachment:
-  - name: poa_property
-    variable name: poa_property[i]
-    filename: power_of_attorney_for_property
-    docx template file: poa_property_statutory_shortform_word_version.docx
+objects:
+  - poa_property: ALDocument.using(title="Power of Attorney for Property", filename="poa_property", has_addendum=False)
+  - instructions: ALDocument.using(title="Instructions and next steps", filename="instructions", has_addendum=False)
+  - pop_powers: ALDocument.using(title="Power of Attorney info sheet", filename="pop_powers", has_addendum=False)
+  - poa_property_es: ALDocument.using(title="Poder Notarial para la Propiedad y Finanzas", filename="poa_property", has_addendum=False)
+  - instructions_es: ALDocument.using(title="Instrucciones y próximos pasos", filename="Instrucciones", has_addendum=False)
+  - pop_powers_es: ALDocument.using(title="Información sobre los poderes notariales", filename="Información sobre los poderes notariales", has_addendum=False)
+
+---
+code: |
+  instructions.enabled = False
+  poa_property.enabled = False
+  pop_powers.enabled = False
+  instructions_es.enabled = False
+  poa_property_es.enabled = False
+  pop_powers_es.enabled = False
+
+  if get_language() == "es":
+    instructions_es.enabled = True
+    poa_property_es.enabled = True
+    pop_powers_es.enabled = True
+  else:
+    instructions.enabled = True
+    poa_property.enabled = True
+    pop_powers.enabled = True    
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("All forms"))
+  - al_user_bundle_es: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("Todos los formularios"))
 ---
 attachment:
   - name: instructions
@@ -1922,6 +2063,28 @@ attachment:
       - "fake": ${""}
 ---
 attachment:
+  - name: Instrucciones
+    variable name: instructions_es[i]
+    filename: instrucciones_bilingue
+    pdf template file: instructions_es_and_en.pdf
+    skip undefined: True
+    editable: False
+    fields:
+      - "fake": ${""}
+---
+attachment:
+  - name: poa_property
+    variable name: poa_property[i]
+    filename: power_of_attorney_for_property
+    docx template file: poa_property_statutory_shortform_word_version.docx
+---
+attachment:
+  - name: Poder Notarial para la Propiedad y Finanzas
+    variable name: poa_property_es[i]
+    filename: poder_notarial_propiedad_bilingue
+    docx template file: poa_property_bilingual.docx
+---
+attachment:
   - name: Power of Planning - Powers of Attorney
     variable name: pop_powers[i]
     filename: pop_powers
@@ -1932,41 +2095,10 @@ attachment:
       - "fake": ${""}
 ---
 attachment:
-  - name: Power of Planning - Memory Loss
-    variable name: pop_memory[i]
-    filename: pop_memory
-    pdf template file: POP_-_Memory_Loss_&_Advance_Planning.pdf
-    skip undefined: True
-    editable: False
-    fields:
-      - "fake": ${""}
----
-attachment:
-  - name: Power of Planning - Caregivers
-    variable name: pop_caregivers[i]
-    filename: pop_caregivers
-    pdf template file: POP_-_Caregivers.pdf
-    skip undefined: True
-    editable: False
-    fields:
-      - "fake": ${""}
----
-
-attachment:
-  - name: Power of Planning - Other Advance Planning
-    variable name: pop_other[i]
-    filename: pop_other
-    pdf template file: POP_-_Other_Advance_Planning.pdf
-    skip undefined: True
-    editable: False
-    fields:
-      - "fake": ${""}
----
-attachment:
-  - name: Power of Planning - What is Advance Planning
-    variable name: pop_what[i]
-    filename: pop_what
-    pdf template file: POP_-_What_is_Advance_Planning.pdf
+  - name: Poder Notarial página de información
+    variable name: pop_powers_es[i]
+    filename: informacion_poderes_bilingue
+    pdf template file: info_sheet_es_and_en.pdf
     skip undefined: True
     editable: False
     fields:
@@ -1988,65 +2120,6 @@ code: |
       release_reason += successors[0].name_full()
       release_reason += " is my successor agent."
   release_logic = True
----
-attachment:
-  - name: ssa_release
-    variable name: ssa_release[i]
-    filename: ssa_release
-    pdf template file: ssa_release.pdf
-    skip undefined: True
-    editable: True
-    fields:
-      - "principal_name": ${ principal.name_full() }
-      - "principal_address": ${ principal.address.on_one_line(bare=True)}
-      - "principal_birth": ${birth_date}
-      - "principal_ssn": ${""}
-      - "principal_phone": ${phone_number_formatted(principal_phone)}
-      - "agent_name": ${ agent.name_full()}
-      - "agent_phone": ${ phone_number_formatted(agent.phone_number) }
-      - "success_agent_name_1": ${successors[0].name_full()}
-      - "successor_agent_phone_1": ${ phone_number_formatted(successors[0].phone_number) }
-      - "successor_agent_name_2": ${successors[1].name_full()}
-      - "successor_agent_phone_2": ${ phone_number_formatted(successors[1].phone_number) }
-      - "release_reason": ${release_reason}
-      - "verify_number": ${ssa_info['verify']}
-      - "monthly_payment": ${ssa_info['current_benefit']}
-      - "monthly_supplemental": ${ssa_info['current_supplement']}
-      - "benefits_date_check": ${ssa_info['past_benefits']}
-      - "benefit_start_date": ${benefit_start_date if ssa_info['past_benefits'] else ""}
-      - "benefit_end_date": ${benefit_end_date if ssa_info['past_benefits'] else ""}
-      - "supplemental_dates_check": ${ssa_info['past_supplement']}
-      - "supplemental_start_date": ${supplemental_start_date if ssa_info['past_supplement'] else ""}
-      - "supplemental_end_date": ${supplemental_end_date if ssa_info['past_supplement'] else ""}
-      - "medicare_date_check": ${ssa_info['medicare']}
-      - "medicare_start_date": ${medicare_start_date if ssa_info['medicare'] else ""}
-      - "medicare_end_date": ${medicare_end_date if ssa_info['medicare'] else ""}
-      - "medical_records_date_check": ${True if ssa_info['medical'] and complete_or_dates == "dates" else False}
-      - "medical_records_start_date": ${medical_records_start_date if ssa_info['medical'] and complete_or_dates == "dates" else ""}
-      - "medical_records_end_date": ${medical_records_end_date if ssa_info['medical'] and complete_or_dates == "dates" else ""}
-      - "complete_medical_records": ${True if ssa_info['medical'] and complete_or_dates == "complete" else False}
-      - "other_records_check": ${ssa_info['other']}
-      - "other_records_text": ${other_records_text if ssa_info['other'] else""}
----
-objects:
-  - poa_property: ALDocument.using(title="Power of Attorney for Property", filename="poa_property", enabled=True, has_addendum=False)
-  - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
-  - ssa_release: ALDocument.using(title="SSA Consent for release of information", filename="ssa_release", has_addendum=False)
-  - planning: ALDocument.using(title="Power of Planning", filename="power_of_planning", has_addendum=False, enabled=True)
-  - pop_caregivers: ALDocument.using(title="Power of Planning - Caregivers", filename="pop_caregivers", enabled=True, has_addendum=False)
-  - pop_powers: ALDocument.using(title="Power of Attorney info sheet", filename="pop_powers", enabled=True, has_addendum=False)
-  - pop_memory: ALDocument.using(title="Power of Planning - Memory Loss & Advance Planning", filename="pop_memory", enabled=True, has_addendum=False)
-  - pop_what: ALDocument.using(title="Power of Planning - What is Advance Planning", filename="pop_what", enabled=True, has_addendum=False)
-  - pop_other: ALDocument.using(title="Power of Planning - Other Advance Planning", filename="pop_other", enabled=True, has_addendum=False)
----
-objects:
-  - pop_bundle: ALDocumentBundle.using(elements=[pop_powers, pop_caregivers, pop_memory, pop_other], filename="power_of_planning_information", enabled=True, title= "Info sheets")
----
-#code: |
-#  if social_powers and ssn_authority:
-#    ssa_release.enabled = True
-#  else:
-#    ssa_release.enabled = False
 ---
 id: review screen
 event: review_answers
