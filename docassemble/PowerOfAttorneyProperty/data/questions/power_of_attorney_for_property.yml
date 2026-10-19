@@ -838,6 +838,8 @@ subquestion: |
 fields:
   - Phone number: agent.phone_number
     datatype: al_international_phone
+    alInvalidInputMessage: ${ word( 'Please check the phone number and try again. If the number is from outside the United States, enter "+" followed by the country code and phone number.' ) }
+    
 ---
 template: video_agent_powers
 subject: |
@@ -1018,6 +1020,7 @@ subquestion: |
 fields:
   - Phone number: principal_phone
     datatype: al_international_phone
+    alInvalidInputMessage: ${ word( 'Please check the phone number and try again. If the number is from outside the United States, enter "+" followed by the country code and phone number.' ) }
 ---
 id: social security information
 question: |
@@ -1487,6 +1490,7 @@ subquestion: |
 fields:
   - Phone number: successors[i].phone_number
     datatype: al_international_phone
+    alInvalidInputMessage: ${ word( 'Please check the phone number and try again. If the number is from outside the United States, enter "+" followed by the country code and phone number.' ) }
 ---
 template: video_when_effect
 subject: |
@@ -1850,6 +1854,7 @@ subquestion: |
 fields:
   - Phone number: preparer.phone_number
     datatype: al_international_phone
+    alInvalidInputMessage: ${ word( 'Please check the phone number and try again. If the number is from outside the United States, enter "+" followed by the country code and phone number.' ) }
     required: False
 ---
 id: witness info
