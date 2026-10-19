@@ -1167,6 +1167,44 @@ fields:
     input type: area
     rows: 13
 ---
+language: es
+id: agent limits
+question: |
+  % if for_yourself == True:
+  ¿Qué límites o reglas especiales quieres incluir?
+  % else:
+  ¿Qué límites o reglas especiales quiere incluir ${principal.name_full()}?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  Por ejemplo, puedes imponer condiciones en la venta de bienes raíces o establecer reglas especiales sobre el endeudamiento por ${agent.name_full()}.
+  % else:
+  Por ejemplo, ellos pueden imponer condiciones en la venta de bienes raíces o establecer reglas especiales sobre el endeudamiento por ${agent.name_full()}.
+  % endif
+fields:
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    show if: 
+      code: |
+        for_yourself == True
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    show if: 
+      code: |
+        for_yourself == False
+
+  - "Límites[NEWLINE]**(En inglés)**": agent_limits
+    input type: area
+    rows: 13
+---
 id: any additional powers
 question: |
   % if for_yourself == True:
@@ -1185,15 +1223,6 @@ subquestion: |
 fields:
   - no label: additional_powers_check
     datatype: yesnoradio
-    #all of the above: True
-    #none of the above: False
-    #datatype: checkboxes
-    #choices: 
-    #  - The power to give my property to others as gifts: gifts
-    #  - The power to exercise powers of appointment: appointment
-    #  - The right to access my social media accounts: social
-    #  - The right to access my online accounts, such as online banking, utilities, and bill pay.: online
-    #  - Another power (Explain below): other
   - ${agent.name_full()} is granted the following additional powers:: additional_powers_text
     show if: additional_powers_check
     input type: area
@@ -1210,6 +1239,47 @@ content: |
   * The power to name or change beneficiaries or joint tenants,
   * The right to access your social media accounts, and
   * The power to revoke or amend a trust.
+---
+language: es
+id: any additional powers
+question: |
+  % if for_yourself == True:
+  ¿Quieres otorgar poderes adicionales a ${agent.name_full()}?
+  % else:
+  ¿Quiere ${ principal.name_full()} otorgar poderes adicionales a ${agent.name_full()}?
+  % endif
+subquestion: |
+  % if for_yourself == True:
+  Si quieres, puedes otorgar otros poderes a ${agent.name_full()}. Estos poderes se añadirán a los que ya se te han proporcionado.
+  % else:
+  Si ${principal.name_full()} quiere, ellos pueden otorgar otros poderes a ${agent.name_full()}. Estos poderes se añadirán a los que ya se te han proporcionado.
+  % endif 
+
+  ${collapse_template(powers_example)}
+fields:
+  - no label: additional_powers_check
+    datatype: yesnoradio
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("additional_powers_check") && ${ json.dumps(for_yourself) } === true      
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("additional_powers_check") && ${ json.dumps(for_yourself) } === false      
+  - "${agent.name_full()} se le otorgan los siguientes poderes adicionales[NEWLINE]**(En inglés)**:": additional_powers_text
+    show if: additional_powers_check
+    input type: area
+    rows: 13
+
 ---
 id: delegate decisions
 question: |
@@ -1471,14 +1541,12 @@ fields:
           % else:
           If ${principal.name_full()} chooses this, ${agent.name_full()} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
           % endif
-      #- Only if ${i_subject} ${am_is} arrested, detained, or deported by law enforcement and ${i_they} ${am_are} unable to make financial decisions: detained
       - When an Adverse Immigration Action stops ${me_subject} from managing ${my_their} property.: immigration
         help: |
           An Adverse Immigration Action is a federal action that stops ${you_subject} from being in or managing ${your_their} property in the United States. An arrest, detention, or apprehension by ICE, CBP, or DHS can be an Adverse Immigration Action.
       - At another time. I will explain below.: other
   - "This Power of Attorney shall become effective on:": effective_date_text
     input type: area
-    #maxlength: 250
     rows: 7
     js show if:
       val("effective_date_choice") === "other"
@@ -1490,6 +1558,82 @@ terms:
     
        * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
        * ${capitalize(you_they)} know what income and property ${you_they} have.
+---
+language: es
+id: effective date option
+question: |
+  % if for_yourself == True:
+  ¿Cuándo quiere que este Poder Notarial entre en vigencia?
+  % else:
+  ¿Cuándo quiere ${principal.name_full()} que este Poder Notarial entre en vigencia?
+  % endif
+subquestion: |
+  ${collapse_template(video_when_effect)}
+  
+  % if for_yourself == True:
+  Este Poder Notarial entrará en vigor cuando usted firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
+  
+  Aún tendrá la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por usted cuando no pueda hacerlo.
+  
+  Aún puede cambiar de opinión y **{revocar}** el Poder Notarial después de firmarlo, siempre que tenga la **{capacidad legal}** requerida.
+  % else:
+  Este Poder Notarial entrará en vigor cuando ${principal.name_full()} firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
+  
+  ${principal.name_full()} seguirá teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
+  
+  Este Poder Notarial entrará en vigor cuando ${principal.name_full()} firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
+  
+  Ellos seguirán teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
+  
+  ${principal.name_full()} aún puede cambiar de opinión y **{revoke}** el Poder Notarial después de firmarlo, siempre que tenga la **{legal capacity}** requerida.
+  % endif
+  
+  ${collapse_template(prove_capacity)}
+fields:
+  - no label: effective_date_choice
+    input type: radio
+    choices:
+      - Inmediatamente.: immediately
+      - "Solo cuando un médico haya hecho una declaración por escrito de que ${i_subject} no puede tomar decisiones financieras para ${myself_their_self}.": doctor
+        help: |
+          % if for_yourself:
+          Si eliges esto, ${agent.name_full()} tendrá autoridad como tu representante personal bajo HIPAA para hablar con tu médico y solicitar una declaración por escrito de si puedes tomar decisiones financieras.
+          % else:
+          Si ${principal.name_full()} elige esto, ${agent.name_full()} tendrá autoridad como su representante personal bajo HIPAA para hablar con su médico y solicitar una declaración por escrito de si pueden tomar decisiones financieras.
+          % endif
+      - "Cuando una acción migratoria adversa impide que ${me_subject} administre la propiedad de ${my_their}.": immigration
+        help: |
+          Una Acción de Inmigración Adversa es una acción federal que impide a ${you_subject} estar en o administrar la propiedad de ${your_their} en los Estados Unidos. Un arresto, detención o aprehensión por parte de ICE, CBP o DHS puede ser una Acción de Inmigración Adversa.
+      - "En otro momento. (Explica abajo)": other
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("effective_date_choice") === "other" && ${ json.dumps(for_yourself) } === true      
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("effective_date_choice") === "other" && ${ json.dumps(for_yourself) } === false
+  - "Este poder notarial entrará en vigor el:[NEWLINE]**(En inglés)**": effective_date_text
+    input type: area
+    rows: 7
+    js show if:
+      val("effective_date_choice") === "other"
+terms:
+  revocar: |
+    **Revocar** un poder notarial significa deshacerlo, destruirlo o dejarlo sin efecto.
+  capacidad legal: |
+    ${capitalize(you_subject)} ${have_has} la **capacidad legal** para revocar un Poder Notarial si 
+
+      * ${capitalize(you_they)} entienden lo que implicará revocar el Poder Notarial, y 
+      * ${capitalize(you_they)} saben qué ingresos y bienes ${you_they} tienen.
 ---
 template: prove_capacity
 subject: |
