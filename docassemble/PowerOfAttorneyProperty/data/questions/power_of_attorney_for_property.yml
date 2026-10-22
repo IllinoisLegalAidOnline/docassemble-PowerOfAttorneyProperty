@@ -31,6 +31,7 @@ objects:
   - delegate: ALIndividual
   - preparer: ALIndividual
   - preview: DAStaticFile.using(filename="power_of_planning.pdf")
+  - preview_es: DAStaticFile.using(filename="empoderate_de_tu_futuro.pdf")
   - successors: ALPeopleList.using(
         object_type=ALIndividual,
         complete_attribute='complete',
@@ -1589,7 +1590,7 @@ subquestion: |
   
   Ellos seguirán teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
   
-  ${principal.name_full()} aún puede cambiar de opinión y **{revoke}** el Poder Notarial después de firmarlo, siempre que tenga la **{legal capacity}** requerida.
+  ${principal.name_full()} aún puede cambiar de opinión y **{revocar}** el Poder Notarial después de firmarlo, siempre que tenga la **{capacidad legal}** requerida.
   % endif
   
   ${collapse_template(prove_capacity)}
@@ -1977,11 +1978,11 @@ subquestion: |
   
   ${ action_button_html(url_action('review_answers'), label=':edit: Hacer cambios', color='success', size="md") }
 
-  ${ al_user_bundle.download_list_html() }
+  ${ al_user_bundle_es.download_list_html() }
  
   &nbsp;
 
-  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  ${ al_user_bundle_es.send_button_html(show_editable_checkbox=False, email_label="") }
   
   **Nota:** El Poder Notarial debe ser firmado ante un notario público y al menos un testigo para que tenga validez.
 
@@ -2031,7 +2032,7 @@ objects:
   - poa_property: ALDocument.using(title="Power of Attorney for Property", filename="poa_property", has_addendum=False)
   - instructions: ALDocument.using(title="Instructions and next steps", filename="instructions", has_addendum=False)
   - pop_powers: ALDocument.using(title="Power of Attorney info sheet", filename="pop_powers", has_addendum=False)
-  - poa_property_es: ALDocument.using(title="Poder Notarial para la Propiedad y Finanzas", filename="poa_property", has_addendum=False)
+  - poa_property_es: ALDocument.using(title="Poder Notarial para la Propiedad y Finanzas", filename="Poder Notarial para la Propiedad", has_addendum=False)
   - instructions_es: ALDocument.using(title="Instrucciones y próximos pasos", filename="Instrucciones", has_addendum=False)
   - pop_powers_es: ALDocument.using(title="Información sobre los poderes notariales", filename="Información sobre los poderes notariales", has_addendum=False)
 
