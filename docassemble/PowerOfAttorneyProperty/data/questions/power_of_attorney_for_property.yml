@@ -144,6 +144,7 @@ code: |
   set_progress(100)
   forms_assembling
   snapshot_forms
+  set_docs_language
   get_docs_screen
 ---
 code: |
@@ -2037,6 +2038,7 @@ objects:
   - pop_powers_es: ALDocument.using(title="Información sobre los poderes notariales", filename="Información sobre los poderes notariales", has_addendum=False)
 
 ---
+reconsider: True
 code: |
   instructions.enabled = False
   poa_property.enabled = False
@@ -2052,7 +2054,9 @@ code: |
   else:
     instructions.enabled = True
     poa_property.enabled = True
-    pop_powers.enabled = True    
+    pop_powers.enabled = True
+  
+  set_docs_language = True
 ---
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("All forms"))
