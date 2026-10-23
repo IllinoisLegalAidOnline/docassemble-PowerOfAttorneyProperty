@@ -1303,7 +1303,7 @@ fields:
       - No, only ${agent.name_full()} can make decisions for ${me_subject}.: agent_only 
       - Yes, ${agent.name_full()} can choose any person as a delegate.: anyone
         help: |
-          ${your_subject} acting agent can amend or revoke that delegation at any time. 
+          ${capitalize(your_subject)} acting agent can amend or revoke that delegation at any time. 
       - They can only delegate to someone that ${i_subject} will authorize.: authorized
   - Who ${do_does} ${you_subject} authorize as delegate?: delegate.name.first
     #maxlength: 50
@@ -1933,7 +1933,7 @@ event: get_docs_screen
 question: |
   Download
 subquestion: |
-  Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+  Your forms are ready. View and download your forms below. Click **:edit: Make changes** to fix any mistakes.
 
   % if user_path == "Shirley":
   [YOUTUBE NE0faXuz5v4]
@@ -2055,8 +2055,8 @@ code: |
     pop_powers.enabled = True    
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers], filename="power_of_attorney_property.pdf", title=word("All forms"))
-  - al_user_bundle_es: ALDocumentBundle.using(elements=[instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("Todos los formularios"))
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("All forms"))
+  - al_user_bundle_es: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("Todos los formularios"))
 ---
 attachment:
   - name: instructions
