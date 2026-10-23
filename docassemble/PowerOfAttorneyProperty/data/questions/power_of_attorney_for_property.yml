@@ -2055,8 +2055,8 @@ code: |
     pop_powers.enabled = True    
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("All forms"))
-  - al_user_bundle_es: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers, instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("Todos los formularios"))
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, poa_property, pop_powers], filename="power_of_attorney_property.pdf", title=word("All forms"))
+  - al_user_bundle_es: ALDocumentBundle.using(elements=[instructions_es, poa_property_es, pop_powers_es], filename="power_of_attorney_property.pdf", title=word("Todos los formularios"))
 ---
 attachment:
   - name: instructions
