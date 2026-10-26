@@ -369,7 +369,7 @@ subquestion: |
 ---
 id: completion guide
 question: |
-  Completing this form
+  After you download your forms
 subquestion: |
   At the end of the program, you can download your Power of Attorney for Property. It is not official until you sign it in front of a witness and a notary public. You do not need to know who the witness will be to use this program.
 
@@ -748,6 +748,7 @@ question: |
 fields:
   - Street address: principal.address.address
     address autocomplete: True
+    hint: ${ word("Enter a location") }    
   - Address line 2: principal.address.unit
     required: False
   - City: principal.address.city
@@ -797,6 +798,7 @@ fields:
   - Street address: agent.address.address
     address autocomplete: True
     required: False
+    hint: ${ word("Enter a location") }    
     show if: agent.in_america
   - Address line 2: agent.address.unit
     required: False
@@ -812,6 +814,7 @@ fields:
     show if: agent.in_america
   - Non-US address line 1 (street address, apartment number): agent.intl_address_1
     required: False
+    hint: ${ word("Enter a location") }    
     show if: 
       variable: agent.in_america
       is: False
@@ -1447,6 +1450,7 @@ fields:
   - Street address: successors[i].address.address
     address autocomplete: True
     required: False
+    hint: ${ word("Enter a location") }    
     show if: successors[i].in_america
   - Address line 2: successors[i].address.unit
     required: False
@@ -1462,6 +1466,7 @@ fields:
     show if: successors[i].in_america
   - Non-US address line 1 (street address, apartment number): successors[i].intl_address_1
     required: False
+    hint: ${ word("Enter a location") }    
     show if: 
       variable: successors[i].in_america
       is: False
@@ -1837,6 +1842,7 @@ fields:
   - Street address: preparer.address.address
     required: False
     address autocomplete: True
+    hint: ${ word("Enter a location") }    
   - Address line 2: preparer.address.unit
     required: False
   - City: preparer.address.city
