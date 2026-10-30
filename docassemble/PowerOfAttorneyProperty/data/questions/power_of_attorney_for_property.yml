@@ -452,6 +452,7 @@ code: |
     your_subject = "your"
     you_subject = "you"
     i_subject = "I"
+    i_subject_lower = "I"
     me_subject = "me"
   else:
     my_subject = principal.name_full()
@@ -460,6 +461,7 @@ code: |
     your_subject += "'s"
     you_subject = principal.name_full()
     i_subject = principal.name_full()
+    i_subject_lower = principal.name_full()
     me_subject = principal.name_full()
 ---
 language: es
@@ -468,8 +470,9 @@ code: |
   if for_yourself:
     my_subject = "mi"
     your_subject = "tu"
-    you_subject = "you"
+    you_subject = "tú"
     i_subject = "Yo"
+    i_subject_lower = "yo"
     me_subject = "mi"
   else:
     my_subject = principal.name_full()
@@ -478,6 +481,7 @@ code: |
     your_subject += "'s"
     you_subject = principal.name_full()
     i_subject = principal.name_full()
+    i_subject_lower = principal.name_full()
     me_subject = principal.name_full()
 ---
 id: other principal notice
