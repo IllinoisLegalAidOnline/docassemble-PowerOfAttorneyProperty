@@ -509,14 +509,14 @@ code: |
   else:
     i_they = "they"
     your_their = "their"
-    you_they = "tú"
+    you_they = "they"
 ---
 language: es
 code: |
   if for_yourself:
     i_they = "yo"
     your_their = "tu"
-    you_they = "you"
+    you_they = "tú"
   else:
     i_they = "ellos"
     your_their = "su"
@@ -944,7 +944,7 @@ fields:
       Some examples of **estate transactions** are accepting money or a gift on behalf of the principal.
   - All other property transactions: all_other_powers
     #This was formerly "all"
-    datatype: yesnowide   
+    datatype: yesnowide 
     help: |
       By selecting **all other property transactions**, the agent can perform any transaction with the principal's property even if is not listed above.
   - None of the above: none_powers
@@ -1618,7 +1618,7 @@ fields:
           % endif
       - "Cuando una acción migratoria adversa impide que ${me_subject} administre la propiedad de ${my_their}.": immigration
         help: |
-          Una Acción de Inmigración Adversa es una acción federal que impide a ${you_subject} estar en o administrar la propiedad de ${your_their} en los Estados Unidos. Un arresto, detención o aprehensión por parte de ICE, CBP o DHS puede ser una Acción de Inmigración Adversa.
+          Una Acción de Inmigración Adversa es una acción federal que impide a ${you_subject} estar en o administrar la propiedad de ${you_they} en los Estados Unidos. Un arresto, detención o aprehensión por parte de ICE, CBP o DHS puede ser una Acción de Inmigración Adversa.
       - "En otro momento. (Explica abajo)": other
   - note: |
       <div class="alert alert-info ilao-info" role="alert">
@@ -1750,9 +1750,9 @@ question: |
   % endif
 subquestion: |
   % if for_yourself == True:
-  Para hacer que el poder notarial termine antes de su muerte, debe indicar una fecha o un evento mediante el cual terminará el poder notarial.
+  Para que el poder notarial termine antes de tu muerte, debe indicar una fecha o un evento que pondrá fin al poder notarial.
   
-  Por ejemplo, el poder notarial podría terminar ante una determinación judicial de su discapacidad.
+  Por ejemplo, el poder notarial podría terminar ante una determinación judicial de tu discapacidad.
   % else:
   Para hacer que el poder notarial termine antes de la muerte de ${principal.name_full()}, deben indicar una fecha o un evento mediante el cual terminará el poder notarial.
   
