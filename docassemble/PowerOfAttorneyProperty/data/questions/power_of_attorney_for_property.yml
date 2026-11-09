@@ -1386,7 +1386,7 @@ subquestion: |
   
   If you list more than one successor agent, you should list them in order of preference
   % else:
-  The person named as a successor agent will have power of attorney for property for ${principal.name_full()} if ${agent.name_full()} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
+  The person named as a **{successor agent}** will have power of attorney for property for ${principal.name_full()} if ${agent.name_full()} dies, becomes **{incompetent}**, quits, or refuses to accept the office of agent.
   
   If ${principal.name_full()} lists more than one successor agent, they should list them in order of preference.
   % endif
@@ -1556,7 +1556,7 @@ fields:
           % else:
           If ${principal.name_full()} chooses this, ${agent.name_full()} will have authority as their personal representative under HIPAA to speak with their doctor and request a written statement whether or not they can make financial decisons.
           % endif
-      - When an Adverse Immigration Action stops ${me_subject} from managing ${my_their} property.: immigration
+      - "When an Adverse Immigration Action stops ${me_subject} from managing ${my_their} property.": immigration
         help: |
           An Adverse Immigration Action is a federal action that stops ${you_subject} from being in or managing ${your_their} property in the United States. An arrest, detention, or apprehension by ICE, CBP, or DHS can be an Adverse Immigration Action.
       - At another time. (Explain below): other
@@ -1569,39 +1569,24 @@ terms:
   revoke: |
     To **revoke** a Power of Attorney means to undo, destroy, or void it.
   legal capacity: |
-    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney if 
+    ${capitalize(you_subject)} ${have_has} the **legal capacity** to revoke a Power of Attorney if:
     
        * ${capitalize(you_they)} understand what revoking the Power of Attorney will do, and 
        * ${capitalize(you_they)} know what income and property ${you_they} have.
 ---
+if: for_yourself
 language: es
 id: effective date option
 question: |
-  % if for_yourself == True:
   ¿Cuándo quiere que este Poder Notarial entre en vigencia?
-  % else:
-  ¿Cuándo quiere ${principal.name_full()} que este Poder Notarial entre en vigencia?
-  % endif
 subquestion: |
   ${collapse_template(video_when_effect)}
   
-  % if for_yourself == True:
   Este Poder Notarial entrará en vigor cuando usted firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
   
   Aún tendrá la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por usted cuando no pueda hacerlo.
   
   Aún puede cambiar de opinión y **{revocar}** el Poder Notarial después de firmarlo, siempre que tenga la **{capacidad legal}** requerida.
-  % else:
-  Este Poder Notarial entrará en vigor cuando ${principal.name_full()} firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
-  
-  ${principal.name_full()} seguirá teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
-  
-  Este Poder Notarial entrará en vigor cuando ${principal.name_full()} firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
-  
-  Ellos seguirán teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
-  
-  ${principal.name_full()} aún puede cambiar de opinión y **{revocar}** el Poder Notarial después de firmarlo, siempre que tenga la **{capacidad legal}** requerida.
-  % endif
   
   ${collapse_template(prove_capacity)}
 fields:
@@ -1609,17 +1594,73 @@ fields:
     input type: radio
     choices:
       - Inmediatamente.: immediately
-      - "Solo cuando un médico haya hecho una declaración por escrito de que ${i_subject} no puede tomar decisiones financieras para ${myself_their_self}.": doctor
+      - "Solo cuando un médico haya declarado por escrito que no puedo tomar decisiones financieras por mí mismo.": doctor
         help: |
-          % if for_yourself:
-          Si eliges esto, ${agent.name_full()} tendrá autoridad como tu representante personal bajo HIPAA para hablar con tu médico y solicitar una declaración por escrito de si puedes tomar decisiones financieras.
-          % else:
-          Si ${principal.name_full()} elige esto, ${agent.name_full()} tendrá autoridad como su representante personal bajo HIPAA para hablar con su médico y solicitar una declaración por escrito de si pueden tomar decisiones financieras.
-          % endif
-      - "Cuando una acción migratoria adversa impide que ${me_subject} administre la propiedad de ${my_their}.": immigration
+           Si eliges esta opción, ${agent.name_full()} tendrá autoridad como tu representante personal bajo HIPAA para hablar con tu médico y solicitar una declaración por escrito sobre si puedes tomar decisiones financieras.
+      - "Cuando una acción migratoria adversa me impida administrar mis propiedades.": immigration
         help: |
-          Una Acción de Inmigración Adversa es una acción federal que impide a ${you_subject} estar en o administrar la propiedad de ${you_they} en los Estados Unidos. Un arresto, detención o aprehensión por parte de ICE, CBP o DHS puede ser una Acción de Inmigración Adversa.
-      - "En otro momento. (Explica abajo)": other
+          Una acción migratoria adversa es una medida del gobierno federal que impide que una persona esté en Estados Unidos o administre sus propiedades en el país. Un arresto, una detención o una aprehensión por parte de ICE, CBP o DHS puede constituir una acción migratoria adversa.
+        show if:
+          code: |
+            for_yourself
+      - "En otro momento. (Explica a continuación)": other
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("effective_date_choice") === "other" && ${ json.dumps(for_yourself) } === true      
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("effective_date_choice") === "other" && ${ json.dumps(for_yourself) } === false
+  - "Este poder notarial entrará en vigor cuando:[NEWLINE]**(En inglés)**": effective_date_text
+    input type: area
+    rows: 7
+    js show if:
+      val("effective_date_choice") === "other"
+terms:
+  revocar: |
+    **Revocar** un poder notarial significa deshacerlo, destruirlo o dejarlo sin efecto.
+  capacidad legal: |
+    ${capitalize(you_subject)} ${have_has} la **capacidad legal** para revocar un Poder Notarial si 
+
+      * ${capitalize(you_they)} entienden lo que implicará revocar el Poder Notarial, y 
+      * ${capitalize(you_they)} saben qué ingresos y bienes ${you_they} tienen.
+---
+if: for_yourself == False
+language: es
+id: effective date option
+question: |
+  ¿Cuándo quiere ${principal.name_full()} que este Poder Notarial entre en vigencia?
+subquestion: |
+  ${collapse_template(video_when_effect)}
+  
+  Este Poder Notarial entrará en vigor cuando ${principal.name_full()} firme el formulario a menos que indique que debe entrar en vigencia en un momento posterior.
+  
+  ${principal.name_full()} seguirá teniendo la autoridad para tomar decisiones. ${agent.name_full()} podrá tomar decisiones por ellos cuando no puedan hacerlo.
+  
+  ${principal.name_full()} aún puede cambiar de opinión y **{revocar}** el Poder Notarial después de firmarlo, siempre que tenga la **{capacidad legal}** requerida.
+  
+  ${collapse_template(prove_capacity)}
+fields:
+  - no label: effective_date_choice
+    input type: radio
+    choices:
+      - Inmediatamente.: immediately
+      - "Solo cuando un médico haya declarado por escrito que ${principal.name_full()} no puede tomar decisiones financieras por sí mismo.": doctor
+        help: |
+          Si ${principal.name_full()} elige esta opción, ${agent.name_full()} tendrá autoridad, como su representante personal bajo HIPAA, para hablar con su médico y solicitar una declaración por escrito sobre la capacidad de ${principal.name_full()} para tomar decisiones financieras.
+      - "Cuando una acción migratoria adversa impida que ${principal.name_full()} administre sus propiedades.": immigration
+        help: |
+          Una acción migratoria adversa es una medida del gobierno federal que impide que una persona esté en Estados Unidos o administre sus propiedades en el país. Un arresto, una detención o una aprehensión por parte de ICE, CBP o DHS puede constituir una acción migratoria adversa.
+      - "En otro momento. (Explica a continuación)": other
   - note: |
       <div class="alert alert-info ilao-info" role="alert">
         <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
@@ -1725,7 +1766,7 @@ fields:
     choices:
        - When ${agent.name_full()} gets a note from ${my_subject} doctor that says ${i_they} can manage ${my_their} financial affairs.: doctor
        - When ${i_subject} ${have_has} been released from custody.: custody
-       - When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again.: immigration
+       - "When the Adverse Immigration Action ends, and ${capitalize(i_subject)} state in writing ${capitalize(i_subject)} will manage ${my_their} property again.": immigration
          help: |
            An Adverse Immigration Action ends when it is resolved. Resolution can be:
              
@@ -1740,40 +1781,31 @@ fields:
     js show if:
       val("end_date_choice") === "other"
 ---
+if: for_yourself
 language: es
 id: termination
 question: |
-  % if for_yourself == True:
   ¿Cuándo quieres que termine el poder notarial?
-  % else:
-  ¿Cuándo quiere ${principal.name_full()} que termine el poder notarial?
-  % endif
 subquestion: |
-  % if for_yourself == True:
   Para que el poder notarial termine antes de tu muerte, debe indicar una fecha o un evento que pondrá fin al poder notarial.
   
   Por ejemplo, el poder notarial podría terminar ante una determinación judicial de tu discapacidad.
-  % else:
-  Para hacer que el poder notarial termine antes de la muerte de ${principal.name_full()}, deben indicar una fecha o un evento mediante el cual terminará el poder notarial.
-  
-  Por ejemplo, el poder notarial podría terminar tras una determinación judicial de su discapacidad.
-  % endif
 fields:
   - no label: end_date_choice
     input type: radio
     choices:
-       - "Cuando ${agent.name_full()} recibe una nota del médico de ${my_subject} que dice que ${i_they} puede gestionar ${my_their} asuntos financieros.": doctor
-       - "Cuando ${i_subject} ${have_has} sido puesto en libertad.": custody
-       - "Cuando termine la Acción de Inmigración Adversa, y ${capitalize(i_subject)} declare por escrito ${capitalize(i_subject)} gestionará la propiedad de ${my_their} de nuevo.": immigration
+       - "Cuando ${agent.name_full()} reciba una declaración por escrito de mi médico que indique que puedo gestionar mis asuntos financieros.": doctor
+       - "Cuando sea puesto en libertad.": custody
+       - "Cuando termine la Acción Migratoria Adversa y yo declare por escrito que volveré a gestionar mi propiedad.": immigration
          help: |
-           Una Acción Migratoria Adversa termina cuando se resuelve. La resolución puede ser:
+           Una Acción Migratoria Adversa termina cuando se resuelve. Esto puede ocurrir cuando:
            
-           * Ejecución o cancelación de una orden de deportación,
-           * Concesión de alivio migratorio o protección,
-           * Fin de los procedimientos de deportación, o
-           * Liberación de la detención migratoria.
+           * Se ejecuta o cancela una orden de deportación,
+           * Se concede un alivio migratorio o una protección migratoria,
+           * Terminan los procedimientos de deportación, o
+           * La persona es puesta en libertad después de una detención migratoria.
          show if: effective_date_choice == "immigration"
-       - "Otro (Explica abajo)": other
+       - "Otro (Explica a continuación)": other
   - note: |
       <div class="alert alert-info ilao-info" role="alert">
         <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
@@ -1794,7 +1826,52 @@ fields:
     input type: area
     js show if:
       val("end_date_choice") === "other"
-
+---
+if: for_yourself == False
+language: es
+id: termination
+question: |
+  ¿Cuándo quiere ${principal.name_full()} que termine el poder notarial?
+subquestion: |
+  Para hacer que el poder notarial termine antes de la muerte de ${principal.name_full()}, deben indicar una fecha o un evento mediante el cual terminará el poder notarial.
+  
+  Por ejemplo, el poder notarial podría terminar tras una determinación judicial de su discapacidad.
+fields:
+  - no label: end_date_choice
+    input type: radio
+    choices:
+       - "Cuando ${agent.name_full()} reciba una declaración por escrito del médico de ${principal.name_full()} que indique que puede gestionar sus asuntos financieros.": doctor
+       - "Cuando ${principal.name_full()} haya sido puesto en libertad.": custody
+       - "Cuando termine la Acción Migratoria Adversa y ${principal.name_full()} declare por escrito que volverá a gestionar su propiedad.": immigration
+         help: |
+           Una Acción Migratoria Adversa termina cuando se resuelve. Esto puede ocurrir cuando:
+           
+           * Se ejecuta o cancela una orden de deportación,
+           * Se concede un alivio migratorio o una protección migratoria,
+           * Terminan los procedimientos de deportación, o
+           * La persona es puesta en libertad después de una detención migratoria.
+         show if: effective_date_choice == "immigration"
+       - "Otro (Explica a continuación)": other
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir tus deseos. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("end_date_choice") === "other" && ${ json.dumps(for_yourself) } === true      
+  - note: |
+      <div class="alert alert-info ilao-info" role="alert">
+        <h6 class="alert-heading">Escribe las respuestas en inglés</h6>
+        <p><strong>Importante:</strong> Las respuestas que escribas aquí deben estar en inglés para que puedan usarse en Illinois. Este Formulario Fácil no traduce por ti. Es muy importante que lo que escribas sea claro y esté en inglés para que las instituciones puedan seguir los deseos de ${ principal.name_full() }. Si escribes las respuestas en español o en otro idioma que no sea inglés, es posible que las instituciones no puedan seguir esos deseos.</p>
+      <p><strong>Pídele a una persona de confianza que verifique que la traducción sea correcta.</strong> Las traducciones en línea o generadas por inteligencia artificial pueden contener errores.</p>
+      </div>
+    js show if: |
+      val("end_date_choice") === "other" && ${ json.dumps(for_yourself) } === false         
+  - "Este poder notarial terminará cuando:[NEWLINE]**(En inglés)**": end_date_text
+    input type: area
+    js show if:
+      val("end_date_choice") === "other"
 ---
 id: agent as guardian
 question: |
