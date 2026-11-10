@@ -2446,11 +2446,11 @@ review:
       % if effective_date_choice == "immediately":
       Immediately
       % elif effective_date_choice == "doctor":
-      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
+      Only when a doctor has made a written statement
       % elif effective_date_choice == "detained":
-      Only if ${i_subject} ${am_is} arrested, detained, or deported.
+      Only if arrested, detained, or deported
       % elif effective_date_choice == "immigration":
-      When an Adverse Immigration Action stops ${me_them} from managing ${my_their} property.
+      When an Adverse Immigration Action happens
       % elif effective_date_choice == "other":
       ${effective_date_text}
       % endif
@@ -2466,11 +2466,11 @@ review:
     button: |
       **This Power of Attorney shall terminate:**
       % if end_date_choice == "doctor":
-      When ${agent.name_full()} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
+      When ${agent.name_full()} gets a note from a doctor
       % elif end_date_choice == "custody":
-      When ${i_subject} ${have_has} been released from custody.
+      When released from custody
       % elif end_date_choice == "immigration":
-      When the Adverse Immigration Action ends, and ${i_they} state in writing ${i_they} will manage ${my_their} property again.
+      When the Adverse Immigration Action ends
       % elif end_date_choice == "other":
       On ${end_date_text}.
       % endif
@@ -2483,17 +2483,17 @@ review:
     button: |
       **Your name:**
       ${preparer.name_full()}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
   - Edit: preparer.address.address
     button: |
       **Your address:**
       ${preparer.address.on_one_line()}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
   - Edit: preparer.phone_number
     button: |
       **Your phone number:**
       ${phone_number_formatted(preparer.phone_number)}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
 ---
 section: Principal
 id: principal review section
@@ -2798,11 +2798,11 @@ review:
       % if effective_date_choice == "immediately":
       Immediately
       % elif effective_date_choice == "doctor":
-      Only when a doctor has made a written statement that ${i_subject} cannot make financial decisions for ${myself_their_self}.
+      Only when a doctor has made a written statement
       % elif effective_date_choice == "detained":
-      Only if ${i_subject} ${am_is} arrested, detained, or deported.
+      Only if arrested, detained, or deported
       % elif effective_date_choice == "immigration":
-      When an Adverse Immigration Action stops ${me_them} from managing ${my_their} property.
+      When an Adverse Immigration Action happens
       % elif effective_date_choice == "other":
       ${effective_date_text}
       % endif
@@ -2818,11 +2818,11 @@ review:
     button: |
       **This Power of Attorney shall terminate:**
       % if end_date_choice == "doctor":
-      When ${agent.name_full()} gets a note from ${my_subject} doctor that ${i_they} can manage ${my_their} financial affairs.
+      When ${agent.name_full()} gets a note from a doctor
       % elif end_date_choice == "custody":
-      When ${i_subject} ${have_has} been released from custody.
+      When released from custody
       % elif end_date_choice == "immigration":
-      When the Adverse Immigration Action ends, and ${i_they} state in writing ${i_they} will manage ${my_their} property again.
+      When the Adverse Immigration Action ends
       % elif end_date_choice == "other":
       On ${end_date_text}.
       % endif
@@ -2835,17 +2835,17 @@ review:
     button: |
       **Your name:**
       ${preparer.name_full()}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
   - Edit: preparer.address.address
     button: |
       **Your address:**
       ${preparer.address.on_one_line()}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
   - Edit: preparer.phone_number
     button: |
       **Your phone number:**
       ${phone_number_formatted(preparer.phone_number)}
-    show if: for_yourself == False and include_preparer == True
+    show if: for_yourself == False
 ---
 id: successors table
 table: successors.table
